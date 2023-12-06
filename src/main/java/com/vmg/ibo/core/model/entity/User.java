@@ -1,0 +1,69 @@
+package com.vmg.ibo.core.model.entity;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.vmg.ibo.core.base.BaseEntity;
+import lombok.*;
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.Objects;
+import java.util.Set;
+
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
+@Entity
+@Table(name = "SYS_USERS")
+public class User extends BaseEntity {
+
+    private String username;
+
+    private String password;
+
+    private Integer channelId;
+
+    private String channelName;
+
+    private String avatar;
+
+    private Integer status;
+
+    private Boolean isAdminRoot;
+
+    private Boolean isResetPass;
+
+    private String lastIp;
+
+    private Date lastLogin;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "SYS_USERS_ROLES",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JsonManagedReference
+    @ToString.Exclude
+    private Set<Role> roles;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        User user = (User) o;
+        return getId() != null && Objects.equals(getId(), user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    public void reverseStatus() {
+        if (this.status == 1) {
+            this.status = 2;
+            return;
+        }
+        this.status = 1;
+    }
+}
