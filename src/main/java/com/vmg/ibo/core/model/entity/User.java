@@ -38,6 +38,12 @@ public class User extends BaseEntity {
 
     private Date lastLogin;
 
+    private String name;
+
+    private String email;
+
+    private String phone;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "SYS_USERS_ROLES",
             joinColumns = @JoinColumn(name = "user_id"),
