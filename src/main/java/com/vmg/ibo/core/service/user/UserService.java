@@ -3,6 +3,7 @@ package com.vmg.ibo.core.service.user;
 import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.constant.AuthConstant;
+import com.vmg.ibo.core.constant.MailMessageConstant;
 import com.vmg.ibo.core.constant.UserConstant;
 import com.vmg.ibo.core.model.dto.ChangePasswordRequest;
 import com.vmg.ibo.core.model.dto.ProfileResponse;
@@ -14,7 +15,9 @@ import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.repository.IPermissionRepository;
 import com.vmg.ibo.core.repository.IRoleRepository;
 import com.vmg.ibo.core.repository.IUserRepository;
+import com.vmg.ibo.core.service.mail.IMailService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -34,12 +37,17 @@ public class UserService extends BaseService implements IUserService {
     private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final IPermissionRepository permissionRepository;
+    private final IMailService mailService;
 
-    public UserService(IUserRepository userRepository, IRoleRepository roleRepository, PasswordEncoder passwordEncoder, IPermissionRepository permissionRepository) {
+    @Value("${cms.url}")
+    private String cmsUrl;
+
+    public UserService(IUserRepository userRepository, IRoleRepository roleRepository, PasswordEncoder passwordEncoder, IPermissionRepository permissionRepository, IMailService mailService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.permissionRepository = permissionRepository;
+        this.mailService = mailService;
     }
 
     @Override
@@ -70,6 +78,7 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
+    @Transactional
     public User create(UserDTO userDTO) {
         writeLog("CREATE_USER", "Thêm mới người dùng hệ thống", userDTO, null, null, null, "SYSTEM", this.getClass());
         String password = AuthConstant.DEFAULT_PASSWORD.getValue();
@@ -86,7 +95,12 @@ public class UserService extends BaseService implements IUserService {
         user.setCreatedByUserId(currentUser.getId());
         user.setCreatedAt(new Date());
         user.setIsResetPass(true);
-        return userRepository.save(user);
+        user = userRepository.save(user);
+        mailService.sendFromSystem(message -> message.to(userDTO.getEmail())
+                .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT)
+                .text(String.format(MailMessageConstant.CREATE_ACCOUNT_TEXT, userDTO.getUsername(), password, cmsUrl))
+                .build());
+        return user;
     }
 
     @Override
