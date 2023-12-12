@@ -6,13 +6,13 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class LoginDTO {
-    @NotNull(message = "Tên đăng nhập không được để trống")
-    private String username;
+    @NotNull(message = "Email không được để trống")
+    private String email;
 
     @NotNull(message = " không được để trống")
     private String password;
 
-    public String getUsername() {
-        return this.username.trim().toLowerCase();
+    public String getEmail() {
+        return this.email.trim().toLowerCase();
     }
 }

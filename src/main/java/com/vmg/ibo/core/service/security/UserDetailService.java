@@ -20,10 +20,10 @@ public class UserDetailService implements IUserDetailService {
     private HttpServletRequest request;
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) {
+        User user = userRepository.findByEmail(email);
         if (ObjectUtils.isEmpty(user)) {
-            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
+            throw new UsernameNotFoundException(String.format("No user found with email '%s'.", email));
         }
         //todo late
         user.setLastIp(RequestUtils.getClientIP(request));

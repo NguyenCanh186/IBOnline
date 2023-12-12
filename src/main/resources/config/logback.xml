@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+	<property name="BASE_HOME" value="./logs" />
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="daily"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${BASE_HOME}/app.log</file>
+		<!-- Support multiple-JVM writing to the same log file -->
+		<!-- <prudent>true</prudent> -->
+		
+    	<!-- <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"> -->
+    	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- <fileNamePattern>${BASE_HOME}/app/%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern> -->
+            <fileNamePattern>${BASE_HOME}/app/%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <!-- <maxFileSize>10MB</maxFileSize> -->
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <!-- <totalSizeCap>20GB</totalSizeCap> -->
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="access"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${BASE_HOME}/access.log</file>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${BASE_HOME}/access/%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+    		
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="error"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${BASE_HOME}/error.log</file>
+		
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${BASE_HOME}/error/%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<logger name="redis.clients.jedis" level="OFF"/>
+	
+	<logger name="com.vmg" level="DEBUG">
+		<appender-ref ref="daily" />
+	</logger>
+	
+	<logger name="com.vmg.ibo.accesslog" level="DEBUG" additivity="true">
+		<appender-ref ref="access" />
+	</logger>
+	
+	<logger name="com.vmg.ibo.errorlog" level="ERROR" additivity="true">
+		<appender-ref ref="error" />
+	</logger>
+	
+	<root level="INFO">
+		<appender-ref ref="stdout" />
+	</root>
+</configuration>
