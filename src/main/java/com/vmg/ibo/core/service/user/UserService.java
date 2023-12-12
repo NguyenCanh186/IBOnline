@@ -5,6 +5,7 @@ import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.constant.AuthConstant;
 import com.vmg.ibo.core.constant.MailMessageConstant;
 import com.vmg.ibo.core.constant.UserConstant;
+import com.vmg.ibo.core.model.customer.PersonalCustomer;
 import com.vmg.ibo.core.model.dto.ChangePasswordRequest;
 import com.vmg.ibo.core.model.dto.ProfileResponse;
 import com.vmg.ibo.core.model.dto.UserDTO;
@@ -12,16 +13,20 @@ import com.vmg.ibo.core.model.dto.filter.UserFilter;
 import com.vmg.ibo.core.model.entity.Permission;
 import com.vmg.ibo.core.model.entity.Role;
 import com.vmg.ibo.core.model.entity.User;
+import com.vmg.ibo.core.model.entity.UserDetail;
 import com.vmg.ibo.core.repository.IPermissionRepository;
 import com.vmg.ibo.core.repository.IRoleRepository;
 import com.vmg.ibo.core.repository.IUserRepository;
 import com.vmg.ibo.core.service.mail.IMailService;
+import com.vmg.ibo.core.service.userDetail.IUserDetailService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +44,8 @@ public class UserService extends BaseService implements IUserService {
     private final IPermissionRepository permissionRepository;
     private final IMailService mailService;
 
+    private IUserDetailService userDetailService;
+
     @Value("${cms.url}")
     private String cmsUrl;
 
@@ -53,6 +60,11 @@ public class UserService extends BaseService implements IUserService {
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -100,6 +112,25 @@ public class UserService extends BaseService implements IUserService {
                 .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT)
                 .text(String.format(MailMessageConstant.CREATE_ACCOUNT_TEXT, userDTO.getUsername(), password, cmsUrl))
                 .build());
+        return user;
+    }
+
+    @Override
+    public User createPersonalCustomer(PersonalCustomer personalCustomer) {
+        Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
+
+        User user = new User();
+        user.setName(personalCustomer.getName());
+        user.setPhone(personalCustomer.getPhone());
+        user.setId(idUser);
+        user.setCreatedAt(new Date());
+        user = userRepository.save(user);
+        UserDetail userDetail = new UserDetail();
+        userDetail.setAddress(personalCustomer.getAddress());
+        userDetail.setDescription(personalCustomer.getDescription());
+        userDetail.setIdUser(user.getId());
+        userDetail.setCINumber(personalCustomer.getCINumber());
+        userDetailService.create(userDetail);
         return user;
     }
 
@@ -161,6 +192,13 @@ public class UserService extends BaseService implements IUserService {
             return userRepository.save(user);
         }
         return null;
+    }
+
+    @Override
+    public User lockOrUnlockUser(Integer status, Long id) {
+        User user = userRepository.findById(id).get();
+        user.setStatus(status);
+        return userRepository.save(user);
     }
 
     @Override

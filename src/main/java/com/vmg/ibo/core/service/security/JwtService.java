@@ -24,9 +24,9 @@ public class JwtService {
 	@Value("${app.token.refresh.key}")
 	private String refreshTokenKey;
 
-	public String generateJwtToken(String username) {
+	public String generateJwtToken(String email) {
 		return Jwts.builder()
-				.setSubject(username)
+				.setSubject(email)
 				.setIssuedAt(new Date())
 				.setExpiration(new Date((new Date()).getTime() + accessTokenDuration))
 				.signWith(SignatureAlgorithm.HS512, accessTokenKey)

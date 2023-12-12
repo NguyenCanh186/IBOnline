@@ -44,17 +44,17 @@ public class AuthController {
     public Result<?> login(@Validated @RequestBody LoginDTO loginDTO) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
+                    new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (LockedException lockedException) {
             throw new WebServiceException(HttpStatus.BAD_REQUEST.value(), "login.error.user-locked");
         } catch (Exception e) {
             throw new WebServiceException(HttpStatus.BAD_REQUEST.value(), "login.error.bad-credentials");
         }
-        User currentUser = userService.findByUsername(loginDTO.getUsername());
-        String jwt = jwtService.generateJwtToken(loginDTO.getUsername());
+        User currentUser = userService.findByEmail(loginDTO.getEmail());
+        String jwt = jwtService.generateJwtToken(loginDTO.getEmail());
         return Result.success(new JwtDTO(jwt, currentUser.getId(),
-                loginDTO.getUsername(),
+                loginDTO.getEmail(),
                 null));
     }
 

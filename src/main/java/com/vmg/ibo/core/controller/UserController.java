@@ -7,6 +7,7 @@ import com.vmg.ibo.core.base.Result;
 import com.vmg.ibo.core.model.dto.UserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
 import com.vmg.ibo.core.service.user.IUserService;
+import com.vmg.ibo.core.service.userDetail.IUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -18,16 +19,19 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    @GetMapping
+    @Autowired
+    private IUserDetailService userDetailService;
+
+    @PostMapping("/search")
     @PreAuthorize("hasAuthority('user-list')")
-    public Result<?> findAllUsersWithPaging(UserFilter userFilter) {
-        return Result.success(userService.findAllUsers(userFilter));
+    public Result<?> findAllUsersWithPaging(@RequestBody UserFilter userFilter) {
+        return Result.success(userDetailService.findAllUser(userFilter));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('user-get')")
     public Result<?> getUserById(@PathVariable Long id) {
-        return Result.success(userService.findById(id));
+        return Result.success(userDetailService.findUserById(id));
     }
 
     @PostMapping
@@ -40,6 +44,14 @@ public class UserController {
     @PreAuthorize("hasAuthority('user-edit')")
     public Result<?> editUser(@PathVariable Long id, @Validated(Update.class) @RequestBody UserDTO userDTO) {
         return Result.success(userService.update(id, userDTO));
+    }
+
+    @PutMapping("/lockOrUnlock")
+    @PreAuthorize("hasAuthority('user-edit')")
+    public Result<?> lockOrUnlock(@RequestBody UserDTO userDTO) {
+        Long id = userDTO.getId();
+        Integer status = userDTO.getStatus();
+        return Result.success(userService.lockOrUnlockUser(status, id));
     }
 
     @PutMapping("/change-status")
