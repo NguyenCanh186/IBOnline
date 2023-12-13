@@ -58,6 +58,27 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
+    public User registerUser(String email) {
+        User user = new User();
+        user.setEmail(email);
+        String password = AuthConstant.DEFAULT_PASSWORD.getValue();
+        user.setStatus((Integer) UserConstant.ENABLE.getValue());
+        user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
+        user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
+        user.setPassword(passwordEncoder.encode(password));
+        user.setCreatedBy("me");
+        user.setCreatedByUserId(1L);
+        user.setCreatedAt(new Date());
+        user.setIsResetPass(true);
+        user = userRepository.save(user);
+        mailService.sendFromSystem(message -> message.to(email)
+                .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT)
+                .text(String.format(MailMessageConstant.CREATE_ACCOUNT_TEXT, email, password, cmsUrl))
+                .build());
+        return user;
+    }
+
+    @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -69,7 +90,7 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public Page<UserDTO> findAllUsers(UserFilter userFilter) {
-        String username = userFilter.getUsername();
+        String username = userFilter.getContactName();
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         PageRequest pageable = handlePaging(userFilter, sort);
         return userRepository.findAllUser(username, pageable).map(this::mapToDTO);

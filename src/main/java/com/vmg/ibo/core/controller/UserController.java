@@ -4,12 +4,18 @@ import com.vmg.ibo.core.action.Delete;
 import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
 import com.vmg.ibo.core.base.Result;
+import com.vmg.ibo.core.model.dto.ChangePasswordRequest;
+import com.vmg.ibo.core.model.dto.JwtDTO;
 import com.vmg.ibo.core.model.dto.UserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
+import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.core.service.userDetail.IUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +38,6 @@ public class UserController {
     @PreAuthorize("hasAuthority('user-get')")
     public Result<?> getUserById(@PathVariable Long id) {
         return Result.success(userDetailService.findUserById(id));
-    }
-
-    @PostMapping
-    @PreAuthorize("hasAuthority('user-add')")
-    public Result<?> createUser(@Validated(Insert.class) @RequestBody UserDTO userDTO) {
-        return Result.success(userService.create(userDTO));
     }
 
     @PutMapping("/{id}")

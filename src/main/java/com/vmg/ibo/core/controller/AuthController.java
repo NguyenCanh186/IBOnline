@@ -63,7 +63,6 @@ public class AuthController {
         authentication.getName();
         return Result.success();
     }
-
     @GetMapping("/permissions")
     public Result<?> getCurrentUserPermissions() {
         List<Permission> permissions = permissionService.getRecursivePermissionsByCurrentUser(null);
@@ -78,12 +77,16 @@ public class AuthController {
     @PutMapping("/change-password")
     public Result<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
         User user = userService.changePassword(changePasswordRequest);
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUsername(), changePasswordRequest.getNewPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtService.generateJwtToken(user.getUsername());
-        return Result.success(new JwtDTO(jwt, user.getId(),
-                user.getUsername(),
-                null));
+        if (user == null) {
+            throw new WebServiceException(HttpStatus.BAD_REQUEST.value(), "change-password.error.bad-credentials");
+        }
+        return Result.success("Thay đổi mật khẩu thành công");
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(user.getUsername(), changePasswordRequest.getNewPassword()));
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        String jwt = jwtService.generateJwtToken(user.getUsername());
+//        return Result.success(new JwtDTO(jwt, user.getId(),
+//                user.getUsername(),
+//                null));
     }
 }
