@@ -29,7 +29,7 @@ public class UserDetail {
     private String contactName;
     private String mainBusiness;
     private String title;
-    private String capitalSize;
+    private Long capitalSize;
     private String description;
     private Long idUser;
 }
