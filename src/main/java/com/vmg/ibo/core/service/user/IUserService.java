@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface IUserService {
+    User registerUser(String email);
     User findByUsername(String username);
 
     User findByEmail(String email);

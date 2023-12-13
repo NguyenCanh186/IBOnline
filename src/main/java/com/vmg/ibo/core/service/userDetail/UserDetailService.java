@@ -22,7 +22,7 @@ public class UserDetailService extends BaseService implements IUserDetailService
     public Page<UserDetailWithUserDTO> findAllUser(UserFilter userFilter) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         PageRequest pageable = handlePaging(userFilter, sort);
-        return userDetailRepository.findAllUser(pageable);
+        return userDetailRepository.findAllUser(pageable, userFilter.getContactName(), userFilter.getIsCustomerPersonal(), userFilter.getStatus(), userFilter.getFromCapitalSize(), userFilter.getToCapitalSize());
     }
 
     @Override
