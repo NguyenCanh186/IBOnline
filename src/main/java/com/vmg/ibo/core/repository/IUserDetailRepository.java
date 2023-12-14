@@ -1,5 +1,6 @@
 package com.vmg.ibo.core.repository;
 
+import com.vmg.ibo.core.model.dto.CustomerCode;
 import com.vmg.ibo.core.model.dto.UserDetailWithUserDTO;
 import com.vmg.ibo.core.model.entity.UserDetail;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public interface IUserDetailRepository extends JpaRepository<UserDetail, Long> {
@@ -16,7 +19,8 @@ public interface IUserDetailRepository extends JpaRepository<UserDetail, Long> {
     @Query(value = "SELECT u.id as id, u.createdAt as createdAt, ud.customerCode as customerCode, ud.isCustomerPersonal as isCustomerPersonal, " +
             "ud.address as address, ud.CINumber as CINumber, ud.dateOfBirth as dateOfBirth, ud.businessName as businessName, ud.codeTax as codeTax, ud.codeReg as codeReg, " +
             "ud.contactName as contactName, ud.mainBusiness as mainBusiness, ud.title as title, ud.capitalSize as capitalSize, ud.description as description, " +
-            "u.status as status, u.email as email, u.phone as phone FROM User u " +
+            "u.status as status, u.email as email, u.phone as phone, ud.mostRecentYearRevenue as mostRecentYearRevenue, ud.mostRecentYearProfit as mostRecentYearProfit," +
+            "ud.propertyStructure as propertyStructure, ud.debtStructure as debtStructure FROM User u " +
             "JOIN UserDetail ud ON u.id = ud.idUser " +
             "WHERE (u.isAdminRoot = false OR u.isAdminRoot IS NULL) and (:isCustomerPersonal = ud.isCustomerPersonal OR :isCustomerPersonal IS NULL) " +
             "AND (:status = u.status OR :status IS NULL) " +
@@ -36,4 +40,8 @@ public interface IUserDetailRepository extends JpaRepository<UserDetail, Long> {
             "JOIN UserDetail ud ON u.id = ud.idUser " +
             "WHERE u.id = :id")
     UserDetailWithUserDTO findUserById(Long id);
+    @Query(value = "SELECT ud FROM UserDetail ud WHERE ud.idUser = :idUser")
+    UserDetail findByIdUser(@Param("idUser") Long idUser);
+    @Query(value = "SELECT ud.customerCode as customerCode FROM UserDetail ud")
+    List<String> getAllCustomerCode();
 }

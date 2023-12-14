@@ -14,4 +14,6 @@ public interface IUserDetailService {
     UserDetailWithUserDTO findUserById(Long id);
 
     UserDetail create(UserDetail userDetail);
+
+    UserDetail findByIdUser(Long id);
 }

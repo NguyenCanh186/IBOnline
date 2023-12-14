@@ -31,5 +31,9 @@ public class UserDetail {
     private String title;
     private Long capitalSize;
     private String description;
+    private Long mostRecentYearRevenue;
+    private Long mostRecentYearProfit;
+    private Long propertyStructure;
+    private Long debtStructure;
     private Long idUser;
 }
