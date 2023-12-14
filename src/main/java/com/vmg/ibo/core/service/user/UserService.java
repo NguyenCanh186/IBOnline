@@ -1,5 +1,6 @@
 package com.vmg.ibo.core.service.user;
 
+import com.vmg.ibo.core.base.BaseFilter;
 import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.constant.AuthConstant;
@@ -99,7 +100,7 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public Page<UserDTO> findAllUsers(UserFilter userFilter) {
-        String username = userFilter.getContactName();
+        String username = userFilter.getUsername();
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         PageRequest pageable = handlePaging(userFilter, sort);
         return userRepository.findAllUser(username, pageable).map(this::mapToDTO);
