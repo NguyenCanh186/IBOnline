@@ -2,11 +2,13 @@ package com.vmg.ibo.core.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vmg.ibo.core.base.BaseEntity;
+import com.vmg.ibo.core.model.customer.File;
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -51,6 +53,9 @@ public class User extends BaseEntity {
     @JsonManagedReference
     @ToString.Exclude
     private Set<Role> roles;
+
+    @OneToMany(mappedBy = "user")
+    private List<File> file;
 
     @Override
     public boolean equals(Object o) {

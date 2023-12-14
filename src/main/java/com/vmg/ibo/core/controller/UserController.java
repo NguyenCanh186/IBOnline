@@ -1,21 +1,16 @@
 package com.vmg.ibo.core.controller;
 
-import com.vmg.ibo.core.action.Delete;
 import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
 import com.vmg.ibo.core.base.Result;
-import com.vmg.ibo.core.model.dto.ChangePasswordRequest;
-import com.vmg.ibo.core.model.dto.JwtDTO;
+import com.vmg.ibo.core.model.customer.PersonalCustomer;
 import com.vmg.ibo.core.model.dto.UserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
-import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.core.service.userDetail.IUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,12 +23,19 @@ public class UserController {
     @Autowired
     private IUserDetailService userDetailService;
 
+    @Value("${upload.path}")
+    private String fileUpload;
+
     @PostMapping("/search")
     @PreAuthorize("hasAuthority('user-list')")
     public Result<?> findAllUsersWithPaging(@RequestBody UserFilter userFilter) {
         return Result.success(userDetailService.findAllUser(userFilter));
     }
 
+    @PostMapping("/create-personal-customer")
+    public Result<?> createUser(@Validated(Insert.class) @RequestBody PersonalCustomer personalCustomer) {
+        return Result.success(userService.createPersonalCustomer(personalCustomer));
+    }
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('user-get')")
     public Result<?> getUserById(@PathVariable Long id) {

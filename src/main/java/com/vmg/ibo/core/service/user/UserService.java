@@ -5,8 +5,10 @@ import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.constant.AuthConstant;
 import com.vmg.ibo.core.constant.MailMessageConstant;
 import com.vmg.ibo.core.constant.UserConstant;
+import com.vmg.ibo.core.model.customer.BusinessCustomer;
 import com.vmg.ibo.core.model.customer.PersonalCustomer;
 import com.vmg.ibo.core.model.dto.ChangePasswordRequest;
+import com.vmg.ibo.core.model.dto.CustomerCode;
 import com.vmg.ibo.core.model.dto.ProfileResponse;
 import com.vmg.ibo.core.model.dto.UserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
@@ -16,10 +18,12 @@ import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.model.entity.UserDetail;
 import com.vmg.ibo.core.repository.IPermissionRepository;
 import com.vmg.ibo.core.repository.IRoleRepository;
+import com.vmg.ibo.core.repository.IUserDetailRepository;
 import com.vmg.ibo.core.repository.IUserRepository;
 import com.vmg.ibo.core.service.mail.IMailService;
 import com.vmg.ibo.core.service.userDetail.IUserDetailService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,7 +49,11 @@ public class UserService extends BaseService implements IUserService {
     private final IPermissionRepository permissionRepository;
     private final IMailService mailService;
 
+    @Autowired
     private IUserDetailService userDetailService;
+
+    @Autowired
+    private IUserDetailRepository userDetailRepository;
 
     @Value("${cms.url}")
     private String cmsUrl;
@@ -135,24 +144,41 @@ public class UserService extends BaseService implements IUserService {
                 .build());
         return user;
     }
-
     @Override
     public User createPersonalCustomer(PersonalCustomer personalCustomer) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
-
-        User user = new User();
+        List<String> listUserCode = userDetailRepository.getAllCustomerCode();
+        int maxNumber = listUserCode.stream()
+                .map(s -> Integer.parseInt(s.substring(3)))
+                .max(Comparator.naturalOrder()).orElse(0) + 1;
+        String userCode = "#KH" + String.valueOf(maxNumber);
+        User user = userRepository.findById(idUser).orElse(null);
         user.setName(personalCustomer.getName());
+        user.setStatus((Integer) UserConstant.ENABLE.getValue());
+        user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
+        user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
         user.setPhone(personalCustomer.getPhone());
-        user.setId(idUser);
         user.setCreatedAt(new Date());
-        user = userRepository.save(user);
-        UserDetail userDetail = new UserDetail();
+        userRepository.save(user);
+        UserDetail userDetail = userDetailService.findByIdUser(idUser);
+        if (userDetail == null) {
+            userDetail = new UserDetail();
+        }
+        userDetail.setCustomerCode(userCode);
         userDetail.setAddress(personalCustomer.getAddress());
         userDetail.setDescription(personalCustomer.getDescription());
-        userDetail.setIdUser(user.getId());
-        userDetail.setCINumber(personalCustomer.getCINumber());
+        userDetail.setIdUser(idUser);
+        userDetail.setCapitalSize(personalCustomer.getCapitalSize());
+        userDetail.setIsCustomerPersonal(true);
+        userDetail.setContactName(personalCustomer.getName());
+        userDetail.setCINumber(personalCustomer.getCinumber());
         userDetailService.create(userDetail);
         return user;
+    }
+
+    @Override
+    public User createBusinessCustomer(BusinessCustomer businessCustomer) {
+        return null;
     }
 
     @Override

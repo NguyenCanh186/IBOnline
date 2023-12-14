@@ -6,9 +6,8 @@ import javax.validation.constraints.NotNull;
 
 @Data
 public class PersonalCustomer {
-    private Long id;
     @NotNull(message = "Số CCCD bắt buộc nhập!")
-    private String CINumber;
+    private String cinumber;
 
     @NotNull(message = "Họ và tên bắt buộc nhập!")
     private String name;
@@ -17,9 +16,7 @@ public class PersonalCustomer {
     private String phone;
 
     private String address;
-
-    @NotNull(message = "Email bắt buộc nhập!")
-    private String email;
-
+    @NotNull(message = "Quy mô vốn bắt buộc nhập!")
+    private Long capitalSize;
     private String description;
 }

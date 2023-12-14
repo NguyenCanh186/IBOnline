@@ -34,4 +34,9 @@ public class UserDetailService extends BaseService implements IUserDetailService
     public UserDetail create(UserDetail userDetail) {
         return userDetailRepository.save(userDetail);
     }
+
+    @Override
+    public UserDetail findByIdUser(Long id) {
+        return userDetailRepository.findByIdUser(id);
+    }
 }

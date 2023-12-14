@@ -16,9 +16,13 @@ public interface UserDetailWithUserDTO {
     String getContactName();
     String getMainBusiness();
     String getTitle();
-    String getCapitalSize();
+    Long getCapitalSize();
     String getDescription();
     Integer getStatus();
     String getEmail();
     String getPhone();
+    Long getMostRecentYearRevenue();
+    Long getMostRecentYearProfit();
+    Long getPropertyStructure();
+    Long getDebtStructure();
 }

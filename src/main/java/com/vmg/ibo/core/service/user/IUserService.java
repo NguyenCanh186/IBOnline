@@ -1,5 +1,6 @@
 package com.vmg.ibo.core.service.user;
 
+import com.vmg.ibo.core.model.customer.BusinessCustomer;
 import com.vmg.ibo.core.model.customer.PersonalCustomer;
 import com.vmg.ibo.core.model.dto.ChangePasswordRequest;
 import com.vmg.ibo.core.model.dto.ProfileResponse;
@@ -24,6 +25,8 @@ public interface IUserService {
     User create(UserDTO userDTO);
 
     User createPersonalCustomer(PersonalCustomer personalCustomer);
+
+    User createBusinessCustomer(BusinessCustomer businessCustomer);
 
     User update(Long id, UserDTO userDTO);
 
