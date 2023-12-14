@@ -26,6 +26,12 @@ public class UserController {
     @Value("${upload.path}")
     private String fileUpload;
 
+    @GetMapping
+    @PreAuthorize("hasAuthority('user-list')")
+    public Result<?> findAllUsers(UserFilter userFilter) {
+        return Result.success(userService.findAllUsers(userFilter));
+    }
+
     @PostMapping("/search")
     @PreAuthorize("hasAuthority('user-list')")
     public Result<?> findAllUsersWithPaging(@RequestBody UserFilter userFilter) {
