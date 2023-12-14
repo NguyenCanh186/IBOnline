@@ -54,9 +54,6 @@ public class User extends BaseEntity {
     @ToString.Exclude
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user")
-    private List<File> file;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
