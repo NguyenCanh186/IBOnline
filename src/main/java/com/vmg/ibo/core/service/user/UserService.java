@@ -178,6 +178,40 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public User createBusinessCustomer(BusinessCustomer businessCustomer) {
+        Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
+        List<String> listUserCode = userDetailRepository.getAllCustomerCode();
+        int maxNumber = listUserCode.stream()
+                .map(s -> Integer.parseInt(s.substring(3)))
+                .max(Comparator.naturalOrder()).orElse(0) + 1;
+        String userCode = "#KH" + String.valueOf(maxNumber);
+        User user = userRepository.findById(idUser).orElse(null);
+        user.setName(businessCustomer.getContactName());
+        user.setPhone(businessCustomer.getPhone());
+        user.setStatus((Integer) UserConstant.ENABLE.getValue());
+        user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
+        user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
+        user.setCreatedAt(new Date());
+        userRepository.save(user);
+        UserDetail userDetail = userDetailService.findByIdUser(idUser);
+        if (userDetail == null) {
+            userDetail = new UserDetail();
+        }
+        userDetail.setCustomerCode(userCode);
+        userDetail.setAddress(businessCustomer.getAddress());
+        userDetail.setDescription(businessCustomer.getDescription());
+        userDetail.setIdUser(idUser);
+        userDetail.setCapitalSize(businessCustomer.getCapitalSize());
+        userDetail.setIsCustomerPersonal(false);
+        userDetail.setContactName(businessCustomer.getContactName());
+        userDetail.setCodeReg(businessCustomer.getCodeReg());
+        userDetail.setCodeTax(businessCustomer.getCodeTax());
+        userDetail.setMainBusiness(businessCustomer.getMainBusiness());
+        userDetail.setMostRecentYearRevenue(businessCustomer.getMostRecentYearRevenue());
+        userDetail.setMostRecentYearProfit(businessCustomer.getMostRecentYearProfit());
+        userDetail.setPropertyStructure(businessCustomer.getPropertyStructure());
+        userDetail.setDebtStructure(businessCustomer.getDebtStructure());
+        userDetail.setTitle(businessCustomer.getTitle());
+        userDetailService.create(userDetail);
         return null;
     }
 
