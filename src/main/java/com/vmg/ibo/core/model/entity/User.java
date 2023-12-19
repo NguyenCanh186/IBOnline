@@ -2,13 +2,11 @@ package com.vmg.ibo.core.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vmg.ibo.core.base.BaseEntity;
-import com.vmg.ibo.core.model.customer.File;
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -45,6 +43,8 @@ public class User extends BaseEntity {
     private String email;
 
     private String phone;
+
+    private boolean isActive;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "SYS_USERS_ROLES",

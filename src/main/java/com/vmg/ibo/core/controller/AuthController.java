@@ -52,6 +52,9 @@ public class AuthController {
             throw new WebServiceException(HttpStatus.BAD_REQUEST.value(), "login.error.bad-credentials");
         }
         User currentUser = userService.findByEmail(loginDTO.getEmail());
+        if (!currentUser.isActive()) {
+            return Result.success("Vui lòng kích hoạt tài khoản");
+        }
         String jwt = jwtService.generateJwtToken(loginDTO.getEmail());
         return Result.success(new JwtDTO(jwt, currentUser.getId(),
                 loginDTO.getEmail(),

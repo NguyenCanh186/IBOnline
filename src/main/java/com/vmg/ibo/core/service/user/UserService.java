@@ -7,20 +7,21 @@ import com.vmg.ibo.core.constant.AuthConstant;
 import com.vmg.ibo.core.constant.MailMessageConstant;
 import com.vmg.ibo.core.constant.UserConstant;
 import com.vmg.ibo.core.model.customer.BusinessCustomer;
+import com.vmg.ibo.core.model.customer.FileUpload;
 import com.vmg.ibo.core.model.customer.PersonalCustomer;
+import com.vmg.ibo.core.model.customer.RegisterModel;
 import com.vmg.ibo.core.model.dto.ChangePasswordRequest;
 import com.vmg.ibo.core.model.dto.CustomerCode;
 import com.vmg.ibo.core.model.dto.ProfileResponse;
 import com.vmg.ibo.core.model.dto.UserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
-import com.vmg.ibo.core.model.entity.Permission;
-import com.vmg.ibo.core.model.entity.Role;
-import com.vmg.ibo.core.model.entity.User;
-import com.vmg.ibo.core.model.entity.UserDetail;
+import com.vmg.ibo.core.model.entity.*;
 import com.vmg.ibo.core.repository.IPermissionRepository;
 import com.vmg.ibo.core.repository.IRoleRepository;
 import com.vmg.ibo.core.repository.IUserDetailRepository;
 import com.vmg.ibo.core.repository.IUserRepository;
+import com.vmg.ibo.core.service.code_and_email.ICodeAndEmailService;
+import com.vmg.ibo.core.service.fileUpload.FileUploadService;
 import com.vmg.ibo.core.service.mail.IMailService;
 import com.vmg.ibo.core.service.userDetail.IUserDetailService;
 import org.modelmapper.ModelMapper;
@@ -34,8 +35,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -54,7 +60,16 @@ public class UserService extends BaseService implements IUserService {
     private IUserDetailService userDetailService;
 
     @Autowired
+    private FileUploadService fileUploadService;
+
+    @Autowired
+    private ICodeAndEmailService codeAndEmailService;
+
+    @Autowired
     private IUserDetailRepository userDetailRepository;
+
+    @Value("${upload.path}")
+    private String fileUpload;
 
     @Value("${cms.url}")
     private String cmsUrl;
@@ -68,24 +83,46 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
-    public User registerUser(String email) {
+    public User registerUser(RegisterModel registerModel) {
+        String codeValid = generateRandomCode();
+        CodeAndEmail codeAndEmail = new CodeAndEmail();
+        codeAndEmail.setCode(codeValid);
+        codeAndEmail.setEmail(registerModel.getEmail());
+        codeAndEmailService.saveCodeAndEmail(codeAndEmail);
         User user = new User();
-        user.setEmail(email);
-        String password = AuthConstant.DEFAULT_PASSWORD.getValue();
+        user.setEmail(registerModel.getEmail());
+        List<String> listUserName = userDetailRepository.getAllUsername();
+        int maxNumberUserName = listUserName.stream()
+                .map(s -> Integer.parseInt(s.substring(8)))
+                .max(Comparator.naturalOrder()).orElse(0) + 1;
+        String username = "username" + String.valueOf(maxNumberUserName);
+        user.setUsername(username);
+        String password = registerModel.getPassword();
         user.setStatus((Integer) UserConstant.ENABLE.getValue());
         user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
         user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
         user.setPassword(passwordEncoder.encode(password));
         user.setCreatedBy("me");
+        user.setActive(false);
         user.setCreatedByUserId(1L);
         user.setCreatedAt(new Date());
         user.setIsResetPass(true);
         user = userRepository.save(user);
-        mailService.sendFromSystem(message -> message.to(email)
+        mailService.sendFromSystem(message -> message.to(registerModel.getEmail())
                 .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT)
-                .text(String.format(MailMessageConstant.CREATE_ACCOUNT_TEXT, email, password, cmsUrl))
+                .text(String.format(MailMessageConstant.CREATE_ACCOUNT_TEXT, registerModel.getEmail(), password, cmsUrl))
                 .build());
         return user;
+    }
+
+    @Override
+    public boolean isValidEmail(String email) {
+        User user = userRepository.findByEmail(email.trim());
+        if (StringUtils.isEmpty(email) || user != null) {
+            return false;
+        }
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
     }
 
     @Override
@@ -129,6 +166,13 @@ public class UserService extends BaseService implements IUserService {
         List<Long> userIds = userDTO.getRoleIds();
         Set<Role> roles = new HashSet<>(roleRepository.findAllById(userIds));
         User currentUser = getCurrentUser();
+        List<String> listUserName = userDetailRepository.getAllUsername();
+        int maxNumberUserName = listUserName.stream()
+                .map(s -> Integer.parseInt(s.substring(8)))
+                .max(Comparator.naturalOrder()).orElse(0) + 1;
+        String username = "username" + String.valueOf(maxNumberUserName);
+        user.setUsername(username);
+        user.setEmail(userDTO.getEmail());
         user.setRoles(roles);
         user.setStatus((Integer) UserConstant.ENABLE.getValue());
         user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
@@ -139,10 +183,6 @@ public class UserService extends BaseService implements IUserService {
         user.setCreatedAt(new Date());
         user.setIsResetPass(true);
         user = userRepository.save(user);
-        mailService.sendFromSystem(message -> message.to(userDTO.getEmail())
-                .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT)
-                .text(String.format(MailMessageConstant.CREATE_ACCOUNT_TEXT, userDTO.getUsername(), password, cmsUrl))
-                .build());
         return user;
     }
     @Override
@@ -213,7 +253,22 @@ public class UserService extends BaseService implements IUserService {
         userDetail.setDebtStructure(businessCustomer.getDebtStructure());
         userDetail.setTitle(businessCustomer.getTitle());
         userDetailService.create(userDetail);
-        return null;
+        if (businessCustomer.getFiles() != null) {
+            for (int i = 0; i < businessCustomer.getFiles().size(); i++) {
+                FileUpload fileUpload1 = new FileUpload();
+                MultipartFile file = businessCustomer.getFiles().get(i);
+                String fileName = file.getOriginalFilename();
+                try {
+                    FileCopyUtils.copy(file.getBytes(), new File(this.fileUpload + fileName));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                fileUpload1.setFile(fileName);
+                fileUpload1.setIdUser(idUser);
+                fileUploadService.saveFile(fileUpload1);
+            }
+        }
+        return user;
     }
 
     @Override
@@ -303,7 +358,7 @@ public class UserService extends BaseService implements IUserService {
     private User mapToEntity(UserDTO userDTO) {
         User user = new User();
         user.setId(userDTO.getId());
-        user.setUsername(userDTO.getUsername());
+        user.setUsername(userDTO.getEmail());
         user.setStatus(userDTO.getStatus());
         return user;
     }
@@ -317,5 +372,35 @@ public class UserService extends BaseService implements IUserService {
     private ProfileResponse mapUserToProfileResponse(User user) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(user, ProfileResponse.class);
+    }
+
+    private static String generateRandomCode() {
+        String randomString = generateRandomString();
+
+        // Kiểm tra xem mã đã tồn tại hay chưa, nếu có thì tạo lại
+        Set<String> generatedCodes = new HashSet<>();
+        while (generatedCodes.contains(randomString)) {
+            randomString = generateRandomString();
+        }
+
+        // Thêm mã vào danh sách đã sinh
+        generatedCodes.add(randomString);
+        return randomString;
+    }
+
+    private static String generateRandomString() {
+        // Chuỗi chứa ký tự để sinh mã ngẫu nhiên
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        // Sử dụng StringBuilder để xây dựng chuỗi ngẫu nhiên
+        StringBuilder randomString = new StringBuilder();
+        Random random = new Random();
+
+        for (int i = 0; i < 12; i++) {
+            int index = random.nextInt(characters.length());
+            randomString.append(characters.charAt(index));
+        }
+
+        return randomString.toString();
     }
 }

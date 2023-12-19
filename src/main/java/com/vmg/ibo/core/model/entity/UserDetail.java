@@ -1,5 +1,7 @@
 package com.vmg.ibo.core.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vmg.ibo.core.model.customer.FileUpload;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -7,6 +9,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter

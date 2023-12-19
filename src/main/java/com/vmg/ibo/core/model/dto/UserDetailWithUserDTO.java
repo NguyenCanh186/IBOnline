@@ -25,4 +25,5 @@ public interface UserDetailWithUserDTO {
     Long getMostRecentYearProfit();
     Long getPropertyStructure();
     Long getDebtStructure();
+    String getName();
 }

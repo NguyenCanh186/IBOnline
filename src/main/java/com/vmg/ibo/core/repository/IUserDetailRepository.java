@@ -20,7 +20,7 @@ public interface IUserDetailRepository extends JpaRepository<UserDetail, Long> {
             "ud.address as address, ud.CINumber as CINumber, ud.dateOfBirth as dateOfBirth, ud.businessName as businessName, ud.codeTax as codeTax, ud.codeReg as codeReg, " +
             "ud.contactName as contactName, ud.mainBusiness as mainBusiness, ud.title as title, ud.capitalSize as capitalSize, ud.description as description, " +
             "u.status as status, u.email as email, u.phone as phone, ud.mostRecentYearRevenue as mostRecentYearRevenue, ud.mostRecentYearProfit as mostRecentYearProfit," +
-            "ud.propertyStructure as propertyStructure, ud.debtStructure as debtStructure FROM User u " +
+            "ud.propertyStructure as propertyStructure, ud.debtStructure as debtStructure, u.name as name FROM User u " +
             "JOIN UserDetail ud ON u.id = ud.idUser " +
             "WHERE (u.isAdminRoot = false OR u.isAdminRoot IS NULL) and (:isCustomerPersonal = ud.isCustomerPersonal OR :isCustomerPersonal IS NULL) " +
             "AND (:status = u.status OR :status IS NULL) " +
@@ -44,4 +44,7 @@ public interface IUserDetailRepository extends JpaRepository<UserDetail, Long> {
     UserDetail findByIdUser(@Param("idUser") Long idUser);
     @Query(value = "SELECT ud.customerCode as customerCode FROM UserDetail ud")
     List<String> getAllCustomerCode();
+
+    @Query(value = "SELECT u.username FROM User u")
+    List<String> getAllUsername();
 }
