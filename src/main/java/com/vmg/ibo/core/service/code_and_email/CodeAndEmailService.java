@@ -19,4 +19,9 @@ public class CodeAndEmailService implements ICodeAndEmailService {
     public void deleteCodeAndEmail(Long id) {
         codeAndEmailRepo.deleteById(id);
     }
+
+    @Override
+    public CodeAndEmail findByCode(String code) {
+        return codeAndEmailRepo.findByCode(code);
+    }
 }

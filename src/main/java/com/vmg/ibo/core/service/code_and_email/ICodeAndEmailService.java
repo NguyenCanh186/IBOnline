@@ -5,4 +5,6 @@ import com.vmg.ibo.core.model.entity.CodeAndEmail;
 public interface ICodeAndEmailService {
     void saveCodeAndEmail(CodeAndEmail codeAndEmail);
     void deleteCodeAndEmail(Long id);
+
+    CodeAndEmail findByCode(String code);
 }
