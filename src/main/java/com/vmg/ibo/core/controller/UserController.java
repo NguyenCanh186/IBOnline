@@ -3,6 +3,7 @@ package com.vmg.ibo.core.controller;
 import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
 import com.vmg.ibo.core.base.Result;
+import com.vmg.ibo.core.model.customer.BusinessCustomer;
 import com.vmg.ibo.core.model.customer.PersonalCustomer;
 import com.vmg.ibo.core.model.dto.UserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
@@ -42,10 +43,21 @@ public class UserController {
     public Result<?> createUser(@Validated(Insert.class) @RequestBody PersonalCustomer personalCustomer) {
         return Result.success(userService.createPersonalCustomer(personalCustomer));
     }
+
+    @PostMapping("/create-business-customer")
+    public Result<?> createUser(@Validated(Insert.class) @ModelAttribute BusinessCustomer businessCustomer) {
+        return Result.success(userService.createBusinessCustomer(businessCustomer));
+    }
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('user-get')")
     public Result<?> getUserById(@PathVariable Long id) {
         return Result.success(userDetailService.findUserById(id));
+    }
+
+    @GetMapping("/systemUser/{id}")
+    @PreAuthorize("hasAuthority('user-get')")
+    public Result<?> getUserSystemById(@PathVariable Long id) {
+        return Result.success(userService.findById(id));
     }
 
     @PutMapping("/{id}")
@@ -66,5 +78,14 @@ public class UserController {
     @PreAuthorize("hasAuthority('user-change-status')")
     public Result<?> changeStatusUser(@RequestBody UserDTO userDTO) {
         return Result.success(userService.changeStatusByIds(userDTO));
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('user-add')")
+    public Result<?> createUser(@Validated(Insert.class) @RequestBody UserDTO userDTO) {
+        if (!userService.isValidEmail(userDTO.getEmail())) {
+            return Result.error(400, "Email đã được đăng ký");
+        }
+        return Result.success(userService.create(userDTO));
     }
 }

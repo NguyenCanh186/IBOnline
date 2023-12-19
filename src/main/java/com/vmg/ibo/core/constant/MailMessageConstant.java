@@ -8,7 +8,7 @@ public class MailMessageConstant {
             "Liên kết có hiệu lực trong vòng 24 giờ.\n" +
             "Cảm ơn Quý Đối Tác đã tin tưởng sử dụng dịch vụ IB Online!";
 
-    public static final String CREATE_ACCOUNT_SUBJECT = "[IB Online] THÔNG TIN TÀI KHOẢN ĐĂNG NHẬP";
+    public static final String CREATE_ACCOUNT_SUBJECT = "[IB Online] KÍCH HOẠT TÀI KHOẢN ĐĂNG NHẬP";
 
     public static final String CREATE_ACCOUNT_TEXT = "Tên tài khoản: %s \n" +
             "Mật khẩu: %s\n" +

@@ -2,6 +2,7 @@ package com.vmg.ibo.core.service.user;
 
 import com.vmg.ibo.core.model.customer.BusinessCustomer;
 import com.vmg.ibo.core.model.customer.PersonalCustomer;
+import com.vmg.ibo.core.model.customer.RegisterModel;
 import com.vmg.ibo.core.model.dto.ChangePasswordRequest;
 import com.vmg.ibo.core.model.dto.ProfileResponse;
 import com.vmg.ibo.core.model.dto.UserDTO;
@@ -12,7 +13,8 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface IUserService {
-    User registerUser(String email);
+    User registerUser(RegisterModel registerModel);
+    boolean isValidEmail(String email);
     User findByUsername(String username);
 
     User findByEmail(String email);
