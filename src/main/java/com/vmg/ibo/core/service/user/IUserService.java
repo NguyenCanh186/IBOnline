@@ -21,6 +21,7 @@ public interface IUserService {
 
     Page<UserDTO> findAllUsers(UserFilter userFilter);
 
+    User activeUser(User user);
 
     UserDTO findById(Long id);
 

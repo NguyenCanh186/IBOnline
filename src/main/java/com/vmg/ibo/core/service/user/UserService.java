@@ -110,7 +110,7 @@ public class UserService extends BaseService implements IUserService {
         user = userRepository.save(user);
         mailService.sendFromSystem(message -> message.to(registerModel.getEmail())
                 .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT)
-                .text(String.format(MailMessageConstant.CREATE_ACCOUNT_TEXT, registerModel.getEmail(), password, cmsUrl))
+                .text("Vui lòng truy cập vào đường link sau để kích hoạt tài khoản: " + "http://172.16.111.150:7991/api/v1/register?code=" + codeValid)
                 .build());
         return user;
     }
@@ -141,6 +141,11 @@ public class UserService extends BaseService implements IUserService {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         PageRequest pageable = handlePaging(userFilter, sort);
         return userRepository.findAllUser(username, pageable).map(this::mapToDTO);
+    }
+
+    @Override
+    public User activeUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override
