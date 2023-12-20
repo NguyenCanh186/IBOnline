@@ -1,17 +1,14 @@
-package com.vmg.ibo.core.service.userDetail;
+package com.vmg.ibo.customer.service.userDetail;
 import com.vmg.ibo.core.base.BaseService;
-import com.vmg.ibo.core.model.dto.UserDetailWithUserDTO;
+import com.vmg.ibo.customer.model.UserDetailWithUserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
-import com.vmg.ibo.core.model.entity.UserDetail;
-import com.vmg.ibo.core.repository.IUserDetailRepository;
+import com.vmg.ibo.customer.model.UserDetail;
+import com.vmg.ibo.customer.repository.IUserDetailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service("newUserDetailService")
 public class UserDetailService extends BaseService implements IUserDetailService {

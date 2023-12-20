@@ -1,8 +1,7 @@
-package com.vmg.ibo.core.repository;
+package com.vmg.ibo.customer.repository;
 
-import com.vmg.ibo.core.model.dto.CustomerCode;
-import com.vmg.ibo.core.model.dto.UserDetailWithUserDTO;
-import com.vmg.ibo.core.model.entity.UserDetail;
+import com.vmg.ibo.customer.model.UserDetailWithUserDTO;
+import com.vmg.ibo.customer.model.UserDetail;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

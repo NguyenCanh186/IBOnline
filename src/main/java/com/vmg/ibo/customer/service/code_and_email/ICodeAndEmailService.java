@@ -1,6 +1,6 @@
-package com.vmg.ibo.core.service.code_and_email;
+package com.vmg.ibo.customer.service.code_and_email;
 
-import com.vmg.ibo.core.model.entity.CodeAndEmail;
+import com.vmg.ibo.customer.model.CodeAndEmail;
 
 import java.util.List;
 

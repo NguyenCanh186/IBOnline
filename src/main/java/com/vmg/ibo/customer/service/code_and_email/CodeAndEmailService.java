@@ -1,7 +1,7 @@
-package com.vmg.ibo.core.service.code_and_email;
+package com.vmg.ibo.customer.service.code_and_email;
 
-import com.vmg.ibo.core.model.entity.CodeAndEmail;
-import com.vmg.ibo.core.repository.ICodeAndEmailRepo;
+import com.vmg.ibo.customer.model.CodeAndEmail;
+import com.vmg.ibo.customer.repository.ICodeAndEmailRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
