@@ -121,7 +121,7 @@ public class UserService extends BaseService implements IUserService {
         codeAndEmailService.saveCodeAndEmail(codeAndEmail);
         mailService.sendFromSystem(message -> message.to(email)
                 .subject(MailMessageConstant.FORGOT_PASSWORD_SUBJECT)
-                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + "http://172.16.111.150:7992/change-password?code" + codeValid)
+                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + "http://172.16.111.150:7992/change-password?code=" + codeValid)
                 .build());
     }
 
