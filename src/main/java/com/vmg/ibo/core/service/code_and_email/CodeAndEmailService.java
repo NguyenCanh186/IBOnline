@@ -5,6 +5,8 @@ import com.vmg.ibo.core.repository.ICodeAndEmailRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CodeAndEmailService implements ICodeAndEmailService {
     @Autowired
@@ -23,5 +25,15 @@ public class CodeAndEmailService implements ICodeAndEmailService {
     @Override
     public CodeAndEmail findByCode(String code) {
         return codeAndEmailRepo.findByCode(code);
+    }
+
+    @Override
+    public List<String> findAllCode() {
+        return codeAndEmailRepo.findAllCode();
+    }
+
+    @Override
+    public List<String> findAllEmail() {
+        return codeAndEmailRepo.findAllEmail();
     }
 }

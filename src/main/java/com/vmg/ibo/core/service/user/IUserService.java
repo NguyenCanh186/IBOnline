@@ -7,6 +7,7 @@ import com.vmg.ibo.core.model.dto.ChangePasswordRequest;
 import com.vmg.ibo.core.model.dto.ProfileResponse;
 import com.vmg.ibo.core.model.dto.UserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
+import com.vmg.ibo.core.model.entity.ForgotPass;
 import com.vmg.ibo.core.model.entity.User;
 import org.springframework.data.domain.Page;
 
@@ -14,6 +15,8 @@ import java.util.List;
 
 public interface IUserService {
     User registerUser(RegisterModel registerModel);
+
+    void forgotPassword(String email);
     boolean isValidEmail(String email);
     User findByUsername(String username);
 
@@ -22,6 +25,8 @@ public interface IUserService {
     Page<UserDTO> findAllUsers(UserFilter userFilter);
 
     User activeUser(User user);
+
+    boolean isExistEmail(String email);
 
     UserDTO findById(Long id);
 
@@ -40,6 +45,8 @@ public interface IUserService {
     ProfileResponse getCurrentUserInfo();
 
     User changePassword(ChangePasswordRequest changePasswordRequest);
+
+    User changePasswordBeForgot(ForgotPass forgotPass);
 
     User lockOrUnlockUser(Integer status, Long id);
 }

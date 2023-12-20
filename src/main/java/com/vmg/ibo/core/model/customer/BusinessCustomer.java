@@ -34,4 +34,25 @@ public class BusinessCustomer {
     @NotNull (message = "Cơ cấu nợ bắt buộc nhập!")
     private Long debtStructure;
     private List<MultipartFile> files;
+
+    public BusinessCustomer() {
+    }
+
+    public BusinessCustomer(String businessName, String codeTax, String codeReg, String address, String contactName, String title, String phone, String mainBusiness, Long capitalSize, String description, Long mostRecentYearRevenue, Long mostRecentYearProfit, Long propertyStructure, Long debtStructure, List<MultipartFile> files) {
+        this.businessName = businessName;
+        this.codeTax = codeTax;
+        this.codeReg = codeReg;
+        this.address = address;
+        this.contactName = contactName;
+        this.title = title;
+        this.phone = phone;
+        this.mainBusiness = mainBusiness;
+        this.capitalSize = capitalSize;
+        this.description = description;
+        this.mostRecentYearRevenue = mostRecentYearRevenue;
+        this.mostRecentYearProfit = mostRecentYearProfit;
+        this.propertyStructure = propertyStructure;
+        this.debtStructure = debtStructure;
+        this.files = files;
+    }
 }
