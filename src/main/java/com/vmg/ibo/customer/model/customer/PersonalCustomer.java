@@ -1,4 +1,4 @@
-package com.vmg.ibo.core.model.customer;
+package com.vmg.ibo.customer.model.customer;
 
 import lombok.Data;
 

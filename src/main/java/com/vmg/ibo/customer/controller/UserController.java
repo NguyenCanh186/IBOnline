@@ -1,14 +1,14 @@
-package com.vmg.ibo.core.controller;
+package com.vmg.ibo.customer.controller;
 
 import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
 import com.vmg.ibo.core.base.Result;
-import com.vmg.ibo.core.model.customer.BusinessCustomer;
-import com.vmg.ibo.core.model.customer.PersonalCustomer;
+import com.vmg.ibo.customer.model.customer.BusinessCustomer;
+import com.vmg.ibo.customer.model.customer.PersonalCustomer;
 import com.vmg.ibo.core.model.dto.UserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
 import com.vmg.ibo.core.service.user.IUserService;
-import com.vmg.ibo.core.service.userDetail.IUserDetailService;
+import com.vmg.ibo.customer.service.userDetail.IUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;

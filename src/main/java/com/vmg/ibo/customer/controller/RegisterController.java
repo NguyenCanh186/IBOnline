@@ -1,17 +1,15 @@
-package com.vmg.ibo.core.controller;
+package com.vmg.ibo.customer.controller;
 
 import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.base.Result;
-import com.vmg.ibo.core.model.customer.RegisterModel;
-import com.vmg.ibo.core.model.entity.CodeAndEmail;
-import com.vmg.ibo.core.model.entity.ForgotPass;
+import com.vmg.ibo.customer.model.customer.RegisterModel;
+import com.vmg.ibo.customer.model.CodeAndEmail;
+import com.vmg.ibo.customer.model.ForgotPass;
 import com.vmg.ibo.core.model.entity.User;
-import com.vmg.ibo.core.service.code_and_email.CodeAndEmailService;
-import com.vmg.ibo.core.service.code_and_email.ICodeAndEmailService;
+import com.vmg.ibo.customer.service.code_and_email.ICodeAndEmailService;
 import com.vmg.ibo.core.service.user.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,9 +45,6 @@ public class RegisterController {
             return Result.error(409, "Mã xác nhận không hợp lệ");
         }
         User user = userService.findByEmail(codeAndEmail.getEmail());
-        if (user == null) {
-            return Result.error(409, "Email không tồn tại");
-        }
         user.setActive(true);
         userService.activeUser(user);
         codeAndEmailService.deleteCodeAndEmail(codeAndEmail.getId());

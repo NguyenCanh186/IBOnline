@@ -1,12 +1,9 @@
-package com.vmg.ibo.core.service.userDetail;
+package com.vmg.ibo.customer.service.userDetail;
 
-import com.vmg.ibo.core.model.dto.UserDetailWithUserDTO;
+import com.vmg.ibo.customer.model.UserDetailWithUserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
-import com.vmg.ibo.core.model.entity.UserDetail;
+import com.vmg.ibo.customer.model.UserDetail;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 public interface IUserDetailService {
     Page<UserDetailWithUserDTO> findAllUser(UserFilter userFilter);

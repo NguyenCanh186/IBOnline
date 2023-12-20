@@ -1,29 +1,30 @@
 package com.vmg.ibo.core.service.user;
 
-import com.vmg.ibo.core.base.BaseFilter;
 import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.constant.AuthConstant;
 import com.vmg.ibo.core.constant.MailMessageConstant;
 import com.vmg.ibo.core.constant.UserConstant;
-import com.vmg.ibo.core.model.customer.BusinessCustomer;
-import com.vmg.ibo.core.model.customer.FileUpload;
-import com.vmg.ibo.core.model.customer.PersonalCustomer;
-import com.vmg.ibo.core.model.customer.RegisterModel;
+import com.vmg.ibo.customer.model.CodeAndEmail;
+import com.vmg.ibo.customer.model.ForgotPass;
+import com.vmg.ibo.customer.model.UserDetail;
+import com.vmg.ibo.customer.model.customer.BusinessCustomer;
+import com.vmg.ibo.customer.model.customer.FileUpload;
+import com.vmg.ibo.customer.model.customer.PersonalCustomer;
+import com.vmg.ibo.customer.model.customer.RegisterModel;
 import com.vmg.ibo.core.model.dto.ChangePasswordRequest;
-import com.vmg.ibo.core.model.dto.CustomerCode;
 import com.vmg.ibo.core.model.dto.ProfileResponse;
 import com.vmg.ibo.core.model.dto.UserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
 import com.vmg.ibo.core.model.entity.*;
 import com.vmg.ibo.core.repository.IPermissionRepository;
 import com.vmg.ibo.core.repository.IRoleRepository;
-import com.vmg.ibo.core.repository.IUserDetailRepository;
+import com.vmg.ibo.customer.repository.IUserDetailRepository;
 import com.vmg.ibo.core.repository.IUserRepository;
-import com.vmg.ibo.core.service.code_and_email.ICodeAndEmailService;
-import com.vmg.ibo.core.service.fileUpload.FileUploadService;
+import com.vmg.ibo.customer.service.code_and_email.ICodeAndEmailService;
+import com.vmg.ibo.customer.service.fileUpload.FileUploadService;
 import com.vmg.ibo.core.service.mail.IMailService;
-import com.vmg.ibo.core.service.userDetail.IUserDetailService;
+import com.vmg.ibo.customer.service.userDetail.IUserDetailService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,8 +32,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
@@ -42,8 +41,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -124,7 +121,7 @@ public class UserService extends BaseService implements IUserService {
         codeAndEmailService.saveCodeAndEmail(codeAndEmail);
         mailService.sendFromSystem(message -> message.to(email)
                 .subject(MailMessageConstant.FORGOT_PASSWORD_SUBJECT)
-                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + "http://localhost:7991/api/v1/changepass?code=" + codeValid)
+                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + "http://172.16.111.150:7992/change-password?code" + codeValid)
                 .build());
     }
 

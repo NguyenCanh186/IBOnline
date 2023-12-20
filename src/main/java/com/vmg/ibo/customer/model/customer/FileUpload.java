@@ -1,7 +1,5 @@
-package com.vmg.ibo.core.model.customer;
+package com.vmg.ibo.customer.model.customer;
 
-import com.vmg.ibo.core.model.entity.User;
-import com.vmg.ibo.core.model.entity.UserDetail;
 import lombok.Data;
 
 import javax.persistence.*;

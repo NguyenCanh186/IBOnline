@@ -1,4 +1,4 @@
-package com.vmg.ibo.core.model.dto;
+package com.vmg.ibo.customer.model;
 
 import java.util.Date;
 

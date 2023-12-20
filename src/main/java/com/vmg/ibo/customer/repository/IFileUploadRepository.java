@@ -1,6 +1,6 @@
-package com.vmg.ibo.core.repository;
+package com.vmg.ibo.customer.repository;
 
-import com.vmg.ibo.core.model.customer.FileUpload;
+import com.vmg.ibo.customer.model.customer.FileUpload;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

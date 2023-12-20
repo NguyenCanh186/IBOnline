@@ -1,4 +1,4 @@
-package com.vmg.ibo.core.model.entity;
+package com.vmg.ibo.customer.model;
 
 import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
