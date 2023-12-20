@@ -116,6 +116,19 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
+    public void forgotPassword(String email) {
+        String codeValid = generateRandomCode();
+        CodeAndEmail codeAndEmail = new CodeAndEmail();
+        codeAndEmail.setCode(codeValid);
+        codeAndEmail.setEmail(email);
+        codeAndEmailService.saveCodeAndEmail(codeAndEmail);
+        mailService.sendFromSystem(message -> message.to(email)
+                .subject(MailMessageConstant.FORGOT_PASSWORD_SUBJECT)
+                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + "http://localhost:7991/api/v1/changepass?code=" + codeValid)
+                .build());
+    }
+
+    @Override
     public boolean isValidEmail(String email) {
         User user = userRepository.findByEmail(email.trim());
         if (StringUtils.isEmpty(email) || user != null) {
@@ -146,6 +159,21 @@ public class UserService extends BaseService implements IUserService {
     @Override
     public User activeUser(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public boolean isExistEmail(String email) {
+        List<String> listEmail = codeAndEmailService.findAllEmail();
+        boolean isExist = false;
+        for (int i = 0; i < listEmail.size(); i++) {
+            if (listEmail.get(i).equals(email)) {
+                isExist = true;
+            }
+            if (isExist) {
+                break;
+            }
+        }
+        return isExist;
     }
 
     @Override
@@ -337,6 +365,14 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
+    public User changePasswordBeForgot(ForgotPass forgotPass) {
+        CodeAndEmail codeAndEmail = codeAndEmailService.findByCode(forgotPass.getCode());
+        User user = findByEmail(codeAndEmail.getEmail());
+        user.setPassword(passwordEncoder.encode(forgotPass.getPassword()));
+        return userRepository.save(user);
+    }
+
+    @Override
     public User lockOrUnlockUser(Integer status, Long id) {
         User user = userRepository.findById(id).get();
         user.setStatus(status);
@@ -381,31 +417,22 @@ public class UserService extends BaseService implements IUserService {
 
     private static String generateRandomCode() {
         String randomString = generateRandomString();
-
-        // Kiểm tra xem mã đã tồn tại hay chưa, nếu có thì tạo lại
         Set<String> generatedCodes = new HashSet<>();
         while (generatedCodes.contains(randomString)) {
             randomString = generateRandomString();
         }
-
-        // Thêm mã vào danh sách đã sinh
         generatedCodes.add(randomString);
         return randomString;
     }
 
     private static String generateRandomString() {
-        // Chuỗi chứa ký tự để sinh mã ngẫu nhiên
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-        // Sử dụng StringBuilder để xây dựng chuỗi ngẫu nhiên
         StringBuilder randomString = new StringBuilder();
         Random random = new Random();
-
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < 20; i++) {
             int index = random.nextInt(characters.length());
             randomString.append(characters.charAt(index));
         }
-
         return randomString.toString();
     }
 }
