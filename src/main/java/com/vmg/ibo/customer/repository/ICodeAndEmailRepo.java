@@ -18,4 +18,7 @@ public interface ICodeAndEmailRepo extends JpaRepository<CodeAndEmail, Long> {
 
     @Query(value = "SELECT c.email FROM CodeAndEmail c")
     List<String> findAllEmail();
+
+    @Query(value = "SELECT c FROM CodeAndEmail c WHERE c.email = :email")
+    CodeAndEmail findByEmail(@Param("email") String email);
 }

@@ -10,6 +10,8 @@ public interface ICodeAndEmailService {
 
     CodeAndEmail findByCode(String code);
 
+    CodeAndEmail findByEmail(String email);
+
     List<String> findAllCode();
 
     List<String> findAllEmail();

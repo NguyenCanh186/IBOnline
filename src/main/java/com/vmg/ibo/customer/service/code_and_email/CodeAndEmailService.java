@@ -5,6 +5,7 @@ import com.vmg.ibo.customer.repository.ICodeAndEmailRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -14,6 +15,7 @@ public class CodeAndEmailService implements ICodeAndEmailService {
 
     @Override
     public void saveCodeAndEmail(CodeAndEmail codeAndEmail) {
+        codeAndEmail.setCreateAt(new Date());
         codeAndEmailRepo.save(codeAndEmail);
     }
 
@@ -25,6 +27,11 @@ public class CodeAndEmailService implements ICodeAndEmailService {
     @Override
     public CodeAndEmail findByCode(String code) {
         return codeAndEmailRepo.findByCode(code);
+    }
+
+    @Override
+    public CodeAndEmail findByEmail(String email) {
+        return codeAndEmailRepo.findByEmail(email);
     }
 
     @Override

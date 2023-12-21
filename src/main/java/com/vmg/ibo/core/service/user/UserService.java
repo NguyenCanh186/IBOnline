@@ -121,7 +121,8 @@ public class UserService extends BaseService implements IUserService {
         codeAndEmailService.saveCodeAndEmail(codeAndEmail);
         mailService.sendFromSystem(message -> message.to(email)
                 .subject(MailMessageConstant.FORGOT_PASSWORD_SUBJECT)
-                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + "http://172.16.111.150:7992/change-password?code=" + codeValid)
+                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + "http://172.16.111.150:7992/change-password?code=" + codeValid
+                        + " . Đường link này có hiệu lực trong 10 phút")
                 .build());
     }
 
@@ -412,13 +413,12 @@ public class UserService extends BaseService implements IUserService {
         return modelMapper.map(user, ProfileResponse.class);
     }
 
-    private static String generateRandomCode() {
+    private String generateRandomCode() {
         String randomString = generateRandomString();
-        Set<String> generatedCodes = new HashSet<>();
-        while (generatedCodes.contains(randomString)) {
+        List<String> listCode = codeAndEmailService.findAllCode();
+        while (listCode.contains(randomString)) {
             randomString = generateRandomString();
         }
-        generatedCodes.add(randomString);
         return randomString;
     }
 
@@ -426,7 +426,7 @@ public class UserService extends BaseService implements IUserService {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder randomString = new StringBuilder();
         Random random = new Random();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 30; i++) {
             int index = random.nextInt(characters.length());
             randomString.append(characters.charAt(index));
         }
