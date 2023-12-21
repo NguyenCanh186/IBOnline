@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Objects;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -57,11 +58,20 @@ public class RegisterController {
         if (user == null) {
             return Result.error(409, "Email không tồn tại");
         }
-        if (userService.isExistEmail(email)) {
-            return Result.error(409, "Chúng tôi đã gửi email đổi mật khẩu đến email này, vui lòng kiểm tra email");
+        CodeAndEmail codeAndEmail = codeAndEmailService.findByEmail(email);
+        if (codeAndEmail != null) {
+            if (new Date().getTime() - codeAndEmail.getCreateAt().getTime() < 600000) {
+                long timeDifference = 600000 - (new Date().getTime() - codeAndEmail.getCreateAt().getTime());
+                long minutes = (timeDifference / 1000) / 60;
+                long seconds = (timeDifference / 1000) % 60;
+                String formattedTime = (minutes > 0 ? minutes + " phút " : "") + seconds + " giây";
+                return Result.error(409, "Chúng tôi đã gửi link đổi mật khẩu đến email này, vui lòng thử lại sau " + formattedTime);
+            }
+            if (new Date().getTime() - codeAndEmail.getCreateAt().getTime() > 600000) {
+                codeAndEmailService.deleteCodeAndEmail(codeAndEmail.getId());
+            }
         }
-        user.setPassword(null);
-        userService.activeUser(user);
+
         userService.forgotPassword(email);
         return Result.success("Đã gửi email xác nhận đến " + email + " vui lòng kiểm tra email để tiếp tục đổi mật khẩu");
     }
@@ -74,6 +84,9 @@ public class RegisterController {
         CodeAndEmail codeAndEmail = codeAndEmailService.findByCode(forgotPass.getCode());
         if (codeAndEmail == null) {
             return Result.error(409, "Mã xác nhận không hợp lệ");
+        }
+        if (new Date().getTime() - codeAndEmail.getCreateAt().getTime() > 600000) {
+            return Result.error(409, "Mã xác nhận đã hết hạn");
         }
         User user = userService.findByEmail(codeAndEmail.getEmail());
         if (user == null) {
