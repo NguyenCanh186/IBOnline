@@ -84,6 +84,7 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/v1/auth/login").permitAll()
+                .antMatchers("/v1/demand").permitAll()
                 .antMatchers("/v1/register/**").permitAll()
                 .antMatchers("/spring-security-rest/api/v2/api-docs").permitAll()
                 .antMatchers("/spring-security-rest/api/swagger-ui/**").permitAll()

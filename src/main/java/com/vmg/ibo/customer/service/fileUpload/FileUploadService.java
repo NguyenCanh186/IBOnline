@@ -6,6 +6,8 @@ import com.vmg.ibo.customer.repository.IFileUploadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FileUploadService extends BaseService implements IFileUploadService{
 
@@ -14,5 +16,10 @@ public class FileUploadService extends BaseService implements IFileUploadService
     @Override
     public void saveFile(FileUpload fileUpload) {
         fileUploadRepository.save(fileUpload);
+    }
+
+    @Override
+    public List<FileUpload> findByIdUser(Long idUser) {
+        return fileUploadRepository.findByIdUser(idUser);
     }
 }
