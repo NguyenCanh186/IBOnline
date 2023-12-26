@@ -80,6 +80,11 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
+    public User FindUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public User registerUser(RegisterModel registerModel) {
         String codeValid = generateRandomCode();
         CodeAndEmail codeAndEmail = new CodeAndEmail();
