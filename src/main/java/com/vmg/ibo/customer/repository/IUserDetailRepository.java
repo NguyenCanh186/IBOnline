@@ -35,7 +35,8 @@ public interface IUserDetailRepository extends JpaRepository<UserDetail, Long> {
     @Query(value = "SELECT u.id as id, u.createdAt as createdAt, ud.customerCode as customerCode, ud.isCustomerPersonal as isCustomerPersonal, " +
             "ud.address as address, ud.CINumber as CINumber, ud.dateOfBirth as dateOfBirth, ud.businessName as businessName, ud.codeTax as codeTax, ud.codeReg as codeReg, " +
             "ud.contactName as contactName, ud.mainBusiness as mainBusiness, ud.title as title, ud.capitalSize as capitalSize, ud.description as description, " +
-            "u.status as status, u.email as email, u.phone as phone FROM User u " +
+            "u.status as status, u.email as email, u.phone as phone, ud.mostRecentYearRevenue as mostRecentYearRevenue, ud.mostRecentYearProfit as mostRecentYearProfit," +
+            "ud.propertyStructure as propertyStructure, ud.debtStructure as debtStructure, u.name as name FROM User u " +
             "JOIN UserDetail ud ON u.id = ud.idUser " +
             "WHERE u.id = :id")
     UserDetailWithUserDTO findUserById(Long id);

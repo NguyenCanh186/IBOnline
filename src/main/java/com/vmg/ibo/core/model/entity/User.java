@@ -1,12 +1,16 @@
 package com.vmg.ibo.core.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vmg.ibo.core.base.BaseEntity;
+import com.vmg.ibo.form_demand.model.financial_investment.FinancialInvestment;
+import com.vmg.ibo.form_demand.model.form_buy_fund_certificate_consulting.FormBuyFundCertificateConsulting;
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -53,6 +57,10 @@ public class User extends BaseEntity {
     @JsonManagedReference
     @ToString.Exclude
     private Set<Role> roles;
+
+//    @OneToMany(mappedBy = "user")
+//    @JsonIgnore
+//    private List<FinancialInvestment> financialInvestments;
 
     @Override
     public boolean equals(Object o) {

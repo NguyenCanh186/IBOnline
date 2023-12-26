@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface IUserService {
+    User FindUserById(Long id);
     User registerUser(RegisterModel registerModel);
 
     void forgotPassword(String email);
