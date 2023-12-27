@@ -10,13 +10,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 @Data
 public class InvestmentPortfolioReq {
     @NotNull(message = "Tên quỹ bắt buộc nhập!", groups = {Insert.class, Update.class})
+    @Size(max = 225, message = "Tên quỹ tối đa được phép là 225 ký tự", groups = {Insert.class, Update.class})
     private String fundName;
     @NotNull(message = "Mã chứng chỉ muốn bán bắt buộc nhập!", groups = {Insert.class, Update.class})
+    @Size(max = 20, message = "Mã chứng chỉ muốn bán đa được phép là 20 ký tự", groups = {Insert.class, Update.class})
     private String fundCertificateCodeWantToSell;
     @NotNull(message = "Số lượng chứng chỉ quỹ muốn bán bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Long numberOfFundCertificateWantToSell;

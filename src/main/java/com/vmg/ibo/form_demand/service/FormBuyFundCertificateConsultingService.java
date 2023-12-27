@@ -35,6 +35,7 @@ public class FormBuyFundCertificateConsultingService extends BaseService {
         formBuyFundCertificateConsulting.setNameOfFund(fundCertificateConsultingReq.getNameOfFund());
         formBuyFundCertificateConsulting.setMinimumNumberOfRegisteredForSale(fundCertificateConsultingReq.getMinimumNumberOfRegisteredForSale());
         formBuyFundCertificateConsulting.setDenominations(fundCertificateConsultingReq.getDenominations());
+        formBuyFundCertificateConsulting.setDeadlineForReceivingRegistrationPayment(fundCertificateConsultingReq.getDeadlineForReceivingRegistrationPayment());
         formBuyFundCertificateConsulting.setMinimumNumberOfPurchased(fundCertificateConsultingReq.getMinimumNumberOfPurchased());
         formBuyFundCertificateConsulting.setValidityOfRegistrationForOffering(fundCertificateConsultingReq.getValidityOfRegistrationForOffering());
         formBuyFundCertificateConsulting.setFundInvestmentFields(fundCertificateConsultingReq.getFundInvestmentFields());
