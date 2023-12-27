@@ -16,7 +16,9 @@ public class FinancialInvestmentReq {
     private Long expectedProfitRate;
     @NotNull(message = "Mức độ chịu rủi ro bắt buộc nhập!", groups = {Insert.class, Update.class})
     private String levelOfRiskTolerance;
-    @NotNull(message = "Tên doanh nghiệp bắt buộc nhập!", groups = {Insert.class, Update.class})
+    @NotNull(message = "Mục tiêu đầu tư bắt buộc nhập!", groups = {Insert.class, Update.class})
+    private String investmentObjective;
+    @NotNull(message = "Id nhu cầu bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Long idDemand;
 
     public FinancialInvestmentReq() {
