@@ -5,6 +5,7 @@ import com.vmg.ibo.core.action.Update;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Data
 public class FinancialInvestmentReq {
@@ -15,6 +16,7 @@ public class FinancialInvestmentReq {
     @NotNull(message = "Lợi nhuận kỳ vọng bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Long expectedProfitRate;
     @NotNull(message = "Mức độ chịu rủi ro bắt buộc nhập!", groups = {Insert.class, Update.class})
+    @Size(max = 500, message = "Mức độ chịu rủi ro tối đa được phép là 500 ký tự", groups = {Insert.class, Update.class})
     private String levelOfRiskTolerance;
     @NotNull(message = "Mục tiêu đầu tư bắt buộc nhập!", groups = {Insert.class, Update.class})
     private String investmentObjective;
