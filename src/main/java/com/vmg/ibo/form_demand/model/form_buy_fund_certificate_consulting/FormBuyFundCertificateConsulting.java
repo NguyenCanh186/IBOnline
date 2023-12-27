@@ -7,6 +7,7 @@ import com.vmg.ibo.demand.entity.Demand;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "FORM_BUY_FUND_CERTIFICATE_CONSULTING_SERVICE")
@@ -20,7 +21,8 @@ public class FormBuyFundCertificateConsulting extends BaseEntity {
     private Long minimumNumberOfRegisteredForSale;
     private Long denominations;
     private Long minimumNumberOfPurchased;
-    private String validityOfRegistrationForOffering;
+    private Date validityOfRegistrationForOffering;
+    private Date deadlineForReceivingRegistrationPayment;
     private String fundInvestmentFields;
     private String fundInvestmentObjective;
     private String fundInvestmentStrategy;

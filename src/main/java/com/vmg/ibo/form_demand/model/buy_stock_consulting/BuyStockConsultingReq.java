@@ -8,12 +8,15 @@ import lombok.Data;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 @Data
 public class BuyStockConsultingReq {
     @NotNull(message = "Mã cổ phiếu bắt buộc nhập!", groups = {Insert.class, Update.class})
+    @Size(max = 20, message = "Mã cổ phiếu tối đa được phép là 20 ký tự", groups = {Insert.class, Update.class})
     private String stocks;
     @NotNull(message = "Loại cổ phiếu bắt buộc nhập!", groups = {Insert.class, Update.class})
+    @Size(max = 255, message = "Loại cổ phiếu tối đa được phép là 255 ký tự", groups = {Insert.class, Update.class})
     private String stockType;
     @NotNull(message = "Số lượng cổ phiếu muốn bán bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Long numberOfStocksWantToSell;
