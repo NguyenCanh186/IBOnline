@@ -1,4 +1,4 @@
-package com.vmg.ibo.form_demand.model.financial_investment;
+package com.vmg.ibo.form_demand.model.buy_bond_consulting;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.ibo.core.base.BaseEntity;
@@ -9,18 +9,22 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "FINANCIAL_INVESTMENT")
+@Table(name = "BUY_BOND_CONSULTING")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class FinancialInvestment extends BaseEntity {
-    private Long minimumInvestmentCapital;
-    private String estimatedInvestmentTime;
-    private Long expectedProfitRate;
-    private String levelOfRiskTolerance;
-    private String investmentObjective;
+public class BuyBondConsulting extends BaseEntity {
+    private String bondCode;
+    private String bondType;
+    private Long numberOfBondsWantToSell;
+    private String bondTerm;
+    private String interestRate;
+    private String interestPaymentPeriod;
+    private String askingPrice;
+    private String offeringPurpose;
+    private String collateral;
     @OneToOne
     @JoinColumn(name = "idDemand")
     private Demand demand;

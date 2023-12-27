@@ -39,6 +39,7 @@ public class FinancialInvestmentService extends BaseService {
         financialInvestment.setMinimumInvestmentCapital(financialInvestmentReq.getMinimumInvestmentCapital());
         financialInvestment.setExpectedProfitRate(financialInvestmentReq.getExpectedProfitRate());
         financialInvestment.setLevelOfRiskTolerance(financialInvestmentReq.getLevelOfRiskTolerance());
+        financialInvestment.setInvestmentObjective(financialInvestmentReq.getInvestmentObjective());
         financialInvestmentRepository.save(financialInvestment);
     }
 
