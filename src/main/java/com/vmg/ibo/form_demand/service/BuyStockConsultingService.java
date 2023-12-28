@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class BuyStockConsultingService extends BaseService {
@@ -24,7 +25,7 @@ public class BuyStockConsultingService extends BaseService {
     private IDemandService demandService;
     @Autowired
     private DataSummaryTableService dataSummaryTableService;
-    public void createBuyStockConsulting(BuyStockConsultingReq buyStockConsultingReq) {
+    public List<DataSummaryTable> createBuyStockConsulting(BuyStockConsultingReq buyStockConsultingReq) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         User user = userService.FindUserById(idUser);
         Demand demand = demandService.getDemandById(3L);
@@ -59,6 +60,7 @@ public class BuyStockConsultingService extends BaseService {
         dataSummaryTable.setTimeToRegisterToBuy(buyStockConsultingReq.getTimeToRegisterToBuy());
         dataSummaryTable.setTimeToPayForPurchase(buyStockConsultingReq.getTimeToPayForPurchase());
         dataSummaryTableService.save(dataSummaryTable);
+        return dataSummaryTableService.getListByFilter(demand.getType() == 1 ? 2 : 1, buyStockConsulting1.getTags(), idUser);
     }
 
     public BuyStockConsulting findById(Long id) {

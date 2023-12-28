@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class FormBuyFundCertificateConsultingService extends BaseService {
@@ -28,7 +29,7 @@ public class FormBuyFundCertificateConsultingService extends BaseService {
     @Autowired
     private DataSummaryTableService dataSummaryTableService;
 
-    public void saveFormBuyFundCertificateConsulting(FormBuyFundCertificateConsultingReq fundCertificateConsultingReq) {
+    public List<DataSummaryTable> saveFormBuyFundCertificateConsulting(FormBuyFundCertificateConsultingReq fundCertificateConsultingReq) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         User user = userService.FindUserById(idUser);
         FormBuyFundCertificateConsulting formBuyFundCertificateConsulting = new FormBuyFundCertificateConsulting();
@@ -70,6 +71,7 @@ public class FormBuyFundCertificateConsultingService extends BaseService {
         dataSummaryTable.setFundBenefits(fundCertificateConsultingReq.getFundBenefits());
 
         dataSummaryTableService.save(dataSummaryTable);
+        return dataSummaryTableService.getListByFilter(demand.getType() == 1 ? 2 : 1, formBuyFundCertificateConsulting1.getTags(), idUser);
     }
     public FormBuyFundCertificateConsulting findById(Long id) {
         return formBuyFundCertificateConsultingRepository.findById(id).orElse(null);

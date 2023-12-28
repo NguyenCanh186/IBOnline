@@ -50,13 +50,11 @@ public class FormController {
     }
     @PostMapping("/financial-investment")
     public Result<?> createFinancialInvestment(@Validated(Insert.class) @RequestBody FinancialInvestmentReq financialInvestmentReq) {
-        financialInvestmentService.createFinancialInvestment(financialInvestmentReq);
-        return Result.success("Thêm mới thành công form đầu tư tài chính");
+        return Result.success("Thêm mới thành công form đầu tư tài chính", financialInvestmentService.createFinancialInvestment(financialInvestmentReq));
     }
     @PostMapping("/buy-bond-consulting")
     public Result<?> createBuyBondConsulting(@Validated(Insert.class) @RequestBody BuyBondConsultingReq buyBondConsultingReq){
-        buyBondConsultingService.createBuyBondConsulting(buyBondConsultingReq);
-        return Result.success("Thêm mới thành công form mua dịch vụ tư vấn trái phiếu");
+        return Result.success("Thêm mới thành công form mua dịch vụ tư vấn trái phiếu", buyBondConsultingService.createBuyBondConsulting(buyBondConsultingReq));
     }
 
     @PostMapping("/sell-bonds")
