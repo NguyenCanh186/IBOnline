@@ -7,6 +7,7 @@ import com.vmg.ibo.demand.entity.Demand;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "FINANCIAL_INVESTMENT")
@@ -21,6 +22,7 @@ public class FinancialInvestment extends BaseEntity {
     private Long expectedProfitRate;
     private String levelOfRiskTolerance;
     private String investmentObjective;
+    private String tags;
     @OneToOne
     @JoinColumn(name = "idDemand")
     private Demand demand;

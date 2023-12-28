@@ -5,6 +5,7 @@ import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.demand.entity.Demand;
 import com.vmg.ibo.demand.service.IDemandService;
+import com.vmg.ibo.form_demand.model.DataSummaryTable;
 import com.vmg.ibo.form_demand.model.sell_​​fund_certificates.InvestmentPortfolio;
 import com.vmg.ibo.form_demand.model.sell_​​fund_certificates.InvestmentPortfolioReq;
 import com.vmg.ibo.form_demand.model.sell_​​fund_certificates.SellFundCertificates;
@@ -26,10 +27,12 @@ public class InvestmentPortfolioService extends BaseService {
     private IDemandService demandService;
     @Autowired
     private SellFundCertificatesService sellFundCertificatesService;
+    @Autowired
+    private DataSummaryTableService dataSummaryTableService;
     public void createInvestmentPortfolio(InvestmentPortfolioReq investmentPortfolioReq) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         User user = userService.FindUserById(idUser);
-        Demand demand = demandService.getDemandById(investmentPortfolioReq.getIdDemand());
+        Demand demand = demandService.getDemandById(5L);
         InvestmentPortfolio investmentPortfolio = new InvestmentPortfolio();
         investmentPortfolio.setCreatedAt(new Date());
         investmentPortfolio.setUpdatedAt(new Date());
@@ -50,7 +53,21 @@ public class InvestmentPortfolioService extends BaseService {
             sellFundCertificatesList.add(sellFundCertificates);
         }
         investmentPortfolio1.setSellFundCertificates(sellFundCertificatesList);
+        investmentPortfolio.setTags("Chứng chỉ quỹ");
         investmentPortfolioRepository.save(investmentPortfolio1);
+        DataSummaryTable dataSummaryTable = new DataSummaryTable();
+        dataSummaryTable.setTags("Chứng chỉ quỹ");
+        dataSummaryTable.setIdChildTable(investmentPortfolio1.getId());
+        dataSummaryTable.setDemandId(5L);
+        dataSummaryTable.setDemandType(demand.getType());
+        dataSummaryTable.setCreatedDate(new Date());
+        dataSummaryTable.setIdCustomer(idUser);
+        dataSummaryTable.setFundName(investmentPortfolioReq.getFundName());
+        dataSummaryTable.setFundCertificateCodeWantToSell(investmentPortfolioReq.getFundCertificateCodeWantToSell());
+        dataSummaryTable.setNumberOfFundCertificateWantToSell(investmentPortfolioReq.getNumberOfFundCertificateWantToSell());
+        dataSummaryTable.setDesiredSellingPriceOfFundCertificates(investmentPortfolioReq.getDesiredSellingPriceOfFundCertificates());
+        dataSummaryTable.setDayTrading(investmentPortfolioReq.getDayTrading());
+        dataSummaryTableService.save(dataSummaryTable);
     }
     public InvestmentPortfolio findById(Long id) {
         return investmentPortfolioRepository.findById(id).orElse(null);

@@ -8,6 +8,7 @@ import com.vmg.ibo.form_demand.model.buy_bond_consulting.BuyBondConsultingReq;
 import com.vmg.ibo.form_demand.model.buy_stock_consulting.BuyStockConsultingReq;
 import com.vmg.ibo.form_demand.model.financial_investment.FinancialInvestmentReq;
 import com.vmg.ibo.form_demand.model.form_buy_fund_certificate_consulting.FormBuyFundCertificateConsultingReq;
+import com.vmg.ibo.form_demand.model.sell_stocks.SellStocksReq;
 import com.vmg.ibo.form_demand.model.sell_​​bonds.SellBondsReq;
 import com.vmg.ibo.form_demand.model.sell_​​fund_certificates.InvestmentPortfolioReq;
 import com.vmg.ibo.form_demand.service.*;
@@ -39,6 +40,9 @@ public class FormController {
     @Autowired
     private InvestmentPortfolioService investmentPortfolioService;
 
+    @Autowired
+    private SellStocksService sellStocksService;
+
     @PostMapping("/buy-fund-certificate-consulting")
     public Result<?> createFormBuyFundCertificateConsulting(@Validated(Insert.class) @RequestBody FormBuyFundCertificateConsultingReq formBuyFundCertificateConsultingReq){
         formBuyFundCertificateConsultingService.saveFormBuyFundCertificateConsulting(formBuyFundCertificateConsultingReq);
@@ -69,5 +73,10 @@ public class FormController {
     public Result<?> createInvestmentPortfolio(@Validated(Insert.class) @RequestBody InvestmentPortfolioReq investmentPortfolioReq){
         investmentPortfolioService.createInvestmentPortfolio(investmentPortfolioReq);
         return Result.success("Thêm mới thành công form bán chứng chỉ quỹ");
+    }
+    @PostMapping("/sell-stocks")
+    public Result<?> createSellStocks(@Validated(Insert.class) @RequestBody SellStocksReq stocksReq){
+        sellStocksService.createSellStocks(stocksReq);
+        return Result.success("Thêm mới thành công form bán cổ phiếu");
     }
 }

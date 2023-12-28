@@ -23,6 +23,8 @@ public class InvestmentPortfolio extends BaseEntity {
     private Long numberOfFundCertificateWantToSell;
     private Long desiredSellingPriceOfFundCertificates;
     private Date dayTrading;
+
+    private String tags;
     @OneToMany(mappedBy = "investmentPortfolio", cascade = CascadeType.ALL)
     private List<SellFundCertificates> sellFundCertificates;
     @OneToOne
