@@ -12,7 +12,9 @@ import com.vmg.ibo.form_demand.repository.IFinancialInvestmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class FinancialInvestmentService extends BaseService {
@@ -28,7 +30,7 @@ public class FinancialInvestmentService extends BaseService {
     @Autowired
     private DataSummaryTableService dataSummaryTableService;
 
-    public void createFinancialInvestment(FinancialInvestmentReq financialInvestmentReq) {
+    public List<DataSummaryTable> createFinancialInvestment(FinancialInvestmentReq financialInvestmentReq) {
         FinancialInvestment financialInvestment = new FinancialInvestment();
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         User user = userService.FindUserById(idUser);
@@ -40,7 +42,7 @@ public class FinancialInvestmentService extends BaseService {
         financialInvestment.setDemand(demand);
         financialInvestment.setUser(user);
         financialInvestment.setEstimatedInvestmentTime(financialInvestmentReq.getEstimatedInvestmentTime());
-        financialInvestment.setTags("Trái phiếu; Cổ phiếu; Chứng chỉ quỹ");
+        financialInvestment.setTags("Trái phiếu,Cổ phiếu,Chứng chỉ quỹ");
         financialInvestment.setMinimumInvestmentCapital(financialInvestmentReq.getMinimumInvestmentCapital());
         financialInvestment.setExpectedProfitRate(financialInvestmentReq.getExpectedProfitRate());
         financialInvestment.setLevelOfRiskTolerance(financialInvestmentReq.getLevelOfRiskTolerance());
@@ -53,14 +55,16 @@ public class FinancialInvestmentService extends BaseService {
         dataSummaryTable.setDemandType(demand.getType());
         dataSummaryTable.setCreatedDate(new Date());
         dataSummaryTable.setIdCustomer(idUser);
-        dataSummaryTable.setTags("Trái phiếu; Cổ phiếu; Chứng chỉ quỹ");
+        dataSummaryTable.setTags("Trái phiếu,Cổ phiếu,Chứng chỉ quỹ");
         dataSummaryTable.setMinimumInvestmentCapital(financialInvestmentReq.getMinimumInvestmentCapital());
         dataSummaryTable.setExpectedProfitRate(financialInvestmentReq.getExpectedProfitRate());
         dataSummaryTable.setLevelOfRiskTolerance(financialInvestmentReq.getLevelOfRiskTolerance());
         dataSummaryTable.setInvestmentObjective(financialInvestmentReq.getInvestmentObjective());
         dataSummaryTable.setEstimatedInvestmentTime(financialInvestmentReq.getEstimatedInvestmentTime());
+        List<String> tagsList = Arrays.asList(dataSummaryTable.getTags().split(","));
 
         dataSummaryTableService.save(dataSummaryTable);
+        return dataSummaryTableService.getListByFilterTags(demand.getType() == 1 ? 2 : 1, tagsList, idUser);
     }
 
     public FinancialInvestment findById(Long id) {

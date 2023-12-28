@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class SellBondsService extends BaseService {
@@ -24,7 +25,7 @@ public class SellBondsService extends BaseService {
     private IDemandService demandService;
     @Autowired
     private DataSummaryTableService dataSummaryTableService;
-    public void createSellBonds(SellBondsReq sellBondsReq) {
+    public List<DataSummaryTable> createSellBonds(SellBondsReq sellBondsReq) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         User user = userService.FindUserById(idUser);
         Demand demand = demandService.getDemandById(6L);
@@ -68,6 +69,7 @@ public class SellBondsService extends BaseService {
         dataSummaryTable.setReleaseDate(sellBondsReq.getReleaseDate());
         dataSummaryTable.setBondValue(sellBondsReq.getBondValue());
         dataSummaryTableService.save(dataSummaryTable);
+        return dataSummaryTableService.getListByFilter(demand.getType() == 1 ? 2 : 1, sellBonds1.getTags(), idUser);
     }
     public SellBonds findSellBondsById(Long id) {
         return sellBondsRepository.findById(id).orElse(null);

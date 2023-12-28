@@ -29,7 +29,7 @@ public class InvestmentPortfolioService extends BaseService {
     private SellFundCertificatesService sellFundCertificatesService;
     @Autowired
     private DataSummaryTableService dataSummaryTableService;
-    public void createInvestmentPortfolio(InvestmentPortfolioReq investmentPortfolioReq) {
+    public List<DataSummaryTable> createInvestmentPortfolio(InvestmentPortfolioReq investmentPortfolioReq) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         User user = userService.FindUserById(idUser);
         Demand demand = demandService.getDemandById(5L);
@@ -68,6 +68,7 @@ public class InvestmentPortfolioService extends BaseService {
         dataSummaryTable.setDesiredSellingPriceOfFundCertificates(investmentPortfolioReq.getDesiredSellingPriceOfFundCertificates());
         dataSummaryTable.setDayTrading(investmentPortfolioReq.getDayTrading());
         dataSummaryTableService.save(dataSummaryTable);
+        return dataSummaryTableService.getListByFilter(demand.getType() == 1 ? 2 : 1, investmentPortfolio1.getTags(), idUser);
     }
     public InvestmentPortfolio findById(Long id) {
         return investmentPortfolioRepository.findById(id).orElse(null);
