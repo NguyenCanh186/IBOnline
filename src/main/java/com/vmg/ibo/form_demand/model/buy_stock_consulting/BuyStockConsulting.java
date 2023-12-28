@@ -23,6 +23,7 @@ public class BuyStockConsulting extends BaseEntity {
     private Long totalCapitalMobilizationValue;
     private Date timeToRegisterToBuy;
     private Date timeToPayForPurchase;
+    private String tags;
     @OneToOne
     @JoinColumn(name = "idDemand")
     private Demand demand;

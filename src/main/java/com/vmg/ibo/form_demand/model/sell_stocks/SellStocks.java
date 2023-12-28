@@ -1,31 +1,32 @@
-package com.vmg.ibo.form_demand.model.buy_bond_consulting;
+package com.vmg.ibo.form_demand.model.sell_stocks;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.vmg.ibo.core.base.BaseEntity;
 import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.demand.entity.Demand;
 import lombok.*;
 
 import javax.persistence.*;
-
+import java.util.Date;
 @Entity
-@Table(name = "BUY_BOND_CONSULTING")
+@Table(name = "FORM_SELL_STOCKS")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class BuyBondConsulting extends BaseEntity {
-    private String bondCode;
-    private String bondType;
-    private Long numberOfBondsWantToSell;
-    private String bondTerm;
-    private String interestRate;
-    private String interestPaymentPeriod;
+public class SellStocks extends BaseEntity {
+    private String stockCode;
+    private String stockName;
+    private String stockType;
+    private Long numberOfStocksWantToSell;
     private Long askingPrice;
-    private String offeringPurpose;
-    private String collateral;
+    private Long minimumNumberOfSharesRegisteredToBuy;
+    private Long maximumNumberOfSharesRegisteredToBuy;
+    private Date estimatedTransactionTime;
     private String tags;
+
     @OneToOne
     @JoinColumn(name = "idDemand")
     private Demand demand;
@@ -34,4 +35,5 @@ public class BuyBondConsulting extends BaseEntity {
     @JsonIgnore
     @JoinColumn(name = "idUser")
     private User user;
+
 }

@@ -27,7 +27,7 @@ public class FormBuyFundCertificateConsulting extends BaseEntity {
     private String fundInvestmentObjective;
     private String fundInvestmentStrategy;
     private String fundBenefits;
-
+    private String tags;
     @OneToOne
     @JoinColumn(name = "idDemand")
     private Demand demand;
