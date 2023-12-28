@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class BuyBondConsultingService extends BaseService {
@@ -26,7 +27,7 @@ public class BuyBondConsultingService extends BaseService {
 
     @Autowired
     private DataSummaryTableService dataSummaryTableService;
-    public void createBuyBondConsulting(BuyBondConsultingReq buyBondConsultingReq) {
+    public List<DataSummaryTable> createBuyBondConsulting(BuyBondConsultingReq buyBondConsultingReq) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         User user = userService.FindUserById(idUser);
         Demand demand = demandService.getDemandById(4L);
@@ -66,6 +67,7 @@ public class BuyBondConsultingService extends BaseService {
         dataSummaryTable.setOfferingPurpose(buyBondConsultingReq.getOfferingPurpose());
         dataSummaryTable.setCollateral(buyBondConsultingReq.getCollateral());
         dataSummaryTableService.save(dataSummaryTable);
+        return dataSummaryTableService.getListByFilter(demand.getType() == 1 ? 2 : 1, buyBondConsulting1.getTags(), idUser);
     }
     public BuyBondConsulting findById(Long id) {
         return buyBondConsultingRepository.findById(id).orElse(null);

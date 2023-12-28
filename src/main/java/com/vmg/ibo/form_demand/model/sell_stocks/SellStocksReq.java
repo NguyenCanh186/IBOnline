@@ -24,9 +24,7 @@ public class SellStocksReq {
     private Long minimumNumberOfSharesRegisteredToBuy;
     private Long maximumNumberOfSharesRegisteredToBuy;
     private Date estimatedTransactionTime;
-
     private Long idDemand;
-
     public SellStocksReq() {
     }
 
