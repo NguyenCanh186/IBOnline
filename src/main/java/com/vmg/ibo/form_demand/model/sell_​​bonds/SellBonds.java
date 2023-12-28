@@ -30,6 +30,7 @@ public class SellBonds extends BaseEntity {
     private String interestPaymentPeriod;
     private String offeringPurpose;
     private String collateral;
+    private String tags;
     @OneToOne
     @JoinColumn(name = "idDemand")
     private Demand demand;

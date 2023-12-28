@@ -21,7 +21,7 @@ public class BuyBondConsultingReq {
     @NotNull(message = "Kỳ trả lãi bắt buộc nhập!", groups = {Insert.class, Update.class})
     private String interestPaymentPeriod;
     @NotNull(message = "Giá chào bán bắt buộc nhập!", groups = {Insert.class, Update.class})
-    private String askingPrice;
+    private Long askingPrice;
     @NotNull(message = "Mục đích chào bán bắt buộc nhập!", groups = {Insert.class, Update.class})
     private String offeringPurpose;
     @NotNull(message = "Tài sản đảm bảo bắt buộc nhập!", groups = {Insert.class, Update.class})
@@ -32,7 +32,7 @@ public class BuyBondConsultingReq {
     public BuyBondConsultingReq() {
     }
 
-    public BuyBondConsultingReq(String bondCode, String bondType, Long numberOfBondsWantToSell, String bondTerm, String interestRate, String interestPaymentPeriod, String askingPrice, String offeringPurpose, String collateral, Long idDemand) {
+    public BuyBondConsultingReq(String bondCode, String bondType, Long numberOfBondsWantToSell, String bondTerm, String interestRate, String interestPaymentPeriod, Long askingPrice, String offeringPurpose, String collateral, Long idDemand) {
         this.bondCode = bondCode;
         this.bondType = bondType;
         this.numberOfBondsWantToSell = numberOfBondsWantToSell;
