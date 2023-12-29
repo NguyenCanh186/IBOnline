@@ -43,7 +43,7 @@ public class DataSummaryTableService extends BaseService {
         DemandForm demandForm = demandFormService.findById(id);
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         UserDetailWithUserDTOImpl userDetail = userDetailService.findUserById(idUser);
-        DataSummaryTable dataSummaryTable = findById(id);
+        DataSummaryTable dataSummaryTable = findById(demandForm.getIdCustomer());
         List<DataSummaryTable> dataSummaryTableList;
         if (dataSummaryTable.getTags() != null && dataSummaryTable.getTags().contains(",")) {
             List<String> tagsList = Arrays.asList(dataSummaryTable.getTags().split(","));
@@ -67,7 +67,7 @@ public class DataSummaryTableService extends BaseService {
         DataSummaryTableRes dataSummaryTableRes = new DataSummaryTableRes();
         DemandForm demandForm = demandFormService.findById(id);
         if (demandForm.getStatus() == 0) {
-            dataSummaryTableRes = dataSummaryTableRes(demandForm.getIdCustomer());
+            dataSummaryTableRes = dataSummaryTableRes(id);
         } else {
             Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
             UserDetailWithUserDTOImpl userDetail = userDetailService.findUserById(idUser);
