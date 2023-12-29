@@ -112,7 +112,7 @@ public class UserService extends BaseService implements IUserService {
         user = userRepository.save(user);
         mailService.sendFromSystem(message -> message.to(registerModel.getEmail())
                 .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT)
-                .text("Vui lòng truy cập vào đường link sau để kích hoạt tài khoản: " + "http://172.16.111.150:7992/active-user?code=" + codeValid)
+                .text("Vui lòng truy cập vào đường link sau để kích hoạt tài khoản: " + cmsUrl + "/active-user?code=" + codeValid)
                 .build());
         return user;
     }
