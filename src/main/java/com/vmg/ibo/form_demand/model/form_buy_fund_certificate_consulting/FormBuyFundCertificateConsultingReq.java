@@ -20,9 +20,13 @@ public class FormBuyFundCertificateConsultingReq {
     @NotNull(message = "Số lượng CCQ mua tối thiểu bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Long minimumNumberOfPurchased;
     @NotNull(message = "Hiệu lực đăng ký chào bán bắt buộc nhập!", groups = {Insert.class, Update.class})
-    private Date validityOfRegistrationForOffering;
+    private Date validityOfRegistrationForOfferingFrom;
+    @NotNull(message = "Hiệu lực đăng ký chào bán bắt buộc nhập!", groups = {Insert.class, Update.class})
+    private Date validityOfRegistrationForOfferingTo;
     @NotNull(message = "Thời hạn nhận đăng ký mua/thanh toán bắt buộc nhập!", groups = {Insert.class, Update.class})
-    private Date deadlineForReceivingRegistrationPayment;
+    private Date deadlineForReceivingRegistrationPaymentForm;
+    @NotNull(message = "Thời hạn nhận đăng ký mua/thanh toán bắt buộc nhập!", groups = {Insert.class, Update.class})
+    private Date deadlineForReceivingRegistrationPaymentTo;
     @NotNull(message = "Lĩnh vực đầu tư của quỹ bắt buộc nhập!", groups = {Insert.class, Update.class})
     @Size(max = 500, message = "Lĩnh vực đầu tư của quỹ tối đa được phép là 500 ký tự", groups = {Insert.class, Update.class})
     private String fundInvestmentFields;
@@ -41,13 +45,15 @@ public class FormBuyFundCertificateConsultingReq {
     public FormBuyFundCertificateConsultingReq() {
     }
 
-    public FormBuyFundCertificateConsultingReq(String nameOfFund, Long minimumNumberOfRegisteredForSale, Long denominations, Long minimumNumberOfPurchased, Date validityOfRegistrationForOffering, Date deadlineForReceivingRegistrationPayment, String fundInvestmentFields, String fundInvestmentObjective, String fundInvestmentStrategy, String fundBenefits, Long idDemand) {
+    public FormBuyFundCertificateConsultingReq(String nameOfFund, Long minimumNumberOfRegisteredForSale, Long denominations, Long minimumNumberOfPurchased, Date validityOfRegistrationForOfferingFrom, Date validityOfRegistrationForOfferingTo, Date deadlineForReceivingRegistrationPaymentForm, Date deadlineForReceivingRegistrationPaymentTo, String fundInvestmentFields, String fundInvestmentObjective, String fundInvestmentStrategy, String fundBenefits, Long idDemand) {
         this.nameOfFund = nameOfFund;
         this.minimumNumberOfRegisteredForSale = minimumNumberOfRegisteredForSale;
         this.denominations = denominations;
         this.minimumNumberOfPurchased = minimumNumberOfPurchased;
-        this.validityOfRegistrationForOffering = validityOfRegistrationForOffering;
-        this.deadlineForReceivingRegistrationPayment = deadlineForReceivingRegistrationPayment;
+        this.validityOfRegistrationForOfferingFrom = validityOfRegistrationForOfferingFrom;
+        this.validityOfRegistrationForOfferingTo = validityOfRegistrationForOfferingTo;
+        this.deadlineForReceivingRegistrationPaymentForm = deadlineForReceivingRegistrationPaymentForm;
+        this.deadlineForReceivingRegistrationPaymentTo = deadlineForReceivingRegistrationPaymentTo;
         this.fundInvestmentFields = fundInvestmentFields;
         this.fundInvestmentObjective = fundInvestmentObjective;
         this.fundInvestmentStrategy = fundInvestmentStrategy;

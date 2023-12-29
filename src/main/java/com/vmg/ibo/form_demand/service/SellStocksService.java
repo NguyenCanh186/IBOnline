@@ -6,6 +6,8 @@ import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.demand.entity.Demand;
 import com.vmg.ibo.demand.service.IDemandService;
 import com.vmg.ibo.form_demand.model.DataSummaryTable;
+import com.vmg.ibo.form_demand.model.DemandForm;
+import com.vmg.ibo.form_demand.model.DemandFormReq;
 import com.vmg.ibo.form_demand.model.sell_stocks.SellStocks;
 import com.vmg.ibo.form_demand.model.sell_stocks.SellStocksReq;
 import com.vmg.ibo.form_demand.repository.ISellStocksRepository;
@@ -13,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class SellStocksService extends BaseService {
@@ -25,8 +26,10 @@ public class SellStocksService extends BaseService {
     private IDemandService demandService;
     @Autowired
     private DataSummaryTableService dataSummaryTableService;
+    @Autowired
+    private DemandFormService demandFormService;
 
-    public List<DataSummaryTable> createSellStocks(SellStocksReq sellStocksReq) {
+    public DemandForm createSellStocks(SellStocksReq sellStocksReq) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         User user = userService.FindUserById(idUser);
         Demand demand = demandService.getDemandById(7L);
@@ -60,11 +63,14 @@ public class SellStocksService extends BaseService {
         dataSummaryTable.setStockType(sellStocksReq.getStockType());
         dataSummaryTable.setNumberOfStocksWantToSell(sellStocksReq.getNumberOfStocksWantToSell());
         dataSummaryTable.setAskingPrice(sellStocksReq.getAskingPrice());
+        dataSummaryTable.setStatus(1);
         dataSummaryTable.setMinimumNumberOfSharesRegisteredToBuy(sellStocksReq.getMinimumNumberOfSharesRegisteredToBuy());
         dataSummaryTable.setMaximumNumberOfSharesRegisteredToBuy(sellStocksReq.getMaximumNumberOfSharesRegisteredToBuy());
         dataSummaryTable.setEstimatedTransactionTime(sellStocksReq.getEstimatedTransactionTime());
-        dataSummaryTableService.save(dataSummaryTable);
-        return dataSummaryTableService.getListByFilter(demand.getType() == 1 ? 2 : 1, sellStocks1.getTags(), idUser);
+        DataSummaryTable dataSummaryTable1 = dataSummaryTableService.save(dataSummaryTable);
+        DemandFormReq demandFormReq = new DemandFormReq();
+        demandFormReq.setIdCustomer(dataSummaryTable1.getId());
+        return demandFormService.save(demandFormReq);
     }
 
     public SellStocks findById(Long id) {
