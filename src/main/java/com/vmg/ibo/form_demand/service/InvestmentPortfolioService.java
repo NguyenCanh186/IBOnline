@@ -6,6 +6,8 @@ import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.demand.entity.Demand;
 import com.vmg.ibo.demand.service.IDemandService;
 import com.vmg.ibo.form_demand.model.DataSummaryTable;
+import com.vmg.ibo.form_demand.model.DemandForm;
+import com.vmg.ibo.form_demand.model.DemandFormReq;
 import com.vmg.ibo.form_demand.model.sell_​​fund_certificates.InvestmentPortfolio;
 import com.vmg.ibo.form_demand.model.sell_​​fund_certificates.InvestmentPortfolioReq;
 import com.vmg.ibo.form_demand.model.sell_​​fund_certificates.SellFundCertificates;
@@ -26,10 +28,12 @@ public class InvestmentPortfolioService extends BaseService {
     @Autowired
     private IDemandService demandService;
     @Autowired
+    private DemandFormService demandFormService;
+    @Autowired
     private SellFundCertificatesService sellFundCertificatesService;
     @Autowired
     private DataSummaryTableService dataSummaryTableService;
-    public List<DataSummaryTable> createInvestmentPortfolio(InvestmentPortfolioReq investmentPortfolioReq) {
+    public DemandForm createInvestmentPortfolio(InvestmentPortfolioReq investmentPortfolioReq) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         User user = userService.FindUserById(idUser);
         Demand demand = demandService.getDemandById(5L);
@@ -67,8 +71,11 @@ public class InvestmentPortfolioService extends BaseService {
         dataSummaryTable.setNumberOfFundCertificateWantToSell(investmentPortfolioReq.getNumberOfFundCertificateWantToSell());
         dataSummaryTable.setDesiredSellingPriceOfFundCertificates(investmentPortfolioReq.getDesiredSellingPriceOfFundCertificates());
         dataSummaryTable.setDayTrading(investmentPortfolioReq.getDayTrading());
-        dataSummaryTableService.save(dataSummaryTable);
-        return dataSummaryTableService.getListByFilter(demand.getType() == 1 ? 2 : 1, investmentPortfolio1.getTags(), idUser);
+        dataSummaryTable.setStatus(1);
+        DataSummaryTable dataSummaryTable1 = dataSummaryTableService.save(dataSummaryTable);
+        DemandFormReq demandFormReq = new DemandFormReq();
+        demandFormReq.setIdCustomer(dataSummaryTable1.getId());
+        return demandFormService.save(demandFormReq);
     }
     public InvestmentPortfolio findById(Long id) {
         return investmentPortfolioRepository.findById(id).orElse(null);
