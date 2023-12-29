@@ -1,12 +1,15 @@
 package com.vmg.ibo.form_demand.model.form_buy_fund_certificate_consulting;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vmg.ibo.core.action.Insert;
+import com.vmg.ibo.core.action.Update;
 import com.vmg.ibo.core.base.BaseEntity;
 import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.demand.entity.Demand;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -21,8 +24,10 @@ public class FormBuyFundCertificateConsulting extends BaseEntity {
     private Long minimumNumberOfRegisteredForSale;
     private Long denominations;
     private Long minimumNumberOfPurchased;
-    private Date validityOfRegistrationForOffering;
-    private Date deadlineForReceivingRegistrationPayment;
+    private Date validityOfRegistrationForOfferingFrom;
+    private Date validityOfRegistrationForOfferingTo;
+    private Date deadlineForReceivingRegistrationPaymentForm;
+    private Date deadlineForReceivingRegistrationPaymentTo;
     private String fundInvestmentFields;
     private String fundInvestmentObjective;
     private String fundInvestmentStrategy;

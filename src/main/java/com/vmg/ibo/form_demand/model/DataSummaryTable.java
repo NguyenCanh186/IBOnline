@@ -45,8 +45,10 @@ public class DataSummaryTable {
     private Long minimumNumberOfRegisteredForSale;
     private Long denominations;
     private Long minimumNumberOfPurchased;
-    private Date validityOfRegistrationForOffering;
-    private Date deadlineForReceivingRegistrationPayment;
+    private Date validityOfRegistrationForOfferingFrom;
+    private Date validityOfRegistrationForOfferingTo;
+    private Date deadlineForReceivingRegistrationPaymentForm;
+    private Date deadlineForReceivingRegistrationPaymentTo;
     private String fundInvestmentFields;
     private String fundInvestmentObjective;
     private String fundInvestmentStrategy;
@@ -60,11 +62,11 @@ public class DataSummaryTable {
     private Long numberOfFundCertificateWantToSell;
     private Long desiredSellingPriceOfFundCertificates;
     private Date dayTrading;
-
     private String stockCode;
     private String stockName;
     private Long minimumNumberOfSharesRegisteredToBuy;
     private Long maximumNumberOfSharesRegisteredToBuy;
     private Date estimatedTransactionTime;
+    private Integer status;
 
 }

@@ -6,6 +6,8 @@ import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.demand.entity.Demand;
 import com.vmg.ibo.demand.service.IDemandService;
 import com.vmg.ibo.form_demand.model.DataSummaryTable;
+import com.vmg.ibo.form_demand.model.DemandForm;
+import com.vmg.ibo.form_demand.model.DemandFormReq;
 import com.vmg.ibo.form_demand.model.sell_​​bonds.SellBonds;
 import com.vmg.ibo.form_demand.model.sell_​​bonds.SellBondsReq;
 import com.vmg.ibo.form_demand.repository.ISellBondsRepository;
@@ -23,9 +25,12 @@ public class SellBondsService extends BaseService {
     private IUserService userService;
     @Autowired
     private IDemandService demandService;
+
+    @Autowired
+    private DemandFormService demandFormService;
     @Autowired
     private DataSummaryTableService dataSummaryTableService;
-    public List<DataSummaryTable> createSellBonds(SellBondsReq sellBondsReq) {
+    public DemandForm createSellBonds(SellBondsReq sellBondsReq) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         User user = userService.FindUserById(idUser);
         Demand demand = demandService.getDemandById(6L);
@@ -68,8 +73,11 @@ public class SellBondsService extends BaseService {
         dataSummaryTable.setCollateral(sellBondsReq.getCollateral());
         dataSummaryTable.setReleaseDate(sellBondsReq.getReleaseDate());
         dataSummaryTable.setBondValue(sellBondsReq.getBondValue());
-        dataSummaryTableService.save(dataSummaryTable);
-        return dataSummaryTableService.getListByFilter(demand.getType() == 1 ? 2 : 1, sellBonds1.getTags(), idUser);
+        dataSummaryTable.setStatus(1);
+        DataSummaryTable dataSummaryTable1 = dataSummaryTableService.save(dataSummaryTable);
+        DemandFormReq demandFormReq = new DemandFormReq();
+        demandFormReq.setIdCustomer(dataSummaryTable1.getId());
+        return demandFormService.save(demandFormReq);
     }
     public SellBonds findSellBondsById(Long id) {
         return sellBondsRepository.findById(id).orElse(null);
