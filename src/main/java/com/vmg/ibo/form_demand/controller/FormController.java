@@ -89,7 +89,7 @@ public class FormController {
         return Result.success("Kết nối thành công", demandFormService.connect(connectReq));
     }
 
-    @PostMapping("/demand-detail/{id}")
+    @GetMapping("/demand-detail/{id}")
     public Result<?> demandFormDetail(@PathVariable("id") Long id){
         return Result.success("Lấy dữ liệu thành công", dataSummaryTableService.getDataSummaryTableResByIdDemandForm(id));
     }
