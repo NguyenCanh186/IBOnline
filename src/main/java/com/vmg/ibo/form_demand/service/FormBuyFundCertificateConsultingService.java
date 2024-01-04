@@ -70,7 +70,7 @@ public class FormBuyFundCertificateConsultingService extends BaseService {
         dataSummaryTable.setNameOfFund(fundCertificateConsultingReq.getNameOfFund());
         dataSummaryTable.setMinimumNumberOfRegisteredForSale(fundCertificateConsultingReq.getMinimumNumberOfRegisteredForSale());
         dataSummaryTable.setDenominations(fundCertificateConsultingReq.getDenominations());
-        dataSummaryTable.setDeadlineForReceivingRegistrationPaymentForm(fundCertificateConsultingReq.getDeadlineForReceivingRegistrationPaymentFrom());
+        dataSummaryTable.setDeadlineForReceivingRegistrationPaymentFrom(fundCertificateConsultingReq.getDeadlineForReceivingRegistrationPaymentFrom());
         dataSummaryTable.setDeadlineForReceivingRegistrationPaymentTo(fundCertificateConsultingReq.getDeadlineForReceivingRegistrationPaymentTo());
         dataSummaryTable.setMinimumNumberOfPurchased(fundCertificateConsultingReq.getMinimumNumberOfPurchased());
         dataSummaryTable.setValidityOfRegistrationForOfferingFrom(fundCertificateConsultingReq.getValidityOfRegistrationForOfferingFrom());
