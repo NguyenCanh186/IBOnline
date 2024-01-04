@@ -24,7 +24,7 @@ public class FormBuyFundCertificateConsultingReq {
     @NotNull(message = "Hiệu lực đăng ký chào bán bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Date validityOfRegistrationForOfferingTo;
     @NotNull(message = "Thời hạn nhận đăng ký mua/thanh toán bắt buộc nhập!", groups = {Insert.class, Update.class})
-    private Date deadlineForReceivingRegistrationPaymentForm;
+    private Date deadlineForReceivingRegistrationPaymentFrom;
     @NotNull(message = "Thời hạn nhận đăng ký mua/thanh toán bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Date deadlineForReceivingRegistrationPaymentTo;
     @NotNull(message = "Lĩnh vực đầu tư của quỹ bắt buộc nhập!", groups = {Insert.class, Update.class})
@@ -45,14 +45,14 @@ public class FormBuyFundCertificateConsultingReq {
     public FormBuyFundCertificateConsultingReq() {
     }
 
-    public FormBuyFundCertificateConsultingReq(String nameOfFund, Long minimumNumberOfRegisteredForSale, Long denominations, Long minimumNumberOfPurchased, Date validityOfRegistrationForOfferingFrom, Date validityOfRegistrationForOfferingTo, Date deadlineForReceivingRegistrationPaymentForm, Date deadlineForReceivingRegistrationPaymentTo, String fundInvestmentFields, String fundInvestmentObjective, String fundInvestmentStrategy, String fundBenefits, Long idDemand) {
+    public FormBuyFundCertificateConsultingReq(String nameOfFund, Long minimumNumberOfRegisteredForSale, Long denominations, Long minimumNumberOfPurchased, Date validityOfRegistrationForOfferingFrom, Date validityOfRegistrationForOfferingTo, Date deadlineForReceivingRegistrationPaymentFrom, Date deadlineForReceivingRegistrationPaymentTo, String fundInvestmentFields, String fundInvestmentObjective, String fundInvestmentStrategy, String fundBenefits, Long idDemand) {
         this.nameOfFund = nameOfFund;
         this.minimumNumberOfRegisteredForSale = minimumNumberOfRegisteredForSale;
         this.denominations = denominations;
         this.minimumNumberOfPurchased = minimumNumberOfPurchased;
         this.validityOfRegistrationForOfferingFrom = validityOfRegistrationForOfferingFrom;
         this.validityOfRegistrationForOfferingTo = validityOfRegistrationForOfferingTo;
-        this.deadlineForReceivingRegistrationPaymentForm = deadlineForReceivingRegistrationPaymentForm;
+        this.deadlineForReceivingRegistrationPaymentFrom = deadlineForReceivingRegistrationPaymentFrom;
         this.deadlineForReceivingRegistrationPaymentTo = deadlineForReceivingRegistrationPaymentTo;
         this.fundInvestmentFields = fundInvestmentFields;
         this.fundInvestmentObjective = fundInvestmentObjective;

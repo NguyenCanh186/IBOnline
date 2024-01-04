@@ -5,6 +5,7 @@ import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.demand.entity.Demand;
 import com.vmg.ibo.demand.service.IDemandService;
+import com.vmg.ibo.form_demand.model.DataModel;
 import com.vmg.ibo.form_demand.model.DataSummaryTable;
 import com.vmg.ibo.form_demand.model.DemandForm;
 import com.vmg.ibo.form_demand.model.DemandFormReq;
@@ -46,7 +47,7 @@ public class FinancialInvestmentService extends BaseService {
         financialInvestment.setDemand(demand);
         financialInvestment.setUser(user);
         financialInvestment.setEstimatedInvestmentTime(financialInvestmentReq.getEstimatedInvestmentTime());
-        financialInvestment.setTags("Trái phiếu,Cổ phiếu,Chứng chỉ quỹ");
+        financialInvestment.setTags(DataModel.BONDS_STOCK_MFC);
         financialInvestment.setMinimumInvestmentCapital(financialInvestmentReq.getMinimumInvestmentCapital());
         financialInvestment.setExpectedProfitRate(financialInvestmentReq.getExpectedProfitRate());
         financialInvestment.setLevelOfRiskTolerance(financialInvestmentReq.getLevelOfRiskTolerance());
@@ -59,7 +60,7 @@ public class FinancialInvestmentService extends BaseService {
         dataSummaryTable.setDemandType(demand.getType());
         dataSummaryTable.setCreatedDate(new Date());
         dataSummaryTable.setIdCustomer(idUser);
-        dataSummaryTable.setTags("Trái phiếu,Cổ phiếu,Chứng chỉ quỹ");
+        dataSummaryTable.setTags(DataModel.BONDS_STOCK_MFC);
         dataSummaryTable.setMinimumInvestmentCapital(financialInvestmentReq.getMinimumInvestmentCapital());
         dataSummaryTable.setExpectedProfitRate(financialInvestmentReq.getExpectedProfitRate());
         dataSummaryTable.setLevelOfRiskTolerance(financialInvestmentReq.getLevelOfRiskTolerance());
