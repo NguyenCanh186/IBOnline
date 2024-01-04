@@ -55,12 +55,11 @@ public class BuyStockConsultingService extends BaseService {
         dataSummaryTable.setCreatedDate(new Date());
         dataSummaryTable.setIdCustomer(idUser);
         dataSummaryTable.setStocks(buyStockConsultingReq.getStocks());
-        dataSummaryTable.setStockType(buyStockConsulting.getStockType());
+        dataSummaryTable.setStockType(buyStockConsultingReq.getStockType());
         dataSummaryTable.setNumberOfStocksWantToSell(buyStockConsultingReq.getNumberOfStocksWantToSell());
         dataSummaryTable.setAskingPrice(buyStockConsultingReq.getAskingPrice());
         dataSummaryTable.setTotalCapitalMobilizationValue(buyStockConsultingReq.getTotalCapitalMobilizationValue());
         dataSummaryTable.setTimeToRegisterToBuy(buyStockConsultingReq.getTimeToRegisterToBuy());
-        dataSummaryTable.setStockType(buyStockConsulting.getStockType());
         dataSummaryTable.setStatus(1);
         dataSummaryTable.setTimeToPayForPurchase(buyStockConsultingReq.getTimeToPayForPurchase());
         DataSummaryTable dataSummaryTable1 = dataSummaryTableService.save(dataSummaryTable);
