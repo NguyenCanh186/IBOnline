@@ -5,6 +5,7 @@ import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.demand.entity.Demand;
 import com.vmg.ibo.demand.service.IDemandService;
+import com.vmg.ibo.form_demand.model.DataModel;
 import com.vmg.ibo.form_demand.model.DataSummaryTable;
 import com.vmg.ibo.form_demand.model.DemandForm;
 import com.vmg.ibo.form_demand.model.DemandFormReq;
@@ -37,7 +38,7 @@ public class SellBondsService extends BaseService {
         SellBonds sellBonds = new SellBonds();
         sellBonds.setDemand(demand);
         sellBonds.setUser(user);
-        sellBonds.setTags("Trái phiếu");
+        sellBonds.setTags(DataModel.BONDS);
         sellBonds.setCreatedAt(new Date());
         sellBonds.setUpdatedAt(new Date());
         sellBonds.setCreatedByUserId(idUser);
@@ -56,7 +57,7 @@ public class SellBondsService extends BaseService {
         SellBonds sellBonds1 = sellBondsRepository.save(sellBonds);
 
         DataSummaryTable dataSummaryTable = new DataSummaryTable();
-        dataSummaryTable.setTags("Trái phiếu");
+        dataSummaryTable.setTags(DataModel.BONDS);
         dataSummaryTable.setIdChildTable(sellBonds1.getId());
         dataSummaryTable.setDemandId(6L);
         dataSummaryTable.setDemandType(demand.getType());
