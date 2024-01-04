@@ -47,7 +47,7 @@ public class DataSummaryTable {
     private Long minimumNumberOfPurchased;
     private Date validityOfRegistrationForOfferingFrom;
     private Date validityOfRegistrationForOfferingTo;
-    private Date deadlineForReceivingRegistrationPaymentForm;
+    private Date deadlineForReceivingRegistrationPaymentFrom;
     private Date deadlineForReceivingRegistrationPaymentTo;
     private String fundInvestmentFields;
     private String fundInvestmentObjective;
