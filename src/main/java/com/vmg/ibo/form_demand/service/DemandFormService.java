@@ -3,10 +3,7 @@ package com.vmg.ibo.form_demand.service;
 import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.demand.entity.Demand;
 import com.vmg.ibo.demand.service.DemandService;
-import com.vmg.ibo.form_demand.model.ConnectReq;
-import com.vmg.ibo.form_demand.model.DataSummaryTable;
-import com.vmg.ibo.form_demand.model.DemandForm;
-import com.vmg.ibo.form_demand.model.DemandFormReq;
+import com.vmg.ibo.form_demand.model.*;
 import com.vmg.ibo.form_demand.repository.IDemandFormRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +29,7 @@ public class DemandFormService extends BaseService {
         int maxNumber = listUserCode.stream()
                 .map(s -> Integer.parseInt(s.substring(3)))
                 .max(Comparator.naturalOrder()).orElse(0) + 1;
-        String userCode = "#NC" + String.valueOf(maxNumber);
+        String userCode = DataModel.DEMAND_FORM_CODE + String.valueOf(maxNumber);
         DemandForm demandForm = new DemandForm();
         demandForm.setCodeDemand(userCode);
         demandForm.setIdUser(idUser);

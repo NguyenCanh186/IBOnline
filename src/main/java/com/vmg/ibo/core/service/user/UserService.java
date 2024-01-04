@@ -25,6 +25,7 @@ import com.vmg.ibo.customer.service.code_and_email.ICodeAndEmailService;
 import com.vmg.ibo.customer.service.fileUpload.FileUploadService;
 import com.vmg.ibo.core.service.mail.IMailService;
 import com.vmg.ibo.customer.service.userDetail.IUserDetailService;
+import com.vmg.ibo.form_demand.model.DataModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -228,7 +229,7 @@ public class UserService extends BaseService implements IUserService {
         int maxNumber = listUserCode.stream()
                 .map(s -> Integer.parseInt(s.substring(3)))
                 .max(Comparator.naturalOrder()).orElse(0) + 1;
-        String userCode = "#KH" + String.valueOf(maxNumber);
+        String userCode = DataModel.USER_CODE + String.valueOf(maxNumber);
         User user = userRepository.findById(idUser).orElse(null);
         user.setName(personalCustomer.getName());
         user.setStatus((Integer) UserConstant.ENABLE.getValue());
@@ -260,7 +261,7 @@ public class UserService extends BaseService implements IUserService {
         int maxNumber = listUserCode.stream()
                 .map(s -> Integer.parseInt(s.substring(3)))
                 .max(Comparator.naturalOrder()).orElse(0) + 1;
-        String userCode = "#KH" + String.valueOf(maxNumber);
+        String userCode = DataModel.USER_CODE + String.valueOf(maxNumber);
         User user = userRepository.findById(idUser).orElse(null);
         user.setName(businessCustomer.getContactName());
         user.setPhone(businessCustomer.getPhone());

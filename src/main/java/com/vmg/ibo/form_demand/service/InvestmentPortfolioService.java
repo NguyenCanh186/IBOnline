@@ -5,6 +5,7 @@ import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.demand.entity.Demand;
 import com.vmg.ibo.demand.service.IDemandService;
+import com.vmg.ibo.form_demand.model.DataModel;
 import com.vmg.ibo.form_demand.model.DataSummaryTable;
 import com.vmg.ibo.form_demand.model.DemandForm;
 import com.vmg.ibo.form_demand.model.DemandFormReq;
@@ -57,10 +58,10 @@ public class InvestmentPortfolioService extends BaseService {
             sellFundCertificatesList.add(sellFundCertificates);
         }
         investmentPortfolio1.setSellFundCertificates(sellFundCertificatesList);
-        investmentPortfolio.setTags("Chứng chỉ quỹ");
+        investmentPortfolio.setTags(DataModel.MFC);
         investmentPortfolioRepository.save(investmentPortfolio1);
         DataSummaryTable dataSummaryTable = new DataSummaryTable();
-        dataSummaryTable.setTags("Chứng chỉ quỹ");
+        dataSummaryTable.setTags(DataModel.MFC);
         dataSummaryTable.setIdChildTable(investmentPortfolio1.getId());
         dataSummaryTable.setDemandId(5L);
         dataSummaryTable.setDemandType(demand.getType());

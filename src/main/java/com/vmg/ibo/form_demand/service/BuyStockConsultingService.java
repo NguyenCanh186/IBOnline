@@ -5,10 +5,7 @@ import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.demand.entity.Demand;
 import com.vmg.ibo.demand.service.IDemandService;
-import com.vmg.ibo.form_demand.model.DataSummaryTable;
-import com.vmg.ibo.form_demand.model.DataSummaryTableRes;
-import com.vmg.ibo.form_demand.model.DemandForm;
-import com.vmg.ibo.form_demand.model.DemandFormReq;
+import com.vmg.ibo.form_demand.model.*;
 import com.vmg.ibo.form_demand.model.buy_stock_consulting.BuyStockConsulting;
 import com.vmg.ibo.form_demand.model.buy_stock_consulting.BuyStockConsultingReq;
 import com.vmg.ibo.form_demand.repository.IBuyStockConsultingRepository;
@@ -35,7 +32,7 @@ public class BuyStockConsultingService extends BaseService {
         User user = userService.FindUserById(idUser);
         Demand demand = demandService.getDemandById(3L);
         BuyStockConsulting buyStockConsulting = new BuyStockConsulting();
-        buyStockConsulting.setTags("Cổ phiếu");
+        buyStockConsulting.setTags(DataModel.STOCK);
         buyStockConsulting.setDemand(demand);
         buyStockConsulting.setUser(user);
         buyStockConsulting.setCreatedAt(new Date());
@@ -51,7 +48,7 @@ public class BuyStockConsultingService extends BaseService {
         buyStockConsulting.setTimeToPayForPurchase(buyStockConsultingReq.getTimeToPayForPurchase());
         BuyStockConsulting buyStockConsulting1 = buyStockConsultingRepository.save(buyStockConsulting);
         DataSummaryTable dataSummaryTable = new DataSummaryTable();
-        dataSummaryTable.setTags("Cổ phiếu");
+        dataSummaryTable.setTags(DataModel.STOCK);
         dataSummaryTable.setIdChildTable(buyStockConsulting1.getId());
         dataSummaryTable.setDemandId(3L);
         dataSummaryTable.setDemandType(demand.getType());
@@ -63,6 +60,7 @@ public class BuyStockConsultingService extends BaseService {
         dataSummaryTable.setAskingPrice(buyStockConsultingReq.getAskingPrice());
         dataSummaryTable.setTotalCapitalMobilizationValue(buyStockConsultingReq.getTotalCapitalMobilizationValue());
         dataSummaryTable.setTimeToRegisterToBuy(buyStockConsultingReq.getTimeToRegisterToBuy());
+        dataSummaryTable.setStockType(buyStockConsulting.getStockType());
         dataSummaryTable.setStatus(1);
         dataSummaryTable.setTimeToPayForPurchase(buyStockConsultingReq.getTimeToPayForPurchase());
         DataSummaryTable dataSummaryTable1 = dataSummaryTableService.save(dataSummaryTable);

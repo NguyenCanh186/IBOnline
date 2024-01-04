@@ -70,9 +70,8 @@ public class FormController {
         return Result.success("Thêm mới thành công form mua dịch vụ tư vấn cổ phiếu", buyStockConsultingService.createBuyStockConsulting(buyStockConsultingReq));
     }
     @PostMapping("/investment-portfolio")
-    public Result<?> createInvestmentPortfolio(@Validated(Insert.class) @RequestBody InvestmentPortfolioReq investmentPortfolioReq){
-        investmentPortfolioService.createInvestmentPortfolio(investmentPortfolioReq);
-        return Result.success("Thêm mới thành công form bán chứng chỉ quỹ");
+    public Result<?> createInvestmentPortfolio(@Validated(Insert.class) @RequestBody InvestmentPortfolioReq investmentPortfolioReq){;
+        return Result.success("Thêm mới thành công form bán chứng chỉ quỹ", investmentPortfolioService.createInvestmentPortfolio(investmentPortfolioReq));
     }
     @PostMapping("/sell-stocks")
     public Result<?> createSellStocks(@Validated(Insert.class) @RequestBody SellStocksReq stocksReq){
