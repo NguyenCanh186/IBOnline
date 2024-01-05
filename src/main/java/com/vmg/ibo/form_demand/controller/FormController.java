@@ -93,4 +93,9 @@ public class FormController {
         return Result.success("Lấy dữ liệu thành công", dataSummaryTableService.getDataSummaryTableResByIdDemandForm(id));
     }
 
+    @GetMapping("/demand-form-by-user")
+    public Result<?> demandFormByUser(){
+        return Result.success("Lấy dữ liệu thành công", demandFormService.getAllDemandFormByIdUser());
+    }
+
 }

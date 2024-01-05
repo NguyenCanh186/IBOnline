@@ -50,4 +50,9 @@ public class DemandFormService extends BaseService {
     public DemandForm findById(Long id) {
         return demandFormRepository.findById(id).orElse(null);
     }
+
+    public List<DemandForm> getAllDemandFormByIdUser() {
+        Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
+        return demandFormRepository.getAllDemandByIdUser(idUser);
+    }
 }
