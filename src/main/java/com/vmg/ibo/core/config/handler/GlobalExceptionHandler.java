@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @ControllerAdvice
@@ -37,22 +38,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({BindException.class})
     public ResponseEntity<?> handleValidationExceptions(BindException ex) {
         LOG.debug("GlobalExceptionHandler => ResponseEntity: ", ex);
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = error.getObjectName();
-            if (error instanceof FieldError) {
-                fieldName = ((FieldError) error).getField();
-            }
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
+        String errorMessage = ex.getBindingResult().getAllErrors().stream()
+                .map(error -> {
+                    if (error instanceof FieldError) {
+                        return ((FieldError) error).getDefaultMessage();
+                    } else {
+                        return error.getDefaultMessage();
+                    }
+                })
+                .collect(Collectors.joining(", "));
         return new ResponseEntity<>(
-                Result.result(
+                Result.error(
                         HttpStatus.CONFLICT.value(),
-                        messageSource.getMessage("error.invalid-input.common", null, Locale.ROOT),
-                        errors
+                        errorMessage
                 ),
-                HttpStatus.CONFLICT
+                HttpStatus.OK
         );
     }
 
