@@ -28,8 +28,13 @@ public class UserDetailService extends BaseService implements IUserDetailService
     @Override
     public Page<UserDetailWithUserDTO> findAllUser(UserFilter userFilter) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        String contactName = escapeSpecialCharacters(userFilter.getContactName());
         PageRequest pageable = handlePaging(userFilter, sort);
-        return userDetailRepository.findAllUser(pageable, userFilter.getContactName(), userFilter.getIsCustomerPersonal(), userFilter.getStatus(), userFilter.getFromCapitalSize(), userFilter.getToCapitalSize());
+        return userDetailRepository.findAllUser(pageable, contactName, userFilter.getIsCustomerPersonal(), userFilter.getStatus(), userFilter.getFromCapitalSize(), userFilter.getToCapitalSize());
+    }
+
+    private String escapeSpecialCharacters(String input) {
+        return input.replace("%", "\\%");
     }
 
     @Override

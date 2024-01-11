@@ -10,6 +10,7 @@ import com.vmg.ibo.customer.service.code_and_email.ICodeAndEmailService;
 import com.vmg.ibo.core.service.user.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,8 +30,11 @@ public class RegisterController {
 
     @PostMapping("/create-user")
     public Result<?> createUser(@Validated(Insert.class) @RequestBody RegisterModel registerModel) {
-        if (!userService.isValidEmail(registerModel.getEmail())) {
-            return Result.error(409, "Email không đúng định dạng hoặc đã được đăng ký");
+        if (userService.isValidEmail(registerModel.getEmail()) == 1) {
+            return Result.error(409, "Email đã được đăng ký");
+        }
+        if (userService.isValidEmail(registerModel.getEmail()) == 2) {
+            return Result.error(409, "Email không đúng định dạng");
         }
         if (!Objects.equals(registerModel.getPassword(), registerModel.getConfirmPassword())) {
             return Result.error(409, "Mật khẩu không khớp");
@@ -56,7 +60,7 @@ public class RegisterController {
     public Result<?> forgotPassword(@RequestParam String email) {
         User user = userService.findByEmail(email);
         if (user == null) {
-            return Result.error(409, "Email không tồn tại");
+            return Result.error(400, "Email không tồn tại");
         }
         CodeAndEmail codeAndEmail = codeAndEmailService.findByEmail(email);
         if (codeAndEmail != null) {
@@ -78,15 +82,18 @@ public class RegisterController {
 
     @PostMapping("/change-pass")
     public Result<?> changePassword(@Validated(Insert.class) @RequestBody ForgotPass forgotPass) {
+        if (forgotPass.getCode() == null || forgotPass.getCode().isEmpty()) {
+            return Result.error(409, "Mã là bắt buộc");
+        }
         if (!Objects.equals(forgotPass.getPassword(), forgotPass.getConfirmPassword())) {
             return Result.error(409, "Mật khẩu không khớp");
         }
         CodeAndEmail codeAndEmail = codeAndEmailService.findByCode(forgotPass.getCode());
         if (codeAndEmail == null) {
-            return Result.error(409, "Mã xác nhận không hợp lệ");
+            return Result.error(409, "Mã không tồn tại hoặc đã được sử dụng");
         }
         if (new Date().getTime() - codeAndEmail.getCreateAt().getTime() > 600000) {
-            return Result.error(409, "Mã xác nhận đã hết hạn");
+            return Result.error(409, "Mã xác nhận đã hết hiệu lực");
         }
         User user = userService.findByEmail(codeAndEmail.getEmail());
         if (user == null) {
@@ -95,5 +102,20 @@ public class RegisterController {
         userService.changePasswordBeForgot(forgotPass);
         codeAndEmailService.deleteCodeAndEmail(codeAndEmail.getId());
         return Result.success("Đổi mật khẩu thành công");
+    }
+
+    @GetMapping("/check-code")
+    public Result<?> checkCode(@RequestParam String code) {
+        if (code == null || code.isEmpty()) {
+            return Result.error(400, "Mã là bắt buộc");
+        }
+        CodeAndEmail codeAndEmail = codeAndEmailService.findByCode(code);
+        if (codeAndEmail == null) {
+            return Result.error(400, "Mã không tồn tại hoặc đã được sử dụng");
+        }
+        if (new Date().getTime() - codeAndEmail.getCreateAt().getTime() > 600000) {
+            return Result.error(400, "Mã xác nhận đã hết hiệu lực");
+        }
+        return Result.success("Mã xác nhận hợp lệ", HttpStatus.OK);
     }
 }

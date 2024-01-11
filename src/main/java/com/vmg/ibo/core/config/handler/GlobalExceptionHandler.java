@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleServiceValidationException(HttpMessageNotReadableException exception) {
         return new ResponseEntity<>(
-                Result.result(HttpStatus.CONFLICT.value(), "Dữ liệu nhập không đúng định dạng", null),
+                Result.result(400, "Dữ liệu nhập không đúng định dạng", null),
                 HttpStatus.CONFLICT
         );
     }

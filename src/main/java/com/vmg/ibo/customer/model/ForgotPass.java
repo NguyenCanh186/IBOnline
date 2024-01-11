@@ -9,7 +9,7 @@ import javax.validation.constraints.Pattern;
 
 @Data
 public class ForgotPass {
-    @NotNull(message = "Vui lòng nhập mã xác nhận", groups = {Insert.class, Update.class})
+    @NotNull(message = "Mã là bắt buộc", groups = {Insert.class, Update.class})
     private String code;
     @NotNull(message = "Vui lòng nhập mật khẩu", groups = {Insert.class, Update.class})
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=])[A-Za-z\\d@#$%^&+=]{8,}$",
