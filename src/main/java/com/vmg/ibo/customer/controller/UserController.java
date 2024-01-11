@@ -3,6 +3,7 @@ package com.vmg.ibo.customer.controller;
 import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
 import com.vmg.ibo.core.base.Result;
+import com.vmg.ibo.core.model.dto.UserChangeStatusDto;
 import com.vmg.ibo.customer.model.customer.BusinessCustomer;
 import com.vmg.ibo.customer.model.customer.PersonalCustomer;
 import com.vmg.ibo.core.model.dto.UserDTO;
@@ -66,18 +67,16 @@ public class UserController {
         return Result.success(userService.update(id, userDTO));
     }
 
-    @PutMapping("/lockOrUnlock")
+    @PutMapping("/{id}/lockOrUnlock")
     @PreAuthorize("hasAuthority('user-edit')")
-    public Result<?> lockOrUnlock(@RequestBody UserDTO userDTO) {
-        if (userDTO.getStatus() == null) {
-            return Result.error(400, "Trường status không được để trống");
+    public Result<?> lockOrUnlock(@PathVariable Long id,@Validated(Update.class) @RequestBody UserChangeStatusDto userChangeStatusDto) {
+        if (userChangeStatusDto.getStatus() == null) {
+            return Result.error(409, "Trường status không được để trống");
         }
-        if (userDTO.getStatus() != 0 && userDTO.getStatus() != 1 && userDTO.getStatus() != 2) {
-            return Result.error(400, "Trường status không hợp lệ");
+        if (userChangeStatusDto.getStatus() != 0 && userChangeStatusDto.getStatus() != 1 && userChangeStatusDto.getStatus() != 2) {
+            return Result.error(409, "Trường status không hợp lệ");
         }
-        Long id = userDTO.getId();
-        Integer status = userDTO.getStatus();
-        return Result.success(userService.lockOrUnlockUser(status, id));
+        return Result.success(userService.lockOrUnlockUser(userChangeStatusDto.getStatus(), id));
     }
 
     @PutMapping("/change-status")
@@ -90,10 +89,10 @@ public class UserController {
     @PreAuthorize("hasAuthority('user-add')")
     public Result<?> createUser(@Validated(Insert.class) @RequestBody UserDTO userDTO) {
         if (userService.isValidEmail(userDTO.getEmail()) == 1) {
-            return Result.error(400, "Email đã được đăng ký");
+            return Result.error(409, "Email đã được đăng ký");
         }
         if (userService.isValidEmail(userDTO.getEmail()) == 2) {
-            return Result.error(400, "Email đã không đúng định dạng");
+            return Result.error(409, "Email đã không đúng định dạng");
         }
         return Result.success(userService.create(userDTO));
     }
