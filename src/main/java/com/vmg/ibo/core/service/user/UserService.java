@@ -127,19 +127,22 @@ public class UserService extends BaseService implements IUserService {
         codeAndEmailService.saveCodeAndEmail(codeAndEmail);
         mailService.sendFromSystem(message -> message.to(email)
                 .subject(MailMessageConstant.FORGOT_PASSWORD_SUBJECT)
-                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + "http://172.16.111.150:7992/change-password?code=" + codeValid
+                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + cmsUrl + "/change-password?code=" + codeValid
                         + " . Đường link này có hiệu lực trong 10 phút")
                 .build());
     }
 
     @Override
-    public boolean isValidEmail(String email) {
+    public int isValidEmail(String email) {
         User user = userRepository.findByEmail(email.trim());
         if (StringUtils.isEmpty(email) || user != null) {
-            return false;
+            return 1;
         }
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        return email.matches(emailRegex);
+        if (!email.matches(emailRegex)) {
+            return 2;
+        }
+        return 0;
     }
 
     @Override
