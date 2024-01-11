@@ -381,9 +381,13 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public User lockOrUnlockUser(Integer status, Long id) {
-        User user = userRepository.findById(id).get();
-        user.setStatus(status);
-        return userRepository.save(user);
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            user.get().setStatus(status);
+            return userRepository.save(user.get());
+        } else {
+            throw new WebServiceException(HttpStatus.OK.value(), "user.error.notFound");
+        }
     }
 
     @Override
