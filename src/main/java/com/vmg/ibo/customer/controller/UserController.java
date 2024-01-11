@@ -69,6 +69,12 @@ public class UserController {
     @PutMapping("/lockOrUnlock")
     @PreAuthorize("hasAuthority('user-edit')")
     public Result<?> lockOrUnlock(@RequestBody UserDTO userDTO) {
+        if (userDTO.getStatus() == null) {
+            return Result.error(400, "Trường status không được để trống");
+        }
+        if (userDTO.getStatus() != 0 && userDTO.getStatus() != 1 && userDTO.getStatus() != 2) {
+            return Result.error(400, "Trường status không hợp lệ");
+        }
         Long id = userDTO.getId();
         Integer status = userDTO.getStatus();
         return Result.success(userService.lockOrUnlockUser(status, id));
@@ -83,8 +89,11 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasAuthority('user-add')")
     public Result<?> createUser(@Validated(Insert.class) @RequestBody UserDTO userDTO) {
-        if (!userService.isValidEmail(userDTO.getEmail())) {
+        if (userService.isValidEmail(userDTO.getEmail()) == 1) {
             return Result.error(400, "Email đã được đăng ký");
+        }
+        if (userService.isValidEmail(userDTO.getEmail()) == 2) {
+            return Result.error(400, "Email đã không đúng định dạng");
         }
         return Result.success(userService.create(userDTO));
     }

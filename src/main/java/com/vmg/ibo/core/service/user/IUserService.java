@@ -18,7 +18,7 @@ public interface IUserService {
     User registerUser(RegisterModel registerModel);
 
     void forgotPassword(String email);
-    boolean isValidEmail(String email);
+    int isValidEmail(String email);
     User findByUsername(String username);
 
     User findByEmail(String email);
