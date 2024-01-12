@@ -68,15 +68,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleServiceValidationException(ServiceValidationException exception) {
         return new ResponseEntity<>(
                 Result.result(HttpStatus.CONFLICT.value(), null, exception.getErrors()),
-                HttpStatus.CONFLICT
+                HttpStatus.OK
         );
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<?> handleServiceValidationException(HttpMessageNotReadableException exception) {
         return new ResponseEntity<>(
-                Result.result(400, "Dữ liệu nhập không đúng định dạng", null),
-                HttpStatus.CONFLICT
+                Result.result(409, "Dữ liệu nhập không đúng định dạng", null),
+                HttpStatus.OK
         );
     }
 
