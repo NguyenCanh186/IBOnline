@@ -21,7 +21,7 @@ public class UserDetailService implements IUserDetailService {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email).get();
         if (ObjectUtils.isEmpty(user)) {
             throw new UsernameNotFoundException(String.format("No user found with email '%s'.", email));
         }
