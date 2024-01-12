@@ -56,17 +56,9 @@ public class AuthController {
             return Result.success("Vui lòng kích hoạt tài khoản");
         }
         String jwt = jwtService.generateJwtToken(loginDTO.getEmail());
-        String role = "";
-        if(currentUser.getIsAdminRoot()) {
-            role = "Admin";
-        } else if (!currentUser.getIsAdminRoot()) {
-            role = "Coordinator";
-        } else {
-            role = "User";
-        }
         return Result.success(new JwtDTO(jwt, currentUser.getId(),
                 loginDTO.getEmail(),
-                null, role));
+                null));
     }
 
     @PostMapping("/logout")
