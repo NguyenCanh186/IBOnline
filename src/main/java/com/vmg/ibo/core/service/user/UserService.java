@@ -134,7 +134,7 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public int isValidEmail(String email) {
-        User user = userRepository.findByEmail(email.trim());
+        User user = userRepository.findByEmail(email.trim()).get();
         if (StringUtils.isEmpty(email) || user != null) {
             return 1;
         }
@@ -152,7 +152,8 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.orElse(null);
     }
 
     @Override
