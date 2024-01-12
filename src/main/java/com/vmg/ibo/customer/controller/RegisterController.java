@@ -62,6 +62,9 @@ public class RegisterController {
         if (user == null) {
             return Result.error(400, "Email không tồn tại");
         }
+        if (!user.isActive()) {
+            return Result.error(400, "Vui lòng kích hoạt tài khoản trước khi đổi mật khẩu");
+        }
         CodeAndEmail codeAndEmail = codeAndEmailService.findByEmail(email);
         if (codeAndEmail != null) {
             if (new Date().getTime() - codeAndEmail.getCreateAt().getTime() < 600000) {
