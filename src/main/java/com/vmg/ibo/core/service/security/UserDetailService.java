@@ -11,6 +11,7 @@ import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class UserDetailService implements IUserDetailService {
@@ -21,13 +22,13 @@ public class UserDetailService implements IUserDetailService {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
-        User user = userRepository.findByEmail(email).get();
-        if (ObjectUtils.isEmpty(user)) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if(!user.isPresent()) {
             throw new UsernameNotFoundException(String.format("No user found with email '%s'.", email));
+        } else {
+            user.get().setLastIp(RequestUtils.getClientIP(request));
+            user.get().setLastLogin(new Date());
+            return new CustomUserDetail(user.get());
         }
-        //todo late
-        user.setLastIp(RequestUtils.getClientIP(request));
-        user.setLastLogin(new Date());
-        return new CustomUserDetail(user);
     }
 }

@@ -134,13 +134,15 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public int isValidEmail(String email) {
-        User user = userRepository.findByEmail(email.trim()).get();
-        if (StringUtils.isEmpty(email) || user != null) {
-            return 1;
-        }
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        if (!email.matches(emailRegex)) {
-            return 2;
+        Optional<User> user = userRepository.findByEmail(email.trim());
+        if(user.isPresent()){
+            if (StringUtils.isEmpty(email) || user != null) {
+                return 1;
+            }
+            String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+            if (!email.matches(emailRegex)) {
+                return 2;
+            }
         }
         return 0;
     }
