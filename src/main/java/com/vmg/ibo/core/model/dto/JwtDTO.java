@@ -14,4 +14,6 @@ public class JwtDTO {
     private Long id;
     private String email;
     private Map<String, Object> params;
+
+    private Integer chanelId;
 }
