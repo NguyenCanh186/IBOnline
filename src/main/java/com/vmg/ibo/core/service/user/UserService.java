@@ -25,7 +25,7 @@ import com.vmg.ibo.customer.service.code_and_email.ICodeAndEmailService;
 import com.vmg.ibo.customer.service.fileUpload.FileUploadService;
 import com.vmg.ibo.core.service.mail.IMailService;
 import com.vmg.ibo.customer.service.userDetail.IUserDetailService;
-import com.vmg.ibo.form_demand.model.DataModel;
+import com.vmg.ibo.customer.model.DataModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
