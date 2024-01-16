@@ -22,7 +22,7 @@ public class FormField extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "form_id")
     private Form form;
-    private String validate;
+    private String rules;
 
     @OneToMany(mappedBy = "formField", cascade = CascadeType.ALL)
     private List<FormData> data;
