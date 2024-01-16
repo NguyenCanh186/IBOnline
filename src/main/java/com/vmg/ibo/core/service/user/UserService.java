@@ -242,6 +242,7 @@ public class UserService extends BaseService implements IUserService {
         user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
         user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
         user.setPhone(personalCustomer.getPhone());
+        user.setChannelId(1);
         user.setCreatedAt(new Date());
         userRepository.save(user);
         UserDetail userDetail = userDetailService.findByIdUser(idUser);
@@ -275,6 +276,7 @@ public class UserService extends BaseService implements IUserService {
         user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
         user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
         user.setCreatedAt(new Date());
+        user.setChannelId(2);
         userRepository.save(user);
         UserDetail userDetail = userDetailService.findByIdUser(idUser);
         if (userDetail == null) {
