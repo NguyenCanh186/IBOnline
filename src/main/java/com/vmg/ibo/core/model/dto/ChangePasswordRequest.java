@@ -1,5 +1,7 @@
 package com.vmg.ibo.core.model.dto;
 
+import com.vmg.ibo.core.action.Insert;
+import com.vmg.ibo.core.action.Update;
 import com.vmg.ibo.core.config.exception.WebServiceException;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
@@ -7,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Data
@@ -17,6 +20,7 @@ public class ChangePasswordRequest {
 
     @NotBlank(message = "{error.invalid-input}")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=])[A-Za-z\\d@#$%^&+=]{8,}$", message = "{user.error.new-password.wrong-format}")
+    @Size(max = 128, message = "Bạn đã nhập quá 128 ký tự cho phép. Vui lòng nhập lại.", groups = {Insert.class, Update.class})
     private String newPassword;
 
     @NotBlank(message = "{error.invalid-input}")
