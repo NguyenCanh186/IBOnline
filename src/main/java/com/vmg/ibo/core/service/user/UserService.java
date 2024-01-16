@@ -25,7 +25,7 @@ import com.vmg.ibo.customer.service.code_and_email.ICodeAndEmailService;
 import com.vmg.ibo.customer.service.fileUpload.FileUploadService;
 import com.vmg.ibo.core.service.mail.IMailService;
 import com.vmg.ibo.customer.service.userDetail.IUserDetailService;
-import com.vmg.ibo.form_demand.model.DataModel;
+import com.vmg.ibo.customer.model.DataModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -242,6 +242,7 @@ public class UserService extends BaseService implements IUserService {
         user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
         user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
         user.setPhone(personalCustomer.getPhone());
+        user.setChannelId(1);
         user.setCreatedAt(new Date());
         userRepository.save(user);
         UserDetail userDetail = userDetailService.findByIdUser(idUser);
@@ -275,6 +276,7 @@ public class UserService extends BaseService implements IUserService {
         user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
         user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
         user.setCreatedAt(new Date());
+        user.setChannelId(2);
         userRepository.save(user);
         UserDetail userDetail = userDetailService.findByIdUser(idUser);
         if (userDetail == null) {

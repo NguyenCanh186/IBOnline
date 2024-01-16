@@ -58,7 +58,7 @@ public class AuthController {
         String jwt = jwtService.generateJwtToken(loginDTO.getEmail());
         return Result.success(new JwtDTO(jwt, currentUser.getId(),
                 loginDTO.getEmail(),
-                null));
+                null, currentUser.getChannelId()));
     }
 
     @PostMapping("/logout")

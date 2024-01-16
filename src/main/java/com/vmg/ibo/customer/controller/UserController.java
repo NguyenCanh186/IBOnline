@@ -49,13 +49,13 @@ public class UserController {
     public Result<?> createUser(@Validated(Insert.class) @ModelAttribute BusinessCustomer businessCustomer) {
         return Result.success(userService.createBusinessCustomer(businessCustomer));
     }
-    @GetMapping("/{id}")
+    @GetMapping("/systemUser/{id}")
     @PreAuthorize("hasAuthority('user-get')")
     public Result<?> getUserById(@PathVariable Long id) {
         return Result.success(userDetailService.findUserById(id));
     }
 
-    @GetMapping("/systemUser/{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('user-get')")
     public Result<?> getUserSystemById(@PathVariable Long id) {
         return Result.success(userService.findById(id));

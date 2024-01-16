@@ -1,4 +1,4 @@
-package com.vmg.ibo.form_demand.model;
+package com.vmg.ibo.customer.model;
 
 public class DataModel {
     public static final String BONDS = "Trái phiếu";
