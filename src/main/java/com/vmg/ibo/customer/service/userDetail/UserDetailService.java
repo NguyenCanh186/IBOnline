@@ -28,7 +28,7 @@ public class UserDetailService extends BaseService implements IUserDetailService
     @Override
     public Page<UserDetailWithUserDTO> findAllUser(UserFilter userFilter) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
-        String contactName = escapeSpecialCharacters(userFilter.getContactName());
+        String contactName = escapeSpecialCharacters(userFilter.getQuery());
         PageRequest pageable = handlePaging(userFilter, sort);
         if(userFilter.getFromCapitalSize() == null) {
             userFilter.setFromCapitalSize(0L);
@@ -36,7 +36,7 @@ public class UserDetailService extends BaseService implements IUserDetailService
         if(userFilter.getToCapitalSize() == null) {
             userFilter.setToCapitalSize(Long.MAX_VALUE);
         }
-        return userDetailRepository.findAllUser(pageable, userFilter.getContactName(), userFilter.getIsCustomerPersonal(), userFilter.getStatus(), userFilter.getFromCapitalSize(), userFilter.getToCapitalSize());
+        return userDetailRepository.findAllUser(pageable, userFilter.getUsername(), userFilter.getQuery(), userFilter.getIsCustomerPersonal(), userFilter.getStatus(), userFilter.getFromCapitalSize(), userFilter.getToCapitalSize());
     }
 
     private String escapeSpecialCharacters(String input) {
