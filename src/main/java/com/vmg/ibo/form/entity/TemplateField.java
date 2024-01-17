@@ -1,7 +1,6 @@
 package com.vmg.ibo.form.entity;
 
 import com.vmg.ibo.core.base.BaseEntity;
-import com.vmg.ibo.core.model.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -15,17 +14,20 @@ import java.util.List;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "FORM")
-public class Form extends BaseEntity {
+@Table(name = "TEMPLATE_FIELD")
+public class TemplateField extends BaseEntity {
+    private String name;
+    private String type;
+    private String metadata;
 
     @ManyToOne
     @JoinColumn(name = "template_id")
     private Template template;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private String rules;
+    private String prop;
 
-    @OneToMany(mappedBy = "form", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "templateField", cascade = CascadeType.ALL)
     private List<FormField> formFields;
+
 }

@@ -2,7 +2,7 @@ package com.vmg.ibo.core.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vmg.ibo.core.base.BaseEntity;
-import com.vmg.ibo.form.entity.FormData;
+import com.vmg.ibo.form.entity.Form;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -57,7 +57,7 @@ public class User extends BaseEntity {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<FormData> data;
+    private List<Form> forms;
 
 //    @OneToMany(mappedBy = "user")
 //    @JsonIgnore
