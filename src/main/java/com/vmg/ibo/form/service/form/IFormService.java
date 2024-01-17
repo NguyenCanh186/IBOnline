@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface IFormService {
     List<Form> getAllForms();
     Optional<Form> getFormById(Long id);
+    Form createForm(Form form);
 }

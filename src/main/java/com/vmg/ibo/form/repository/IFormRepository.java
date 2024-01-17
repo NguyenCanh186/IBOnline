@@ -11,7 +11,4 @@ import java.util.Optional;
 
 @Repository
 public interface IFormRepository extends JpaRepository<Form, Long> {
-
-    @Query ("SELECT f FROM Form f WHERE f.slug = :slug")
-    Optional<Form> findBySlug(@Param("slug") String slug);
 }

@@ -22,5 +22,10 @@ public class FormService implements IFormService{
         return formRepository.findById(id);
     }
 
+    @Override
+    public Form createForm(Form form) {
+        return formRepository.save(form);
+    }
+
 
 }
