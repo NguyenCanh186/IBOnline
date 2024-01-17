@@ -24,7 +24,6 @@ public class Form extends BaseEntity {
     private String tag;
     private Integer type;
     private String image;
-
     @OneToMany(mappedBy = "form", cascade = CascadeType.ALL)
     private List<FormField> data;
 
