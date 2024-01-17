@@ -110,6 +110,8 @@ public class UserService extends BaseService implements IUserService {
         user.setCreatedByUserId(1L);
         user.setCreatedAt(new Date());
         user.setIsResetPass(true);
+        Role role = roleRepository.findById(2L).get();
+        user.setRoles(Collections.singleton(role));
         user = userRepository.save(user);
         mailService.sendFromSystem(message -> message.to(registerModel.getEmail())
                 .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT)

@@ -1,5 +1,6 @@
 package com.vmg.ibo.core.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vmg.ibo.core.base.BaseEntity;
 import com.vmg.ibo.form.entity.Form;
@@ -55,7 +56,7 @@ public class User extends BaseEntity {
     @JsonManagedReference
     @ToString.Exclude
     private Set<Role> roles;
-
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Form> forms;
 
