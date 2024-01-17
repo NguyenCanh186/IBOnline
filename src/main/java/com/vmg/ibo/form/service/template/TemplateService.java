@@ -5,6 +5,7 @@ import com.vmg.ibo.form.repository.TemplateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,5 +21,10 @@ public class TemplateService implements ITemplateService {
     @Override
     public Template createTemplate(Template template) {
         return templateRepository.save(template);
+    }
+
+    @Override
+    public List<Template> getAllTemplate() {
+        return templateRepository.findAll();
     }
 }

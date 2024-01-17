@@ -15,19 +15,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/v1/template")
+@RequestMapping("/v1/form")
 public class FormController {
     @Autowired
-    private IFormService formService;
-    @Autowired
     private IFormFieldService formFieldService;
-    @Autowired
-    private ITemplateFieldService formDataService;
 
     @Autowired
     private ITemplateService templateService;
 
-    @GetMapping("/get-template/{id}")
+    @GetMapping("/get-form/{id}")
     @PreAuthorize("hasAuthority('get-form')")
     public Result<?> getFormsFieldById(@PathVariable Long id) {
         Optional<Template> template = templateService.getTemplateById(id);
@@ -35,6 +31,12 @@ public class FormController {
             return Result.error(404, "Không tìm thấy template");
         }
         return Result.success("Lấy dữ liệu thành công", template.get()) ;
+    }
+
+    @GetMapping("/get-form")
+    @PreAuthorize("hasAuthority('get-form')")
+    public Result<?> getAll() {
+        return Result.success("Lấy dữ liệu thành công", templateService.getAllTemplate()) ;
     }
 
     @PostMapping("/create-form")
