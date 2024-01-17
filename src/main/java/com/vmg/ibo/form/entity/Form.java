@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -24,6 +25,7 @@ public class Form extends BaseEntity {
     private Integer type;
     private String image;
 
-    private FormField formField;
+    @OneToMany(mappedBy = "form", cascade = CascadeType.ALL)
+    private List<FormField> data;
 
 }
