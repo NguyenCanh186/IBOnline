@@ -1,5 +1,6 @@
 package com.vmg.ibo.form.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.ibo.core.base.BaseEntity;
 import com.vmg.ibo.core.model.entity.User;
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class Form extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "template_id")
     private Template template;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

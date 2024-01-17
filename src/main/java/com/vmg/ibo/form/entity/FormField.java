@@ -1,5 +1,6 @@
 package com.vmg.ibo.form.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.ibo.core.base.BaseEntity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class FormField  extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "template_field_id")
     private TemplateField templateField;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "form_id")
     private Form form;
