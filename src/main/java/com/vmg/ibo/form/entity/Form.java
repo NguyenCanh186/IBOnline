@@ -24,4 +24,6 @@ public class Form extends BaseEntity {
     private Integer type;
     private String image;
 
+    private FormField formField;
+
 }
