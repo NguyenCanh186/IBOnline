@@ -19,10 +19,12 @@ public class FormField extends BaseEntity {
     private String name;
     private String type;
     private String metadata;
+
     @ManyToOne
     @JoinColumn(name = "form_id")
     private Form form;
     private String rules;
+    private String prop;
 
     @OneToMany(mappedBy = "formField", cascade = CascadeType.ALL)
     private List<FormData> data;
