@@ -7,8 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface IFormRepository extends JpaRepository<Form, Long> {
+    List<Form> findAllByTemplateIdIn(List<Long> ids);
+
+    List<Form> findTop3ByTemplateIdInAndUserIdNotOrderByCreatedAtDesc(List<Long> ids, Long userId);
 }
