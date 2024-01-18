@@ -3,6 +3,7 @@ package com.vmg.ibo.form.service.form;
 import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.form.dto.FormDTO;
+import com.vmg.ibo.form.dto.FormSuggestDTO;
 import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.entity.Template;
 import com.vmg.ibo.form.repository.IFormRepository;
@@ -52,7 +53,7 @@ public class FormService extends BaseService implements IFormService{
             List<Form> listSuggestLatest = formRepository.findTop3ByTemplateIdInAndUserIdNotOrderByCreatedAtDesc(list, getCurrentUser().getId());
             ModelMapper modelMapper = new ModelMapper();
             FormDTO formDTO = modelMapper.map(form.get(), FormDTO.class);
-            formDTO.setSuggestLatest(listSuggestLatest.stream().map(x -> modelMapper.map(x, FormDTO.class)).collect(Collectors.toList()));
+            formDTO.setSuggestLatest(listSuggestLatest.stream().map(x -> modelMapper.map(x, FormSuggestDTO.class)).collect(Collectors.toList()));
             return formDTO;
         } else {
             throw new WebServiceException(HttpStatus.OK.value(), "Không tìm thấy nhu cầu hợp lệ");
