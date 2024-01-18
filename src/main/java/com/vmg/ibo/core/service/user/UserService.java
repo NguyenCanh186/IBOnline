@@ -163,10 +163,10 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public Page<UserDTO> findAllUsers(UserFilter userFilter) {
-        String username = userFilter.getUsername();
+        String email = userFilter.getEmail();
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         PageRequest pageable = handlePaging(userFilter, sort);
-        return userRepository.findAllUser(username, pageable).map(this::mapToDTO);
+        return userRepository.findAllUser(email, pageable).map(this::mapToDTO);
     }
 
     @Override
