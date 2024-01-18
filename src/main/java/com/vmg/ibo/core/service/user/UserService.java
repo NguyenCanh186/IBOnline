@@ -220,7 +220,8 @@ public class UserService extends BaseService implements IUserService {
         user.setUsername(username);
         user.setEmail(userDTO.getEmail());
         user.setRoles(roles);
-        user.setStatus((Integer) UserConstant.ENABLE.getValue());
+        user.setStatus(1);
+        user.setActive(true);
         user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
         user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
         user.setPassword(passwordEncoder.encode(password));
@@ -229,6 +230,11 @@ public class UserService extends BaseService implements IUserService {
         user.setCreatedAt(new Date());
         user.setIsResetPass(true);
         user = userRepository.save(user);
+        mailService.sendFromSystem(message -> message.to(userDTO.getEmail())
+                .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT_FOR_ADMIN)
+                .text("Chúng tôi đã tạo tài khoản IB Online cho bạn với Email: " + userDTO.getEmail() + " và mật khẩu là: " + AuthConstant.DEFAULT_PASSWORD.getValue() + " . " +
+                      "vui lòng truy cập vào link này để đăng nhập: "  +  cmsUrl )
+                .build());
         return user;
     }
     @Override
