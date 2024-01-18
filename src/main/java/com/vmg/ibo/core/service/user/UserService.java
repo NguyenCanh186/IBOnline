@@ -102,8 +102,8 @@ public class UserService extends BaseService implements IUserService {
         user.setUsername(username);
         String password = registerModel.getPassword();
         user.setStatus((Integer) UserConstant.ENABLE.getValue());
-        user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
-        user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
+        user.setChannelId((Integer) UserConstant.USER_CONSTANT.getValue());
+        user.setChannelName((String) UserConstant.CHANNEL_USER_STR.getValue());
         user.setPassword(passwordEncoder.encode(password));
         user.setCreatedBy("me");
         user.setActive(false);
