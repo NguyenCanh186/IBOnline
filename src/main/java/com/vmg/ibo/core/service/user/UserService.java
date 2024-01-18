@@ -322,7 +322,7 @@ public class UserService extends BaseService implements IUserService {
     @Override
     @Transactional
     public User update(Long id, UserDTO userDTO) {
-        if (!Objects.equals(userDTO.getName(), getCurrentUser().getEmail())) {
+        if (!Objects.equals(userDTO.getEmail(), getCurrentUser().getEmail())) {
             if (isValidEmail(userDTO.getEmail()) == 1) {
                 throw new WebServiceException(HttpStatus.OK.value(), "Email đã tồn tại");
             }
