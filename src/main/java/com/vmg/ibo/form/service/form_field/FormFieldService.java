@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +54,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
         Form form = new Form();
         form.setTemplate(template.get());
         form.setUser(getCurrentUser());
+        form.setCreatedAt(new Date());
         Form formCreated = formService.createForm(form);
         List<FormField> formFields = new ArrayList<>();
         for (int i = 0; i < formDataReq.getTemplateFieldReqs().size(); i++) {
@@ -62,6 +64,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                 throw new WebServiceException(HttpStatus.OK.value(), "Template Field không tồn tại");
             }
             formField.setForm(formCreated);
+            formField.setCreatedAt(new Date());
             formField.setTemplateField(templateField.get());
             formField.setValue(formDataReq.getTemplateFieldReqs().get(i).getValue());
             FormField formField1 = formFieldRepository.save(formField);
