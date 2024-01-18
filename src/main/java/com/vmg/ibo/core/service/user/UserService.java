@@ -1,6 +1,7 @@
 package com.vmg.ibo.core.service.user;
 
 import com.vmg.ibo.core.base.BaseService;
+import com.vmg.ibo.core.base.Result;
 import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.constant.AuthConstant;
 import com.vmg.ibo.core.constant.MailMessageConstant;
@@ -321,6 +322,14 @@ public class UserService extends BaseService implements IUserService {
     @Override
     @Transactional
     public User update(Long id, UserDTO userDTO) {
+        if (!Objects.equals(userDTO.getName(), getCurrentUser().getEmail())) {
+            if (isValidEmail(userDTO.getEmail()) == 1) {
+                throw new WebServiceException(HttpStatus.OK.value(), "Email đã tồn tại");
+            }
+            if (isValidEmail(userDTO.getEmail()) == 2) {
+                throw new WebServiceException(HttpStatus.OK.value(), "Email không đúng định dạng");
+            }
+        }
         writeLog("UPDATE_USER", "Chỉnh sửa người dùng hệ thống", userDTO, null, null, null, "SYSTEM", this.getClass());
         User user = mapToEntity(userDTO);
         User oldUser = userRepository.findById(id).orElse(null);
@@ -332,6 +341,10 @@ public class UserService extends BaseService implements IUserService {
         Set<Role> roles = new HashSet<>(roleRepository.findAllById(roleIds));
         oldUser.setRoles(roles);
         oldUser.setUsername(user.getUsername());
+        oldUser.setEmail(user.getEmail());
+        oldUser.setPhone(user.getPhone());
+        oldUser.setName(user.getName());
+        oldUser.setStatus(user.getStatus());
         oldUser.setStatus(user.getStatus());
         oldUser.setUsername(user.getUsername());
         oldUser.setUpdatedBy(currentUser.getUsername());
