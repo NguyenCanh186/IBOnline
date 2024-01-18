@@ -22,6 +22,7 @@ public class Form extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "template_id")
     private Template template;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
