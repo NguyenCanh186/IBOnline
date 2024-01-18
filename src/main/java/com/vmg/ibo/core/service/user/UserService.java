@@ -421,6 +421,8 @@ public class UserService extends BaseService implements IUserService {
         User user = new User();
         user.setId(userDTO.getId());
         user.setUsername(userDTO.getEmail());
+        user.setName(userDTO.getName());
+        user.setPhone(userDTO.getPhone());
         user.setStatus(userDTO.getStatus());
         return user;
     }
