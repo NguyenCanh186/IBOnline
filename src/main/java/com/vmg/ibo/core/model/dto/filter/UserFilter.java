@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class UserFilter extends BaseFilter {
+    private String email;
     private String username;
     private String query;
     private Boolean isCustomerPersonal;

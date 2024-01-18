@@ -15,6 +15,6 @@ public interface IUserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
 
     Optional<User> findByEmail(@Param("email") String email);
-    @Query(value = "SELECT u FROM User u WHERE (u.isAdminRoot = false OR u.isAdminRoot IS NULL) AND (:username IS NULL OR LOWER(u.username) LIKE LOWER(CONCAT('%', :username, '%')))")
-    Page<User> findAllUser(@Param("username") String username, Pageable pageable);
+    @Query(value = "SELECT u FROM User u WHERE (u.isAdminRoot = false OR u.isAdminRoot IS NULL) AND (:email IS NULL OR LOWER(u.email) LIKE LOWER(CONCAT('%', :email, '%')))")
+    Page<User> findAllUser(@Param("email") String email, Pageable pageable);
 }
