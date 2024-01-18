@@ -54,6 +54,12 @@ public class RoleService extends BaseService implements IRoleService {
     @Override
     @Transactional
     public Role create(RoleDTO roleDTO) {
+        List<Role> roles = roleRepository.findAll();
+        for (Role role : roles) {
+            if (roleDTO.getCode().equals(role.getCode())) {
+                throw new WebServiceException(HttpStatus.OK.value(), "Mã vai trò đã tồn tại");
+            }
+        }
         writeLog("CREATE_ROLE", "Thêm mới vai trò", roleDTO, 2, null, null, "SYSTEM", this.getClass());
         Role role = mapToEntity(roleDTO);
         updateRoleMerchantDefault(roleDTO);
