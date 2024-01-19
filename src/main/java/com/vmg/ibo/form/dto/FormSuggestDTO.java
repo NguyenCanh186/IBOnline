@@ -9,5 +9,6 @@ import java.util.List;
 public class FormSuggestDTO {
     private Long id;
     private Date createdAt;
+    private TemplateDTO template;
     private List<FormFieldDTO> formFields;
 }
