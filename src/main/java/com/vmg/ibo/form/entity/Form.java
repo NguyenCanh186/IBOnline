@@ -35,5 +35,5 @@ public class Form extends BaseEntity {
 
     private Integer status;
 
-    private Long connectionNeedId;
+    private Long partnerId;
 }
