@@ -21,7 +21,6 @@ public class TemplateController {
     private ITemplateService templateService;
 
     @GetMapping("/get-template/{id}")
-    @PreAuthorize("hasAuthority('get-form')")
     public Result<?> getFormsFieldById(@PathVariable Long id) {
         Optional<Template> template = templateService.getTemplateById(id);
         if (!template.isPresent()) {
@@ -31,13 +30,11 @@ public class TemplateController {
     }
 
     @GetMapping("/get-template")
-    @PreAuthorize("hasAuthority('get-form')")
     public Result<?> getAll() {
         return Result.success("Lấy dữ liệu thành công", templateService.getAllTemplate());
     }
 
     @PostMapping("/create-template")
-    @PreAuthorize("hasAuthority('create-form')")
     public Result<?> createForm(@RequestBody FormDataReq formDataReq) {
         return Result.success("Thêm mói thành công", formFieldService.createFormField(formDataReq));
     }
