@@ -338,11 +338,9 @@ public class UserService extends BaseService implements IUserService {
         List<Long> roleIds = userDTO.getRoleIds();
         Set<Role> roles = new HashSet<>(roleRepository.findAllById(roleIds));
         oldUser.setRoles(roles);
-        oldUser.setUsername(user.getUsername());
         oldUser.setPhone(user.getPhone());
         oldUser.setName(user.getName());
         oldUser.setStatus(user.getStatus());
-        oldUser.setUsername(user.getUsername());
         oldUser.setUpdatedBy(currentUser.getUsername());
         oldUser.setUpdatedByUserId(currentUser.getId());
         oldUser.setUpdatedAt(new Date());
