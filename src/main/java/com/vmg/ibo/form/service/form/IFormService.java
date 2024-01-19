@@ -10,4 +10,6 @@ public interface IFormService {
     List<Form> getAllForms();
     FormDTO getFormById(Long id);
     Form createForm(Form form);
+
+    List<String> getAllCodeDemand();
 }

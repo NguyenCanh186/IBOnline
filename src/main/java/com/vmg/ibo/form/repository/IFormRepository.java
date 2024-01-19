@@ -15,4 +15,7 @@ public interface IFormRepository extends JpaRepository<Form, Long> {
     List<Form> findAllByTemplateIdIn(List<Long> ids);
 
     List<Form> findTop3ByTemplateIdInAndUserIdNotOrderByCreatedAtDesc(List<Long> ids, Long userId);
+
+    @Query(value = "SELECT f.codeDemand FROM Form f")
+    List<String> getAllCodeDemand();
 }
