@@ -11,6 +11,7 @@ import java.util.List;
 public class FormDTO {
     private Long id;
     private Date createdAt;
+    private Integer status;
     private TemplateDTO template;
     private UserDTO user;
     private List<FormFieldDTO> formFields;

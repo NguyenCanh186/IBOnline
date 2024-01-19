@@ -3,6 +3,7 @@ package com.vmg.ibo.form.service.form_field;
 import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.model.entity.User;
+import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.customer.model.DataModel;
 import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.entity.FormField;
@@ -36,6 +37,9 @@ public class FormFieldService extends BaseService implements IFormFieldService {
     @Autowired
     private ITemplateFieldService templateFieldService;
 
+    @Autowired
+    private IUserService userService;
+
     @Override
     public List<FormField> getFormFieldsByFormId(Long formId) {
         return formFieldRepository.getFormFieldsByFormId(formId);
@@ -43,6 +47,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
 
     @Override
     public Form createFormField(FormDataReq formDataReq) {
+        userService.checkChannel(getCurrentUser());
         Optional<Template> template = templateService.getTemplateById(formDataReq.getIdTemplate());
         if (!template.isPresent()) {
             throw new WebServiceException(HttpStatus.OK.value(), "Không tìm thấy Form");

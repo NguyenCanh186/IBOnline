@@ -50,4 +50,6 @@ public interface IUserService {
     User changePasswordBeForgot(ForgotPass forgotPass);
 
     User lockOrUnlockUser(Integer status, Long id);
+
+    void checkChannel(User user);
 }
