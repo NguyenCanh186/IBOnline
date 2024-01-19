@@ -28,8 +28,7 @@ public class TemplateController {
     @GetMapping("/get-template/{id}")
     @PreAuthorize("hasAuthority('get-form')")
     public Result<?> getFormsFieldById(@PathVariable Long id) {
-        FormDTO form = iFormService.getFormById(id);
-        return Result.success("Lấy dữ liệu thành công", form);
+        return Result.success("Lấy dữ liệu thành công", templateService.getTemplateById(id));
     }
 
     @GetMapping("/get-template")
