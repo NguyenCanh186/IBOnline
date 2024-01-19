@@ -30,4 +30,10 @@ public class Form extends BaseEntity {
 
     @OneToMany(mappedBy = "form", cascade = CascadeType.ALL)
     private List<FormField> formFields;
+
+    private String codeDemand;
+
+    private Integer status;
+
+    private Long connectionNeedId;
 }
