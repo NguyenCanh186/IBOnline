@@ -5,6 +5,7 @@ import com.vmg.ibo.form.dto.FormDTO;
 import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.entity.Template;
 import com.vmg.ibo.form.model.FormDataReq;
+import com.vmg.ibo.form.model.FormUpdateStatusReq;
 import com.vmg.ibo.form.service.form.IFormService;
 import com.vmg.ibo.form.service.template.ITemplateService;
 import com.vmg.ibo.form.service.template_field.ITemplateFieldService;
@@ -19,18 +20,17 @@ import java.util.Optional;
 @RequestMapping("/v1/form")
 public class FormController {
     @Autowired
-    private IFormFieldService formFieldService;
-
-    @Autowired
-    private ITemplateService templateService;
-
-    @Autowired
     private IFormService iFormService;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('get-form')")
     public Result<?> getFormsFieldById(@PathVariable Long id) {
         FormDTO form = iFormService.getFormById(id);
         return Result.success("Lấy dữ liệu thành công", form) ;
+    }
+
+    @PutMapping("/{id}/update-status")
+    public Result<?> updateStatus(@PathVariable Long id, @RequestBody FormUpdateStatusReq formUpdateStatusReq) {
+        Form form = iFormService.updateStatus(id, formUpdateStatusReq);
+        return Result.success("Cập nhật trạng thái thành công", form);
     }
 }

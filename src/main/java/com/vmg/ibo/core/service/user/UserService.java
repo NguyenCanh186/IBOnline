@@ -410,6 +410,13 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
+    public void checkChannel(User user) {
+        if(user.getChannelId() == 0){
+            throw new WebServiceException(HttpStatus.CONFLICT.value(), "Access denied");
+        }
+    }
+
+    @Override
     public ProfileResponse getCurrentUserInfo() {
         User user = getCurrentUser();
         List<Permission> permissions = permissionRepository.findPermissionsByUserId(user.getId());
