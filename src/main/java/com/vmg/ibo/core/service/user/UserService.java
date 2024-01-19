@@ -209,6 +209,11 @@ public class UserService extends BaseService implements IUserService {
         writeLog("CREATE_USER", "Thêm mới người dùng hệ thống", userDTO, null, null, null, "SYSTEM", this.getClass());
         String password = AuthConstant.DEFAULT_PASSWORD.getValue();
         User user = mapToEntity(userDTO);
+        for (int i = 0; i < userDTO.getRoleIds().size(); i++) {
+            if (userDTO.getRoleIds().get(i) == 1) {
+                throw new WebServiceException(HttpStatus.NOT_FOUND.value(), "Không tìm thấy vai trò này");
+            }
+        }
         List<Long> userIds = userDTO.getRoleIds();
         Set<Role> roles = new HashSet<>(roleRepository.findAllById(userIds));
         User currentUser = getCurrentUser();

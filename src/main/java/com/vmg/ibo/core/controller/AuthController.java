@@ -53,7 +53,7 @@ public class AuthController {
         }
         User currentUser = userService.findByEmail(loginDTO.getEmail());
         if (!currentUser.isActive()) {
-            return Result.success("Vui lòng kích hoạt tài khoản");
+            return Result.result(400, "Vui lòng kích hoạt tài khoản", null);
         }
         String jwt = jwtService.generateJwtToken(loginDTO.getEmail());
         return Result.success(new JwtDTO(jwt, currentUser.getId(),
@@ -84,12 +84,5 @@ public class AuthController {
             throw new WebServiceException(HttpStatus.BAD_REQUEST.value(), "change-password.error.bad-credentials");
         }
         return Result.success("Thay đổi mật khẩu thành công");
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(user.getUsername(), changePasswordRequest.getNewPassword()));
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        String jwt = jwtService.generateJwtToken(user.getUsername());
-//        return Result.success(new JwtDTO(jwt, user.getId(),
-//                user.getUsername(),
-//                null));
     }
 }

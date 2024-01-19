@@ -6,6 +6,7 @@ public enum UserConstant {
     LOCKED(2),
     CHANNEL_ADMIN(0),
     USER_CONSTANT(1),
+    CODE_CUSTOMER("KH"),
     CHANNEL_ADMIN_STR("SYSTEM"),
     CHANNEL_USER_STR("USER"),
     CHANNEL_MERCHANT(1),
