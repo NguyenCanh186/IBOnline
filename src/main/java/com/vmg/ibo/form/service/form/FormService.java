@@ -65,5 +65,10 @@ public class FormService extends BaseService implements IFormService{
         return formRepository.save(form);
     }
 
+    @Override
+    public List<String> getAllCodeDemand() {
+        return formRepository.getAllCodeDemand();
+    }
+
 
 }

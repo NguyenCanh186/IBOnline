@@ -3,6 +3,7 @@ package com.vmg.ibo.form.service.form_field;
 import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.model.entity.User;
+import com.vmg.ibo.customer.model.DataModel;
 import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.entity.FormField;
 import com.vmg.ibo.form.entity.Template;
@@ -18,10 +19,8 @@ import org.json.simple.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 @Service
 public class FormFieldService extends BaseService implements IFormFieldService {
@@ -51,11 +50,17 @@ public class FormFieldService extends BaseService implements IFormFieldService {
         if (!checkListField(formDataReq.getTemplateFieldReqs())) {
             throw new WebServiceException(HttpStatus.OK.value(), "Dữ liệu không hợp lệ");
         }
+        List<String> listFormCode = formService.getAllCodeDemand();
+        int maxNumber = listFormCode.stream()
+                .map(s -> Integer.parseInt(s.substring(3)))
+                .max(Comparator.naturalOrder()).orElse(0) + 1;
+        String formCode = DataModel.DEMAND_FORM_CODE + String.valueOf(maxNumber);
         Form form = new Form();
         form.setTemplate(template.get());
         form.setUser(getCurrentUser());
         form.setCreatedAt(new Date());
         form.setStatus(0);
+        form.setCodeDemand(formCode);
         Form formCreated = formService.createForm(form);
         List<FormField> formFields = new ArrayList<>();
         for (int i = 0; i < formDataReq.getTemplateFieldReqs().size(); i++) {
