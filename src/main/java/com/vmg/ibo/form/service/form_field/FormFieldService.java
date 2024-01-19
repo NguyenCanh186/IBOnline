@@ -55,6 +55,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
         form.setTemplate(template.get());
         form.setUser(getCurrentUser());
         form.setCreatedAt(new Date());
+        form.setStatus(0);
         Form formCreated = formService.createForm(form);
         List<FormField> formFields = new ArrayList<>();
         for (int i = 0; i < formDataReq.getTemplateFieldReqs().size(); i++) {
