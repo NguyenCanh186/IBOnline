@@ -286,7 +286,7 @@ public class UserService extends BaseService implements IUserService {
         User user = userRepository.findById(idUser).orElse(null);
         assert user != null;
         user.setInfo(true);
-        user.setName(businessCustomer.getContactName());
+        user.setName(businessCustomer.getBusinessName());
         user.setPhone(businessCustomer.getPhone());
         user.setStatus((Integer) UserConstant.ENABLE.getValue());
         user.setCreatedAt(new Date());
