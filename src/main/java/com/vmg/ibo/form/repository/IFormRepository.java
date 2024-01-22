@@ -27,5 +27,4 @@ public interface IFormRepository extends JpaRepository<Form, Long> {
             "u.businessName as customerName, f.createdAt as createdAt," +
             "f.status as status FROM Form f join Template t on f.template.id = t.id join UserDetail u on f.user.id = u.id")
     List<DemandDTO> getAllDemand();
-
 }
