@@ -18,4 +18,6 @@ public interface IFormRepository extends JpaRepository<Form, Long> {
 
     @Query(value = "SELECT f.codeDemand FROM Form f")
     List<String> getAllCodeDemand();
+
+    Optional<Form> findByPartnerId(Long partnerId);
 }
