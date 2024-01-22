@@ -4,6 +4,7 @@ import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
 import com.vmg.ibo.core.base.Result;
 import com.vmg.ibo.core.model.dto.UserChangeStatusDto;
+import com.vmg.ibo.customer.model.UserDetail;
 import com.vmg.ibo.customer.model.customer.BusinessCustomer;
 import com.vmg.ibo.customer.model.customer.PersonalCustomer;
 import com.vmg.ibo.core.model.dto.UserDTO;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/users")
@@ -59,6 +62,16 @@ public class UserController {
     @PreAuthorize("hasAuthority('user-get')")
     public Result<?> getUserSystemById(@PathVariable Long id) {
         return Result.success(userService.findById(id));
+    }
+
+    @GetMapping("/check-info")
+    @PreAuthorize("hasAuthority('user-get')")
+    public Result<?> checkInfo() {
+        Optional<UserDetail> userDetail = userDetailService.findById();
+        if (!userDetail.isPresent()) {
+            return Result.error(404, "Không tìm thấy thông tin người dùng");
+        }
+        return Result.success(userDetailService.findById());
     }
 
     @PutMapping("/{id}")

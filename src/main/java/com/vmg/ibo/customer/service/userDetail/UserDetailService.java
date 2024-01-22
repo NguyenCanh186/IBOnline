@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service("newUserDetailService")
 public class UserDetailService extends BaseService implements IUserDetailService {
@@ -54,6 +55,11 @@ public class UserDetailService extends BaseService implements IUserDetailService
             userDetailWithUserDTOImpl = new UserDetailWithUserDTOImpl(userDetailWithUserDTO);
         }
         return userDetailWithUserDTOImpl;
+    }
+
+    @Override
+    public Optional<UserDetail> findById() {
+        return userDetailRepository.findById(getCurrentUser().getId());
     }
 
     @Override
