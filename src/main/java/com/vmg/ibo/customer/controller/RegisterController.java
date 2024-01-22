@@ -31,7 +31,7 @@ public class RegisterController {
     @PostMapping("/create-user")
     public Result<?> createUser(@Validated(Insert.class) @RequestBody RegisterModel registerModel) {
         if (userService.isValidEmail(registerModel.getEmail()) == 1) {
-            return Result.error(409, "Email đã được đăng ký");
+            return Result.error(409, "Email đã tồn tại trong hệ thống");
         }
         if (userService.isValidEmail(registerModel.getEmail()) == 2) {
             return Result.error(409, "Email không đúng định dạng");

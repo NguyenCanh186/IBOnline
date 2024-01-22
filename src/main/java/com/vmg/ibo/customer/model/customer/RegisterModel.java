@@ -4,6 +4,7 @@ import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -12,6 +13,8 @@ import javax.validation.constraints.Size;
 public class RegisterModel {
     @NotNull(message = "Email bắt buộc nhập!", groups = {Insert.class, Update.class})
     @Size(max = 64, message = "Tên email không dài quá 64 ký tự.", groups = {Insert.class, Update.class})
+    @Email(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,6}$",
+            message = "Sai định dạng email, vui lòng nhập lại.", groups = {Insert.class, Update.class})
     private String email;
 
     @NotNull(message = "Mật khẩu bắt buộc nhập!", groups = {Insert.class, Update.class})
