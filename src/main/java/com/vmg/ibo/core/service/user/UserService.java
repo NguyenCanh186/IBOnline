@@ -305,6 +305,7 @@ public class UserService extends BaseService implements IUserService {
         userDetail.setContactName(businessCustomer.getContactName());
         userDetail.setCodeReg(businessCustomer.getCodeReg());
         userDetail.setCodeTax(businessCustomer.getCodeTax());
+        userDetail.setBusinessName(businessCustomer.getBusinessName());
         userDetail.setMainBusiness(businessCustomer.getMainBusiness());
         userDetail.setMostRecentYearRevenue(businessCustomer.getMostRecentYearRevenue());
         userDetail.setMostRecentYearProfit(businessCustomer.getMostRecentYearProfit());
