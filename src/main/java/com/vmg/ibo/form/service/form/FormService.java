@@ -67,7 +67,16 @@ public class FormService extends BaseService implements IFormService {
                     list.add(template.getId());
                 }
             }
-            List<Form> listSuggestLatest = formRepository.findTop3ByTemplateIdInAndUserIdNotOrderByCreatedAtDesc(list, getCurrentUser().getId());
+            List<Form> listSuggestLatest = new ArrayList<>();
+            if(form.get().getPartnerId() == null) {
+                listSuggestLatest  = formRepository.findTop3ByTemplateIdInAndUserIdNotOrderByCreatedAtDesc(list, getCurrentUser().getId());
+            } else {
+                Optional<Form> findParent = formRepository.findById(form.get().getPartnerId());
+                if(findParent.isPresent()) {
+                    listSuggestLatest.add(findParent.get());
+
+                }
+            }
             ModelMapper modelMapper = new ModelMapper();
             FormDTO formDTO = modelMapper.map(form.get(), FormDTO.class);
             formDTO.setSuggestLatest(listSuggestLatest.stream().map(x -> modelMapper.map(x, FormSuggestDTO.class)).collect(Collectors.toList()));
@@ -96,6 +105,7 @@ public class FormService extends BaseService implements IFormService {
         if (formUpdateStatusReq.getStatus() == 1) {
             sendEmailsForStatus1(form, formUpdateStatusReq.getParentId());
         }
+        form.setPartnerId(formUpdateStatusReq.getParentId());
         return formRepository.save(form);
     }
 
