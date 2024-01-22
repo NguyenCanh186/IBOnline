@@ -36,4 +36,6 @@ public class Form extends BaseEntity {
     private Integer status;
 
     private Long partnerId;
+
+    private String dealCode;
 }

@@ -33,4 +33,9 @@ public class FormController {
         Form form = iFormService.updateStatus(id, formUpdateStatusReq);
         return Result.success("Cập nhật trạng thái thành công", form);
     }
+
+    @GetMapping("/get-all-demand")
+    public Result<?> getAllDemand() {
+        return Result.success("Lấy dữ liệu thành công", iFormService.getAllDemand());
+    }
 }

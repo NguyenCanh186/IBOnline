@@ -251,10 +251,10 @@ public class UserService extends BaseService implements IUserService {
                 .max(Comparator.naturalOrder()).orElse(0) + 1;
         String userCode = DataModel.USER_CODE + String.valueOf(maxNumber);
         User user = userRepository.findById(idUser).orElse(null);
+        assert user != null;
+        user.setInfo(true);
         user.setName(personalCustomer.getName());
         user.setStatus((Integer) UserConstant.ENABLE.getValue());
-        user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
-        user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
         user.setPhone(personalCustomer.getPhone());
         user.setChannelId(1);
         user.setCreatedAt(new Date());
@@ -284,11 +284,11 @@ public class UserService extends BaseService implements IUserService {
                 .max(Comparator.naturalOrder()).orElse(0) + 1;
         String userCode = DataModel.USER_CODE + String.valueOf(maxNumber);
         User user = userRepository.findById(idUser).orElse(null);
+        assert user != null;
+        user.setInfo(true);
         user.setName(businessCustomer.getContactName());
         user.setPhone(businessCustomer.getPhone());
         user.setStatus((Integer) UserConstant.ENABLE.getValue());
-        user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
-        user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
         user.setCreatedAt(new Date());
         user.setChannelId(2);
         userRepository.save(user);
