@@ -103,9 +103,9 @@ public class FormService extends BaseService implements IFormService {
                 .orElseThrow(() -> new WebServiceException(HttpStatus.OK.value(), "Không tìm thấy nhu cầu hợp lệ"));
         form.setStatus(formUpdateStatusReq.getStatus());
         if (formUpdateStatusReq.getStatus() == 1) {
-            sendEmailsForStatus1(form, formUpdateStatusReq.getParentId());
+            sendEmailsForStatus1(form, formUpdateStatusReq.getPartnerId());
         }
-        form.setPartnerId(formUpdateStatusReq.getParentId());
+        form.setPartnerId(formUpdateStatusReq.getPartnerId());
         return formRepository.save(form);
     }
 
