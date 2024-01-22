@@ -49,6 +49,8 @@ public class User extends BaseEntity {
 
     private boolean isActive;
 
+    private boolean isInfo;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "SYS_USERS_ROLES",
             joinColumns = @JoinColumn(name = "user_id"),

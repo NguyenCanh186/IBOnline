@@ -7,6 +7,7 @@ import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.repository.IUserRepository;
 import com.vmg.ibo.core.service.mail.IMailService;
 import com.vmg.ibo.core.service.user.IUserService;
+import com.vmg.ibo.form.dto.DemandDTO;
 import com.vmg.ibo.form.dto.FormDTO;
 import com.vmg.ibo.form.dto.FormSuggestDTO;
 import com.vmg.ibo.form.entity.Form;
@@ -107,6 +108,11 @@ public class FormService extends BaseService implements IFormService {
         }
         form.setPartnerId(formUpdateStatusReq.getPartnerId());
         return formRepository.save(form);
+    }
+
+    @Override
+    public List<DemandDTO> getAllDemand() {
+        return formRepository.getAllDemand();
     }
 
     private void sendEmailsForStatus1(Form form, Long parentId) {

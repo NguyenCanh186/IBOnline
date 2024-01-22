@@ -1,5 +1,6 @@
 package com.vmg.ibo.form.service.form;
 
+import com.vmg.ibo.form.dto.DemandDTO;
 import com.vmg.ibo.form.dto.FormDTO;
 import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.model.FormUpdateStatusReq;
@@ -15,5 +16,7 @@ public interface IFormService {
     List<String> getAllCodeDemand();
 
     Form updateStatus(Long id, FormUpdateStatusReq formUpdateStatusReq);
+
+    List<DemandDTO> getAllDemand();
 
 }
