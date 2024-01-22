@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class FormUpdateStatusReq {
     private Integer status;
-    private Long parentId;
+    private Long partnerId;
 }
