@@ -15,11 +15,13 @@ import com.vmg.ibo.form.entity.Template;
 import com.vmg.ibo.form.model.FormUpdateStatusReq;
 import com.vmg.ibo.form.repository.IFormRepository;
 import com.vmg.ibo.form.repository.TemplateRepository;
+import com.vmg.ibo.form.service.email.EmailService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -46,6 +48,9 @@ public class FormService extends BaseService implements IFormService {
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private EmailService emailService;
+
     @Override
     public List<Form> getAllForms() {
         return formRepository.findAll();
@@ -69,11 +74,11 @@ public class FormService extends BaseService implements IFormService {
                 }
             }
             List<Form> listSuggestLatest = new ArrayList<>();
-            if(form.get().getPartnerId() == null) {
-                listSuggestLatest  = formRepository.findTop3ByTemplateIdInAndUserIdNotOrderByCreatedAtDesc(list, getCurrentUser().getId());
+            if (form.get().getPartnerId() == null) {
+                listSuggestLatest = formRepository.findTop3ByTemplateIdInAndUserIdNotOrderByCreatedAtDesc(list, getCurrentUser().getId());
             } else {
                 Optional<Form> findParent = formRepository.findById(form.get().getPartnerId());
-                if(findParent.isPresent()) {
+                if (findParent.isPresent()) {
                     listSuggestLatest.add(findParent.get());
 
                 }
@@ -102,6 +107,9 @@ public class FormService extends BaseService implements IFormService {
         userService.checkChannel(getCurrentUser());
         Form form = formRepository.findById(id)
                 .orElseThrow(() -> new WebServiceException(HttpStatus.OK.value(), "Không tìm thấy nhu cầu hợp lệ"));
+        if(form.getPartnerId() != null){
+            throw new WebServiceException(HttpStatus.OK.value(), "Nhu cầu đã được kết nối");
+        }
         form.setStatus(formUpdateStatusReq.getStatus());
         if (formUpdateStatusReq.getStatus() == 1) {
             sendEmailsForStatus1(form, formUpdateStatusReq.getPartnerId());
@@ -120,16 +128,12 @@ public class FormService extends BaseService implements IFormService {
         if (formParent.isPresent()) {
             User userParent = formParent.get().getUser();
             List<User> users = userRepository.findUsersByRoleId(13L);
-            users.forEach(user -> {
-                iMailService.sendFromSystem(message -> message.to(user.getEmail())
-                        .subject(MailMessageConstant.DEMAND)
-                        .text("Xin chào " + user.getName() + "\n" +
-                                "Hệ thống IBOnline ghi nhận " + getCurrentUser().getName() +
-                                " đang có nhu cầu kết nối đến nhu cầu " + formParent.get().getCodeDemand() +
-                                " của khách hàng " + userParent.getName() + ". " +
-                                "Bạn có thể xem chi tiết tại đây:url\n")
-                        .build());
-            });
+            List<String> emails = users.stream().map(User::getEmail).collect(Collectors.toList());
+            emailService.sendEmail(emails.get(0), MailMessageConstant.DEMAND, "Xin chào bạn \n" +
+                    "Hệ thống IBOnline ghi nhận " + getCurrentUser().getName() +
+                    " đang có nhu cầu kết nối đến nhu cầu " + formParent.get().getCodeDemand() +
+                    " của khách hàng " + userParent.getName() + ". " +
+                    "Bạn có thể xem chi tiết tại đây:url\n", emails);
         } else {
             throw new WebServiceException(HttpStatus.OK.value(), "Không tìm thấy nhu cầu hợp lệ");
         }
