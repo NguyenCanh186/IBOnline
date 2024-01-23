@@ -258,7 +258,6 @@ public class UserService extends BaseService implements IUserService {
         user.setName(personalCustomer.getName());
         user.setStatus((Integer) UserConstant.ENABLE.getValue());
         user.setPhone(personalCustomer.getPhone());
-        user.setChannelId(1);
         user.setCreatedAt(new Date());
         userRepository.save(user);
         UserDetail userDetail = userDetailService.findByIdUser(idUser);
@@ -292,7 +291,6 @@ public class UserService extends BaseService implements IUserService {
         user.setPhone(businessCustomer.getPhone());
         user.setStatus((Integer) UserConstant.ENABLE.getValue());
         user.setCreatedAt(new Date());
-        user.setChannelId(2);
         userRepository.save(user);
         UserDetail userDetail = userDetailService.findByIdUser(idUser);
         if (userDetail == null) {

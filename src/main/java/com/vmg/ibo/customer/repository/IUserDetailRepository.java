@@ -52,7 +52,7 @@ public interface IUserDetailRepository extends JpaRepository<UserDetail, Long> {
     UserDetailWithUserDTO findUserById(Long id);
     @Query(value = "SELECT ud FROM UserDetail ud WHERE ud.idUser = :idUser")
     UserDetail findByIdUser(@Param("idUser") Long idUser);
-    @Query(value = "SELECT ud.customerCode as customerCode FROM UserDetail ud")
+    @Query(value = "SELECT ud.customerCode as customerCode FROM UserDetail ud where ud.customerCode != null")
     List<String> getAllCustomerCode();
 
     @Query(value = "SELECT u.username FROM User u")
