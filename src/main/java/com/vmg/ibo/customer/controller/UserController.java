@@ -2,6 +2,7 @@ package com.vmg.ibo.customer.controller;
 
 import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
+import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.base.Result;
 import com.vmg.ibo.core.model.dto.UserChangeStatusDto;
 import com.vmg.ibo.customer.model.UserDetail;
@@ -21,7 +22,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/users")
-public class UserController {
+public class UserController extends BaseService {
     @Autowired
     private IUserService userService;
 
@@ -67,11 +68,10 @@ public class UserController {
     @GetMapping("/check-info")
     @PreAuthorize("hasAuthority('user-get')")
     public Result<?> checkInfo() {
-        Optional<UserDetail> userDetail = userDetailService.findById();
-        if (!userDetail.isPresent()) {
+        if (!userDetailService.isInfo()) {
             return Result.error(404, "Không tìm thấy thông tin người dùng");
         }
-        return Result.success(userDetailService.findById());
+        return Result.success("Người dùng đã nhập thông tin cá nhân");
     }
 
     @PutMapping("/{id}")
