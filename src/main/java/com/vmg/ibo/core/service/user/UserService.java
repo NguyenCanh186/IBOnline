@@ -226,7 +226,7 @@ public class UserService extends BaseService implements IUserService {
             UserDetail userDetail = userDetailService.findByIdUser(user.getId());
             if (userDetail != null) {
                 userDTO.setUserDetail(userDetail);
-                if (!userDetail.getIsCustomerPersonal()) {
+                if (userDetail.getIsCustomerPersonal() !=  null && !userDetail.getIsCustomerPersonal()) {
                     List<FinancialReportDTO> financialReports = financialReportService.findAll(user);
                     userDTO.setReports(financialReports);
                 }
