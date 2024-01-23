@@ -123,9 +123,10 @@ public class FormService extends BaseService implements IFormService {
             throw new WebServiceException(HttpStatus.CONFLICT.value(), "Nhu cầu đã được kết nối");
         }
         form.setStatus(1);
-        sendEmailsForStatus1(form, formUpdateStatusReq.getPartnerId());
         form.setPartnerId(formUpdateStatusReq.getPartnerId());
-        return formRepository.save(form);
+        Form form1 = formRepository.save(form);
+        sendEmailsForStatus1(form, formUpdateStatusReq.getPartnerId());
+        return form1;
     }
 
     @Override
