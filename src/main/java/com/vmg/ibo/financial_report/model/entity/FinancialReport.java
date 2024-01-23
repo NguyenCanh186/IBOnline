@@ -1,6 +1,7 @@
 package com.vmg.ibo.financial_report.model.entity;
 
 import com.vmg.ibo.core.base.BaseEntity;
+import com.vmg.ibo.core.model.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -21,4 +22,5 @@ public class FinancialReport extends BaseEntity {
     private Long debt;
     private Integer year;
     private Integer quarter;
+    private User user;
 }
