@@ -32,7 +32,7 @@ public class FormController {
 
     @PutMapping("/{id}/connect")
     public Result<?> updateStatus(@PathVariable Long id, @RequestBody FormUpdateStatusReq formUpdateStatusReq) {
-        Form form = iFormService.updateStatus(id, formUpdateStatusReq);
+        Form form = iFormService.connect(id, formUpdateStatusReq);
         return Result.success("Cập nhật trạng thái thành công", form);
     }
 

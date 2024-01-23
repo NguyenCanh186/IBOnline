@@ -18,7 +18,7 @@ public interface IFormService {
 
     List<String> getAllCodeDemand();
 
-    Form updateStatus(Long id, FormUpdateStatusReq formUpdateStatusReq);
+    Form connect(Long id, FormUpdateStatusReq formUpdateStatusReq);
 
     Page<DemandDTO> getAllDemand(DemandReq demandReq, Pageable pageable);
 
