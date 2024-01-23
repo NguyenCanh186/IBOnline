@@ -71,7 +71,7 @@ public class UserController extends BaseService {
         if (!userDetailService.isInfo()) {
             return Result.error(404, "Không tìm thấy thông tin người dùng");
         }
-        return Result.success("Người dùng đã nhập thông tin cá nhân");
+        return Result.result(200, "Người dùng đã nhập thông tin cá nhân", null);
     }
 
     @PutMapping("/{id}")
