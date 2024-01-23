@@ -1,6 +1,7 @@
 package com.vmg.ibo.form.repository;
 
 import com.vmg.ibo.core.model.entity.Option;
+import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.form.dto.DemandDTO;
 import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.model.DemandReq;
@@ -39,4 +40,5 @@ public interface IFormRepository extends JpaRepository<Form, Long> {
             )
     Page<DemandDTO> getAllDemand(DemandReq demandReq, Pageable pageable);
 
+    List<Form> findByUser(User user);
 }

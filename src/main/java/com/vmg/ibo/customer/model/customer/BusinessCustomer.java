@@ -56,5 +56,7 @@ public class BusinessCustomer {
     private Long propertyStructure;
     @NotNull (message = "Cơ cấu nợ bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Long debtStructure;
+    private Integer year;
+    private Integer quarter;
     private List<MultipartFile> files;
 }
