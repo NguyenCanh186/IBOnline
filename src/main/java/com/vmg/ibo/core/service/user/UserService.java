@@ -115,6 +115,15 @@ public class UserService extends BaseService implements IUserService {
         Role role = roleRepository.findById(2L).get();
         user.setRoles(Collections.singleton(role));
         user = userRepository.save(user);
+        List<String> listUserCode = userDetailRepository.getAllCustomerCode();
+        int maxNumber = listUserCode.stream()
+                .map(s -> Integer.parseInt(s.substring(3)))
+                .max(Comparator.naturalOrder()).orElse(0) + 1;
+        String userCode = DataModel.USER_CODE + String.valueOf(maxNumber);
+        UserDetail userDetail = new UserDetail();
+        userDetail.setCustomerCode(userCode);
+        userDetail.setIdUser(user.getId());
+        userDetailService.create(userDetail);
         mailService.sendFromSystem(message -> message.to(registerModel.getEmail())
                 .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT)
                 .text("Quý khách vui lòng truy cập theo link: " + cmsUrl + "/active-user?code=" + codeValid + " để xác thực tài khoản email. Cảm ơn quý khách đã tin tưởng sử dụng dịch vụ IB Online của HMG")
@@ -247,11 +256,6 @@ public class UserService extends BaseService implements IUserService {
     @Override
     public User createPersonalCustomer(PersonalCustomer personalCustomer) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
-        List<String> listUserCode = userDetailRepository.getAllCustomerCode();
-        int maxNumber = listUserCode.stream()
-                .map(s -> Integer.parseInt(s.substring(3)))
-                .max(Comparator.naturalOrder()).orElse(0) + 1;
-        String userCode = DataModel.USER_CODE + String.valueOf(maxNumber);
         User user = userRepository.findById(idUser).orElse(null);
         assert user != null;
         user.setInfo(true);
@@ -264,7 +268,6 @@ public class UserService extends BaseService implements IUserService {
         if (userDetail == null) {
             userDetail = new UserDetail();
         }
-        userDetail.setCustomerCode(userCode);
         userDetail.setAddress(personalCustomer.getAddress());
         userDetail.setDescription(personalCustomer.getDescription());
         userDetail.setIdUser(idUser);
@@ -279,11 +282,6 @@ public class UserService extends BaseService implements IUserService {
     @Override
     public User createBusinessCustomer(BusinessCustomer businessCustomer) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
-        List<String> listUserCode = userDetailRepository.getAllCustomerCode();
-        int maxNumber = listUserCode.stream()
-                .map(s -> Integer.parseInt(s.substring(3)))
-                .max(Comparator.naturalOrder()).orElse(0) + 1;
-        String userCode = DataModel.USER_CODE + String.valueOf(maxNumber);
         User user = userRepository.findById(idUser).orElse(null);
         assert user != null;
         user.setInfo(true);
@@ -296,7 +294,6 @@ public class UserService extends BaseService implements IUserService {
         if (userDetail == null) {
             userDetail = new UserDetail();
         }
-        userDetail.setCustomerCode(userCode);
         userDetail.setAddress(businessCustomer.getAddress());
         userDetail.setDescription(businessCustomer.getDescription());
         userDetail.setIdUser(idUser);

@@ -22,8 +22,8 @@ public interface IUserDetailRepository extends JpaRepository<UserDetail, Long> {
             "u.status as status, u.email as email, u.phone as phone, ud.mostRecentYearRevenue as mostRecentYearRevenue, ud.mostRecentYearProfit as mostRecentYearProfit," +
             "ud.propertyStructure as propertyStructure, ud.debtStructure as debtStructure, u.name as name FROM User u " +
             "JOIN UserDetail ud ON u.id = ud.idUser " +
-            "WHERE (u.isAdminRoot = false OR u.isAdminRoot IS NULL) and (:isCustomerPersonal = ud.isCustomerPersonal OR :isCustomerPersonal IS NULL) " +
-            "AND (:status = u.status OR :status IS NULL) AND (LOWER(ud.contactName) LIKE LOWER(CONCAT('%', :username, '%')))" +
+            "WHERE ( u.isAdminRoot IS NULL ) and (:isCustomerPersonal = ud.isCustomerPersonal OR :isCustomerPersonal IS NULL) " +
+            "AND (:status = u.status OR :status IS NULL) AND (LOWER(ud.contactName) LIKE LOWER(CONCAT('%', :username, '%')) or ud.contactName is null)" +
             "AND ((ud.capitalSize BETWEEN :fromCapitalSize AND :toCapitalSize) OR (:fromCapitalSize IS NULL AND :toCapitalSize IS NULL)) " +
             "AND ((LOWER(ud.contactName) LIKE LOWER(CONCAT('%', :contactName, '%')) OR :contactName IS NULL) or (LOWER(ud.businessName) LIKE LOWER(CONCAT('%', :contactName, '%')) OR :contactName IS NULL) " +
             "or (LOWER(u.email) LIKE LOWER(CONCAT('%', :contactName, '%')) OR :contactName IS NULL) or (LOWER(u.phone) LIKE LOWER(CONCAT('%', :contactName, '%')) OR :contactName IS NULL) " +
@@ -35,12 +35,6 @@ public interface IUserDetailRepository extends JpaRepository<UserDetail, Long> {
                                             @Param("status") Integer status,
                                             @Param("fromCapitalSize") Long fromCapitalSize,
                                             @Param("toCapitalSize") Long toCapitalSize);
-
-//
-//    " +
-//            "OR LOWER(u.id) LIKE LOWER(CONCAT('%', :contactName, '%'))" +
-//            "OR LOWER(u.email) LIKE LOWER(CONCAT('%', :contactName, '%'))" +
-//            "OR LOWER(u.phone) LIKE LOWER(CONCAT('%', :contactName, '%'))
 
     @Query(value = "SELECT u.id as id, u.createdAt as createdAt, ud.customerCode as customerCode, ud.isCustomerPersonal as isCustomerPersonal, " +
             "ud.address as address, ud.CINumber as CINumber, ud.dateOfBirth as dateOfBirth, ud.businessName as businessName, ud.codeTax as codeTax, ud.codeReg as codeReg, " +
