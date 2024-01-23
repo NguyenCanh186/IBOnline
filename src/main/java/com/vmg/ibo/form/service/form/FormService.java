@@ -115,28 +115,38 @@ public class FormService extends BaseService implements IFormService {
     }
 
 
-    public Form updateStatus(Long id, FormUpdateStatusReq formUpdateStatusReq) {
+    public Form connect(Long id, FormUpdateStatusReq formUpdateStatusReq) {
         userService.checkChannel(getCurrentUser());
         Form form = formRepository.findById(id)
                 .orElseThrow(() -> new WebServiceException(HttpStatus.CONFLICT.value(), "Không tìm thấy nhu cầu hợp lệ"));
-        if(form.getPartnerId() != null){
+        Form formPartner = formRepository.findById(formUpdateStatusReq.getPartnerId())
+                .orElseThrow(() -> new WebServiceException(HttpStatus.CONFLICT.value(), "Không tìm thấy nhu cầu hợp lệ"));
+        if (form.getPartnerId() != null) {
             throw new WebServiceException(HttpStatus.CONFLICT.value(), "Nhu cầu đã được kết nối");
+        } else if (formPartner.getPartnerId() != null) {
+            throw new WebServiceException(HttpStatus.CONFLICT.value(), "Đối tác đã được kết nối vui lòng chọn đối tác khác");
         }
-        form.setStatus(1);
-        form.setPartnerId(formUpdateStatusReq.getPartnerId());
-        Form form1 = formRepository.save(form);
-        sendEmailsForStatus1(form, formUpdateStatusReq.getPartnerId());
-        return form1;
+        else {
+            form.setStatus(1);
+            form.setPartnerId(formUpdateStatusReq.getPartnerId());
+            form = formRepository.save(form);
+            formPartner.setStatus(1);
+            formPartner.setPartnerId(id);
+            formRepository.save(formPartner);
+            sendEmailsForStatus1(formPartner);
+            return form;
+        }
     }
+
 
     @Override
     public Page<DemandDTO> getAllDemand(DemandReq demandReq, Pageable pageable) {
-        if(demandReq.getDemandType().isEmpty()){
+        if (demandReq.getDemandType().isEmpty()) {
             demandReq.setDemandType(new ArrayList<>());
             demandReq.getDemandType().add(1);
             demandReq.getDemandType().add(2);
         }
-        if(demandReq.getStatus().isEmpty()){
+        if (demandReq.getStatus().isEmpty()) {
             demandReq.setStatus(new ArrayList<>());
             demandReq.getStatus().add(0);
             demandReq.getStatus().add(1);
@@ -146,19 +156,15 @@ public class FormService extends BaseService implements IFormService {
         return formRepository.getAllDemand(demandReq, pageable);
     }
 
-    private void sendEmailsForStatus1(Form form, Long parentId) {
-        Optional<Form> formParent = formRepository.findById(parentId);
-        if (formParent.isPresent()) {
-            User userParent = formParent.get().getUser();
-            List<User> users = userRepository.findUsersByRoleId(13L);
-            List<String> emails = users.stream().map(User::getEmail).collect(Collectors.toList());
-            emailService.sendEmail(emails.get(0), MailMessageConstant.DEMAND, "Xin chào bạn \n" +
-                    "Hệ thống IBOnline ghi nhận " + getCurrentUser().getName() +
-                    " đang có nhu cầu kết nối đến nhu cầu " + formParent.get().getCodeDemand() +
-                    " của khách hàng " + userParent.getName() + ". " +
-                    "Bạn có thể xem chi tiết tại đây:url\n", emails);
-        } else {
-            throw new WebServiceException(HttpStatus.CONFLICT.value(), "Không tìm thấy nhu cầu hợp lệ");
-        }
+    private void sendEmailsForStatus1(Form formPartner) {
+        User userParent = formPartner.getUser();
+        List<User> users = userRepository.findUsersByRoleId(13L);
+        List<String> emails = users.stream().map(User::getEmail).collect(Collectors.toList());
+        emailService.sendEmail(emails.get(0), MailMessageConstant.DEMAND, "Xin chào bạn \n" +
+                "Hệ thống IBOnline ghi nhận " + getCurrentUser().getName() +
+                " đang có nhu cầu kết nối đến nhu cầu " + formPartner.getCodeDemand() +
+                " của khách hàng " + userParent.getName() + ". " +
+                "Bạn có thể xem chi tiết tại đây:url\n", emails);
+
     }
 }
