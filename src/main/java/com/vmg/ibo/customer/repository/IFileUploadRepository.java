@@ -15,4 +15,6 @@ public interface IFileUploadRepository extends JpaRepository<FileUpload, Long> {
     List<FileUpload> findByIdUser(@Param("idUser") Long idUser);
 
     List<FileUpload> findAllByFinancialReport(FinancialReport financialReport);
+
+    void deleteAllByFinancialReport(FinancialReport financialReport);
 }

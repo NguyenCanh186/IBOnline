@@ -10,4 +10,6 @@ public interface IFinancialReportService {
     FinancialReport save(FinancialReport financialReport);
 
     List<FinancialReportDTO> findAll(User user);
+
+    FinancialReport findByQuarterAndYearAndUser(Integer quarter, Integer year, User user);
 }

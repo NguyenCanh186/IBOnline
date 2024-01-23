@@ -25,20 +25,15 @@ public class FinancialReportService extends BaseService implements IFinancialRep
 
     @Override
     public FinancialReport save(FinancialReport financialReport) {
-        FinancialReport current = financialReportRepository.findByQuarterAndYearAndUser(financialReport.getQuarter(), financialReport.getYear(), getCurrentUser());
-        if (current != null) {
-            current.setAsset(financialReport.getAsset());
-            current.setProfit(financialReport.getProfit());
-            current.setRevenue(financialReport.getRevenue());
-            current.setDebt(financialReport.getDebt());
+        if (financialReport.getId() != null) {
             financialReport.setUpdatedAt(new Date());
             financialReport.setUpdatedBy(getCurrentUser().getEmail());
             financialReport.setUpdatedByUserId(getCurrentUser().getId());
-            return financialReportRepository.save(current);
+        } else  {
+            financialReport.setCreatedAt(new Date());
+            financialReport.setCreatedBy(getCurrentUser().getEmail());
+            financialReport.setCreatedByUserId(getCurrentUser().getId());
         }
-        financialReport.setCreatedAt(new Date());
-        financialReport.setCreatedBy(getCurrentUser().getEmail());
-        financialReport.setCreatedByUserId(getCurrentUser().getId());
         return financialReportRepository.save(financialReport);
     }
 
@@ -46,6 +41,11 @@ public class FinancialReportService extends BaseService implements IFinancialRep
     public List<FinancialReportDTO> findAll(User user) {
         Sort sort = Sort.by(Sort.Direction.DESC, "quarter", "year");
         return financialReportRepository.findAllByUser(user, sort).stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public FinancialReport findByQuarterAndYearAndUser(Integer quarter, Integer year, User user) {
+        return financialReportRepository.findByQuarterAndYearAndUser(quarter, year, user);
     }
 
     private FinancialReportDTO mapToDTO(FinancialReport financialReport) {
