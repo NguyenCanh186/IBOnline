@@ -47,9 +47,9 @@ public class FormFieldService extends BaseService implements IFormFieldService {
 
     @Override
     public Form createFormField(FormDataReq formDataReq) {
-//        if (!getCurrentUser().isInfo()) {
-//            throw new WebServiceException(HttpStatus.OK.value(), "Vui lòng cập nhật thông tin cá nhân trước khi đăng nhu cầu");
-//        }
+        if (!getCurrentUser().isInfo()) {
+            throw new WebServiceException(HttpStatus.OK.value(), "Vui lòng cập nhật thông tin cá nhân trước khi đăng nhu cầu");
+        }
         userService.checkChannel(getCurrentUser());
         Optional<Template> template = templateService.getTemplateById(formDataReq.getIdTemplate());
         if (!template.isPresent()) {

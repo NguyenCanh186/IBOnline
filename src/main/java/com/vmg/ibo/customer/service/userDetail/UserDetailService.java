@@ -58,8 +58,8 @@ public class UserDetailService extends BaseService implements IUserDetailService
     }
 
     @Override
-    public Optional<UserDetail> findById() {
-        return userDetailRepository.findById(getCurrentUser().getId());
+    public boolean isInfo() {
+        return getCurrentUser().isInfo();
     }
 
     @Override

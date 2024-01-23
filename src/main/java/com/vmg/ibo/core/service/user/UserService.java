@@ -108,6 +108,7 @@ public class UserService extends BaseService implements IUserService {
         user.setPassword(passwordEncoder.encode(password));
         user.setCreatedBy("me");
         user.setActive(false);
+        user.setInfo(false);
         user.setCreatedByUserId(1L);
         user.setCreatedAt(new Date());
         user.setIsResetPass(true);
@@ -227,6 +228,7 @@ public class UserService extends BaseService implements IUserService {
         user.setRoles(roles);
         user.setStatus(1);
         user.setActive(true);
+        user.setInfo(false);
         user.setChannelId((Integer) UserConstant.CHANNEL_ADMIN.getValue());
         user.setChannelName((String) UserConstant.CHANNEL_ADMIN_STR.getValue());
         user.setPassword(passwordEncoder.encode(password));

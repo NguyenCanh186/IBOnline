@@ -13,7 +13,7 @@ public interface IUserDetailService {
 
     UserDetailWithUserDTOImpl findUserById(Long id);
 
-    Optional<UserDetail> findById();
+    boolean isInfo();
 
     UserDetail create(UserDetail userDetail);
 
