@@ -25,6 +25,17 @@ public class FinancialReportService extends BaseService implements IFinancialRep
 
     @Override
     public FinancialReport save(FinancialReport financialReport) {
+        FinancialReport current = financialReportRepository.findByQuarterAndYearAndUser(financialReport.getQuarter(), financialReport.getYear(), getCurrentUser());
+        if (current != null) {
+            current.setAsset(financialReport.getAsset());
+            current.setProfit(financialReport.getProfit());
+            current.setRevenue(financialReport.getRevenue());
+            current.setDebt(financialReport.getDebt());
+            financialReport.setUpdatedAt(new Date());
+            financialReport.setUpdatedBy(getCurrentUser().getEmail());
+            financialReport.setUpdatedByUserId(getCurrentUser().getId());
+            return financialReportRepository.save(current);
+        }
         financialReport.setCreatedAt(new Date());
         financialReport.setCreatedBy(getCurrentUser().getEmail());
         financialReport.setCreatedByUserId(getCurrentUser().getId());

@@ -12,4 +12,6 @@ import java.util.List;
 @Repository
 public interface IFinancialReportRepository extends JpaRepository<FinancialReport, Long> {
     List<FinancialReport> findAllByUser(User user, Sort sort);
+
+    FinancialReport findByQuarterAndYearAndUser(Integer quarter, Integer year, User user);
 }
