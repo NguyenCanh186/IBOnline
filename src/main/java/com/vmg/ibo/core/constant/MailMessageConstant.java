@@ -12,6 +12,7 @@ public class MailMessageConstant {
     public static final String CREATE_ACCOUNT_SUBJECT_FOR_ADMIN = "[IB Online] TÀI KHOẢN ĐĂNG NHẬP CMS";
     public static final String DEMAND = "[IB Online] KẾT NỐI NHU CẦU";
     public static final String FORGOT_PASSWORD_SUBJECT = "[IB Online] ĐỔI MẬT KHẨU ĐĂNG NHẬP";
+    public static final String WELCOME_SUBJECT = "[IB Online] ĐỔI MẬT KHẨU ĐĂNG NHẬP";
 
     public static final String CREATE_ACCOUNT_TEXT = "Tên tài khoản: %s \n" +
             "Mật khẩu: %s\n" +

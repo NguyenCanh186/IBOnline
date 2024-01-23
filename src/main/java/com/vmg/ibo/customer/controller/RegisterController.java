@@ -60,10 +60,10 @@ public class RegisterController {
     public Result<?> forgotPassword(@RequestParam String email) {
         User user = userService.findByEmail(email);
         if (user == null) {
-            return Result.error(400, "Email không tồn tại");
+            return Result.error(409, "Email không tồn tại");
         }
         if (!user.isActive()) {
-            return Result.error(400, "Vui lòng kích hoạt tài khoản trước khi đổi mật khẩu");
+            return Result.error(409, "Vui lòng kích hoạt tài khoản trước khi đổi mật khẩu");
         }
         CodeAndEmail codeAndEmail = codeAndEmailService.findByEmail(email);
         if (codeAndEmail != null) {
@@ -110,14 +110,14 @@ public class RegisterController {
     @GetMapping("/check-code")
     public Result<?> checkCode(@RequestParam String code) {
         if (code == null || code.isEmpty()) {
-            return Result.error(400, "Mã là bắt buộc");
+            return Result.error(409, "Mã là bắt buộc");
         }
         CodeAndEmail codeAndEmail = codeAndEmailService.findByCode(code);
         if (codeAndEmail == null) {
-            return Result.error(400, "Mã không tồn tại hoặc đã được sử dụng");
+            return Result.error(409, "Mã không tồn tại hoặc đã được sử dụng");
         }
         if (new Date().getTime() - codeAndEmail.getCreateAt().getTime() > 600000) {
-            return Result.error(400, "Mã xác nhận đã hết hiệu lực");
+            return Result.error(409, "Mã xác nhận đã hết hiệu lực");
         }
         return Result.success("Mã xác nhận hợp lệ", HttpStatus.OK);
     }
