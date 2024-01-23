@@ -13,6 +13,7 @@ public class FileUpload {
     private Long id;
     private String filename;
     private Long idUser;
+    private Long financialReportId;
 
     public FileUpload() {
 

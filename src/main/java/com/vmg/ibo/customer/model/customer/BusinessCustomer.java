@@ -44,21 +44,18 @@ public class BusinessCustomer {
     @NotBlank(message = "Số điện thoại không được để trống!", groups = {Insert.class, Update.class})
     private String mainBusiness;
     @NotNull (message = "Quy mô vốn bắt buộc nhập!", groups = {Insert.class, Update.class})
-    @NotBlank(message = "Quy mô vốn không được để trống!", groups = {Insert.class, Update.class})
     private Long capitalSize;
     @Size(max = 255, message = "Mô tả không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
     private String description;
     @NotNull (message = "Doanh thu năm gần nhất bắt buộc nhập!", groups = {Insert.class, Update.class})
-    @NotBlank(message = "Doanh thu năm gần nhất không được để trống!", groups = {Insert.class, Update.class})
     private Long mostRecentYearRevenue;
     @NotNull (message = "Lợi nhuận năm gần nhất bắt buộc nhập!", groups = {Insert.class, Update.class})
-    @NotBlank(message = "Lợi nhuận năm gần nhất không được để trống!", groups = {Insert.class, Update.class})
     private Long mostRecentYearProfit;
     @NotNull (message = "Cơ cấu tài sản bắt buộc nhập!", groups = {Insert.class, Update.class})
-    @NotBlank(message = "Cơ cấu tài sản không được để trống!", groups = {Insert.class, Update.class})
     private Long propertyStructure;
     @NotNull (message = "Cơ cấu nợ bắt buộc nhập!", groups = {Insert.class, Update.class})
-    @NotBlank(message = "Cơ cấu nợ không được để trống!", groups = {Insert.class, Update.class})
     private Long debtStructure;
+    private Integer year;
+    private Integer quarter;
     private List<MultipartFile> files;
 }

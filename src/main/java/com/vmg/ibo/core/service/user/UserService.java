@@ -1,7 +1,6 @@
 package com.vmg.ibo.core.service.user;
 
 import com.vmg.ibo.core.base.BaseService;
-import com.vmg.ibo.core.base.Result;
 import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.constant.AuthConstant;
 import com.vmg.ibo.core.constant.MailMessageConstant;
@@ -27,6 +26,10 @@ import com.vmg.ibo.customer.service.fileUpload.FileUploadService;
 import com.vmg.ibo.core.service.mail.IMailService;
 import com.vmg.ibo.customer.service.userDetail.IUserDetailService;
 import com.vmg.ibo.customer.model.DataModel;
+import com.vmg.ibo.financial_report.model.entity.FinancialReport;
+import com.vmg.ibo.financial_report.service.IFinancialReportService;
+import com.vmg.ibo.form.entity.Form;
+import com.vmg.ibo.form.repository.IFormRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,6 +69,12 @@ public class UserService extends BaseService implements IUserService {
 
     @Autowired
     private IUserDetailRepository userDetailRepository;
+
+    @Autowired
+    private IFormRepository formRepository;
+
+    @Autowired
+    private IFinancialReportService financialReportService;
 
     @Value("${upload.path}")
     private String fileUpload;
@@ -200,6 +209,16 @@ public class UserService extends BaseService implements IUserService {
         if (userDTO != null) {
             List<Long> roleIds = user.getRoles().stream().map(Role::getId).collect(Collectors.toList());
             userDTO.setRoleIds(roleIds);
+            UserDetail userDetail = userDetailService.findByIdUser(user.getId());
+            if (userDetail != null) {
+                userDTO.setUserDetail(userDetail);
+                if (!userDetail.getIsCustomerPersonal()) {
+                    List<FileUpload> fileUploads = fileUploadService.findByIdUser(user.getId());
+                    userDTO.setFiles(fileUploads);
+                }
+            }
+            List<Form> forms = formRepository.findByUser(user);
+            userDTO.setForms(forms);
         }
         return userDTO;
     }
@@ -278,6 +297,7 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
+    @Transactional
     public User createBusinessCustomer(BusinessCustomer businessCustomer) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         List<String> listUserCode = userDetailRepository.getAllCustomerCode();
@@ -309,12 +329,16 @@ public class UserService extends BaseService implements IUserService {
         userDetail.setCodeTax(businessCustomer.getCodeTax());
         userDetail.setBusinessName(businessCustomer.getBusinessName());
         userDetail.setMainBusiness(businessCustomer.getMainBusiness());
-        userDetail.setMostRecentYearRevenue(businessCustomer.getMostRecentYearRevenue());
-        userDetail.setMostRecentYearProfit(businessCustomer.getMostRecentYearProfit());
-        userDetail.setPropertyStructure(businessCustomer.getPropertyStructure());
-        userDetail.setDebtStructure(businessCustomer.getDebtStructure());
         userDetail.setTitle(businessCustomer.getTitle());
         userDetailService.create(userDetail);
+        FinancialReport financialReport = new FinancialReport();
+        financialReport.setRevenue(businessCustomer.getMostRecentYearRevenue());
+        financialReport.setProfit(businessCustomer.getMostRecentYearProfit());
+        financialReport.setAsset(businessCustomer.getPropertyStructure());
+        financialReport.setDebt(businessCustomer.getDebtStructure());
+        financialReport.setYear(businessCustomer.getYear());
+        financialReport.setQuarter(businessCustomer.getQuarter());
+        financialReport = financialReportService.save(financialReport);
         if (businessCustomer.getFiles() != null) {
             for (int i = 0; i < businessCustomer.getFiles().size(); i++) {
                 FileUpload fileUpload1 = new FileUpload();
@@ -327,6 +351,7 @@ public class UserService extends BaseService implements IUserService {
                 }
                 fileUpload1.setFile(fileName);
                 fileUpload1.setIdUser(idUser);
+                fileUpload1.setFinancialReportId(financialReport.getId());
                 fileUploadService.saveFile(fileUpload1);
             }
         }
