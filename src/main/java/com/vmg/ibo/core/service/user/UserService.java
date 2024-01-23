@@ -26,6 +26,7 @@ import com.vmg.ibo.customer.service.fileUpload.FileUploadService;
 import com.vmg.ibo.core.service.mail.IMailService;
 import com.vmg.ibo.customer.service.userDetail.IUserDetailService;
 import com.vmg.ibo.customer.model.DataModel;
+import com.vmg.ibo.financial_report.model.dto.FinancialReportDTO;
 import com.vmg.ibo.financial_report.model.entity.FinancialReport;
 import com.vmg.ibo.financial_report.service.IFinancialReportService;
 import com.vmg.ibo.form.entity.Form;
@@ -226,12 +227,10 @@ public class UserService extends BaseService implements IUserService {
             if (userDetail != null) {
                 userDTO.setUserDetail(userDetail);
                 if (!userDetail.getIsCustomerPersonal()) {
-                    List<FileUpload> fileUploads = fileUploadService.findByIdUser(user.getId());
-                    userDTO.setFiles(fileUploads);
+                    List<FinancialReportDTO> financialReports = financialReportService.findAll(user);
+                    userDTO.setReports(financialReports);
                 }
             }
-            List<Form> forms = formRepository.findByUser(user);
-            userDTO.setForms(forms);
         }
         return userDTO;
     }
@@ -351,7 +350,7 @@ public class UserService extends BaseService implements IUserService {
                 }
                 fileUpload1.setFile(fileName);
                 fileUpload1.setIdUser(idUser);
-                fileUpload1.setFinancialReportId(financialReport.getId());
+                fileUpload1.setFinancialReport(financialReport);
                 fileUploadService.saveFile(fileUpload1);
             }
         }

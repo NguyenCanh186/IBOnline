@@ -1,5 +1,6 @@
 package com.vmg.ibo.form.service.form;
 
+import com.vmg.ibo.core.base.BaseFilter;
 import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.constant.MailMessageConstant;
@@ -24,7 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -157,6 +160,14 @@ public class FormService extends BaseService implements IFormService {
             demandReq.getStatus().add(3);
         }
         return formRepository.getAllDemand(demandReq, pageable);
+    }
+
+    @Override
+    public Page<Form> getAllFormByUser(Long id, BaseFilter filter) {
+        User user = userRepository.findById(id).orElseThrow(() -> new WebServiceException(HttpStatus.CONFLICT.value(), "Không tìm thấy người dùng"));
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        PageRequest pageable = handlePaging(filter, sort);
+        return formRepository.findByUser(user, pageable);
     }
 
     private void sendEmailsForStatus1(Form formPartner) {

@@ -4,7 +4,7 @@ import com.vmg.ibo.core.action.Delete;
 import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
 import com.vmg.ibo.customer.model.UserDetail;
-import com.vmg.ibo.customer.model.customer.FileUpload;
+import com.vmg.ibo.financial_report.model.dto.FinancialReportDTO;
 import com.vmg.ibo.form.entity.Form;
 import lombok.Data;
 
@@ -28,6 +28,5 @@ public class UserDTO {
     private List<Long> roleIds;
     private List<RoleDTO> roles;
     private UserDetail userDetail;
-    private List<FileUpload> files;
-    private List<Form> forms;
+    private List<FinancialReportDTO> reports;
 }
