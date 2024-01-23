@@ -7,11 +7,14 @@ import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.repository.IUserRepository;
 import com.vmg.ibo.core.service.mail.IMailService;
 import com.vmg.ibo.core.service.user.IUserService;
+import com.vmg.ibo.customer.model.UserDetail;
+import com.vmg.ibo.customer.repository.IUserDetailRepository;
 import com.vmg.ibo.form.dto.DemandDTO;
 import com.vmg.ibo.form.dto.FormDTO;
 import com.vmg.ibo.form.dto.FormSuggestDTO;
 import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.entity.Template;
+import com.vmg.ibo.form.model.DemandReq;
 import com.vmg.ibo.form.model.FormUpdateStatusReq;
 import com.vmg.ibo.form.repository.IFormRepository;
 import com.vmg.ibo.form.repository.TemplateRepository;
@@ -20,12 +23,15 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,6 +56,9 @@ public class FormService extends BaseService implements IFormService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private IUserDetailRepository userDetailRepository;
 
     @Override
     public List<Form> getAllForms() {
@@ -86,9 +95,12 @@ public class FormService extends BaseService implements IFormService {
             ModelMapper modelMapper = new ModelMapper();
             FormDTO formDTO = modelMapper.map(form.get(), FormDTO.class);
             formDTO.setSuggestLatest(listSuggestLatest.stream().map(x -> modelMapper.map(x, FormSuggestDTO.class)).collect(Collectors.toList()));
+            Long userID = form.get().getUser().getId();
+            UserDetail userDetail = userDetailRepository.findByIdUser(userID);
+            formDTO.getUser().setUserDetail(userDetail);
             return formDTO;
         } else {
-            throw new WebServiceException(HttpStatus.OK.value(), "Không tìm thấy nhu cầu hợp lệ");
+            throw new WebServiceException(HttpStatus.CONFLICT.value(), "Không tìm thấy nhu cầu hợp lệ");
         }
     }
 
@@ -106,21 +118,31 @@ public class FormService extends BaseService implements IFormService {
     public Form updateStatus(Long id, FormUpdateStatusReq formUpdateStatusReq) {
         userService.checkChannel(getCurrentUser());
         Form form = formRepository.findById(id)
-                .orElseThrow(() -> new WebServiceException(HttpStatus.OK.value(), "Không tìm thấy nhu cầu hợp lệ"));
+                .orElseThrow(() -> new WebServiceException(HttpStatus.CONFLICT.value(), "Không tìm thấy nhu cầu hợp lệ"));
         if(form.getPartnerId() != null){
-            throw new WebServiceException(HttpStatus.OK.value(), "Nhu cầu đã được kết nối");
+            throw new WebServiceException(HttpStatus.CONFLICT.value(), "Nhu cầu đã được kết nối");
         }
-        form.setStatus(formUpdateStatusReq.getStatus());
-        if (formUpdateStatusReq.getStatus() == 1) {
-            sendEmailsForStatus1(form, formUpdateStatusReq.getPartnerId());
-        }
+        form.setStatus(1);
+        sendEmailsForStatus1(form, formUpdateStatusReq.getPartnerId());
         form.setPartnerId(formUpdateStatusReq.getPartnerId());
         return formRepository.save(form);
     }
 
     @Override
-    public List<DemandDTO> getAllDemand() {
-        return formRepository.getAllDemand();
+    public Page<DemandDTO> getAllDemand(DemandReq demandReq, Pageable pageable) {
+        if(demandReq.getDemandType().isEmpty()){
+            demandReq.setDemandType(new ArrayList<>());
+            demandReq.getDemandType().add(1);
+            demandReq.getDemandType().add(2);
+        }
+        if(demandReq.getStatus().isEmpty()){
+            demandReq.setStatus(new ArrayList<>());
+            demandReq.getStatus().add(0);
+            demandReq.getStatus().add(1);
+            demandReq.getStatus().add(2);
+            demandReq.getStatus().add(3);
+        }
+        return formRepository.getAllDemand(demandReq, pageable);
     }
 
     private void sendEmailsForStatus1(Form form, Long parentId) {
@@ -135,7 +157,7 @@ public class FormService extends BaseService implements IFormService {
                     " của khách hàng " + userParent.getName() + ". " +
                     "Bạn có thể xem chi tiết tại đây:url\n", emails);
         } else {
-            throw new WebServiceException(HttpStatus.OK.value(), "Không tìm thấy nhu cầu hợp lệ");
+            throw new WebServiceException(HttpStatus.CONFLICT.value(), "Không tìm thấy nhu cầu hợp lệ");
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.vmg.ibo.customer.model;
 
+import com.vmg.ibo.core.model.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -36,4 +37,7 @@ public class UserDetail {
     private Long propertyStructure;
     private Long debtStructure;
     private Long idUser;
+
+    @OneToOne(mappedBy = "userDetail")
+    private User user;
 }

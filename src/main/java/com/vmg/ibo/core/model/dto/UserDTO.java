@@ -5,6 +5,7 @@ import com.vmg.ibo.core.action.Delete;
 import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
 import com.vmg.ibo.core.validator.UniqueUsername;
+import com.vmg.ibo.customer.model.UserDetail;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -26,4 +27,5 @@ public class UserDTO {
     private String phone;
     private List<Long> roleIds;
     private List<RoleDTO> roles;
+    private UserDetail userDetail;
 }

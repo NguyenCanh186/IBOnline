@@ -3,6 +3,9 @@ package com.vmg.ibo.form.repository;
 import com.vmg.ibo.core.model.entity.Option;
 import com.vmg.ibo.form.dto.DemandDTO;
 import com.vmg.ibo.form.entity.Form;
+import com.vmg.ibo.form.model.DemandReq;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,7 +27,12 @@ public interface IFormRepository extends JpaRepository<Form, Long> {
 
     @Query(value = "SELECT f.id as id, f.codeDemand as codeDemand" +
             ", t.name as demandName, t.type as demandType," +
-            "u.businessName as customerName, f.createdAt as createdAt," +
-            "f.status as status FROM Form f join Template t on f.template.id = t.id join UserDetail u on f.user.id = u.id")
-    List<DemandDTO> getAllDemand();
+            "u.name as customerName, f.createdAt as createdAt," +
+            "f.status as status FROM Form f join Template t on f.template.id = t.id join User u on f.user.id = u.id " +
+            "where (:#{#demandReq.codeDemand} is null or f.codeDemand like %:#{#demandReq.codeDemand}%) and" +
+            " (:#{#demandReq.demandName} is null or t.name like %:#{#demandReq.demandName}%) and t.type in (:#{#demandReq.demandType})" +
+            "and f.status in (:#{#demandReq.status}) and (:#{#demandReq.createdAt} is null or :#{#demandReq.createdAt} = '' or DATE(f.createdAt) = COALESCE(DATE(:#{#demandReq.createdAt}), DATE(f.createdAt)))"
+            )
+    Page<DemandDTO> getAllDemand(DemandReq demandReq, Pageable pageable);
+
 }
