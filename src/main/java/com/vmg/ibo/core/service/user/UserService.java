@@ -190,6 +190,10 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public User activeUser(User user) {
+        mailService.sendFromSystem(message -> message.to(user.getEmail())
+                .subject(MailMessageConstant.WELCOME_SUBJECT)
+                .text("Tài khoản của bạn đã được kích hoạt thành công. Cảm ơn quý khách đã tin tưởng sử dụng dịch vụ IB Online của HMG")
+                .build());
         return userRepository.save(user);
     }
 
