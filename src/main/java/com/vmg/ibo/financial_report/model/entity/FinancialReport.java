@@ -22,5 +22,6 @@ public class FinancialReport extends BaseEntity {
     private Long debt;
     private Integer year;
     private Integer quarter;
+    @ManyToOne
     private User user;
 }
