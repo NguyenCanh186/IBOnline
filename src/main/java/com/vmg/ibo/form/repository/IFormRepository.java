@@ -29,9 +29,13 @@ public interface IFormRepository extends JpaRepository<Form, Long> {
             ", t.name as demandName, t.type as demandType," +
             "u.name as customerName, f.createdAt as createdAt," +
             "f.status as status FROM Form f join Template t on f.template.id = t.id join User u on f.user.id = u.id " +
-            "where (:#{#demandReq.codeDemand} is null or f.codeDemand like %:#{#demandReq.codeDemand}%) and" +
-            " (:#{#demandReq.demandName} is null or t.name like %:#{#demandReq.demandName}%) and t.type in (:#{#demandReq.demandType})" +
-            "and f.status in (:#{#demandReq.status}) and (:#{#demandReq.createdAt} is null or :#{#demandReq.createdAt} = '' or DATE(f.createdAt) = COALESCE(DATE(:#{#demandReq.createdAt}), DATE(f.createdAt)))"
+            "where (:#{#demandReq.query} is null or f.codeDemand like %:#{#demandReq.query}%) " +
+            "or (:#{#demandReq.query} is null or u.name like %:#{#demandReq.query}%) " +
+            "or (:#{#demandReq.query} is null or t.name like %:#{#demandReq.query}%) " +
+            "and (:#{#demandReq.demandName} is null or t.name like %:#{#demandReq.demandName}%) " +
+            "and t.type in (:#{#demandReq.demandType})" +
+            "and f.status in (:#{#demandReq.status}) and " +
+            "(:#{#demandReq.createdAt} is null or :#{#demandReq.createdAt} = '' or DATE(f.createdAt) = COALESCE(DATE(:#{#demandReq.createdAt}), DATE(f.createdAt)))"
             )
     Page<DemandDTO> getAllDemand(DemandReq demandReq, Pageable pageable);
 
