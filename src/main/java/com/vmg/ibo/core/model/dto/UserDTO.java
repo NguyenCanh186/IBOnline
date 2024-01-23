@@ -1,11 +1,11 @@
 package com.vmg.ibo.core.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.ibo.core.action.Delete;
 import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
-import com.vmg.ibo.core.validator.UniqueUsername;
 import com.vmg.ibo.customer.model.UserDetail;
+import com.vmg.ibo.customer.model.customer.FileUpload;
+import com.vmg.ibo.form.entity.Form;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -28,4 +28,6 @@ public class UserDTO {
     private List<Long> roleIds;
     private List<RoleDTO> roles;
     private UserDetail userDetail;
+    private List<FileUpload> files;
+    private List<Form> forms;
 }

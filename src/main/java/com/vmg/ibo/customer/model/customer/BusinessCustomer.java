@@ -24,9 +24,6 @@ public class BusinessCustomer {
     @Size(max = 20, message = "Mã số thuế không được vượt quá 20 ký tự!", groups = {Insert.class, Update.class})
     @NotBlank(message = "Mã số thuế không được để trống!", groups = {Insert.class, Update.class})
     private String codeTax;
-    @NotNull(message = "Số giấy phép kinh doanh bắt buộc nhập!", groups = {Insert.class, Update.class})
-    @Size(max = 20, message = "Số giấy phép kinh doanh không được vượt quá 20 ký tự!", groups = {Insert.class, Update.class})
-    @NotBlank(message = "Số giấy phép kinh doanh không được để trống!", groups = {Insert.class, Update.class})
     private String codeReg;
     @Size(max = 100, message = "Địa chỉ không được vượt quá 100 ký tự!", groups = {Insert.class, Update.class})
     private String address;
@@ -56,5 +53,7 @@ public class BusinessCustomer {
     private Long propertyStructure;
     @NotNull (message = "Cơ cấu nợ bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Long debtStructure;
+    private Integer year;
+    private Integer quarter;
     private List<MultipartFile> files;
 }
