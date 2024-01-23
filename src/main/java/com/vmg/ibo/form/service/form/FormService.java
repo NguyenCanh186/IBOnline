@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,14 +78,16 @@ public class FormService extends BaseService implements IFormService {
             } else {
                 templateList = templateRepository.findAllByType(2);
             }
+            String tag = form.get().getTemplate().getTag();
             for (Template template : templateList) {
-                if (form.get().getTemplate().getTag().contains(template.getTag())) {
+                String tagTemplate =  template.getTag();
+                if (tag.toLowerCase().contains(tagTemplate.toLowerCase()) || tagTemplate.toLowerCase().contains(tag.toLowerCase())) {
                     list.add(template.getId());
                 }
             }
             List<Form> listSuggestLatest = new ArrayList<>();
             if (form.get().getPartnerId() == null) {
-                listSuggestLatest = formRepository.findTop3ByTemplateIdInAndUserIdNotOrderByCreatedAtDesc(list, getCurrentUser().getId());
+                listSuggestLatest = formRepository.findTop3ByTemplateIdInAndUserIdNotAndPartnerIdNullOrderByCreatedAtDesc(list, getCurrentUser().getId());
             } else {
                 Optional<Form> findParent = formRepository.findById(form.get().getPartnerId());
                 if (findParent.isPresent()) {
