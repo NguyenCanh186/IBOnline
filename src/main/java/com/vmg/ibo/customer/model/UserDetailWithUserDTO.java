@@ -26,4 +26,5 @@ public interface UserDetailWithUserDTO {
     Long getPropertyStructure();
     Long getDebtStructure();
     String getName();
+    Long getQuantityNeeded();
 }
