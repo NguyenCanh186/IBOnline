@@ -21,13 +21,17 @@ public interface IUserDetailRepository extends JpaRepository<UserDetail, Long> {
             "ud.contactName as contactName, ud.mainBusiness as mainBusiness, ud.title as title, ud.capitalSize as capitalSize, ud.description as description, " +
             "u.status as status, u.email as email, u.phone as phone, ud.mostRecentYearRevenue as mostRecentYearRevenue, ud.mostRecentYearProfit as mostRecentYearProfit," +
             "ud.propertyStructure as propertyStructure, ud.debtStructure as debtStructure, u.name as name, count(f.template.id) as quantityNeeded FROM User u " +
-            "JOIN UserDetail ud ON u.id = ud.idUser left join Form f on u.id = f.user.id " +
+            " join UserDetail ud ON u.id = ud.idUser left join Form f on u.id = f.user.id " +
             "WHERE (u.isAdminRoot = false OR u.isAdminRoot IS NULL) and (:isCustomerPersonal = ud.isCustomerPersonal OR :isCustomerPersonal IS NULL) " +
             "AND (:status = u.status OR :status IS NULL) AND (LOWER(ud.contactName) LIKE LOWER(CONCAT('%', :username, '%')))" +
             "AND (ud.capitalSize is null or (ud.capitalSize BETWEEN :fromCapitalSize AND :toCapitalSize) OR (:fromCapitalSize IS NULL AND :toCapitalSize IS NULL)) " +
             "AND ((LOWER(ud.contactName) LIKE LOWER(CONCAT('%', :contactName, '%')) OR :contactName IS NULL) or (LOWER(ud.businessName) LIKE LOWER(CONCAT('%', :contactName, '%')) OR :contactName IS NULL) " +
             "or (LOWER(u.email) LIKE LOWER(CONCAT('%', :contactName, '%')) OR :contactName IS NULL) or (LOWER(u.phone) LIKE LOWER(CONCAT('%', :contactName, '%')) OR :contactName IS NULL) " +
-            "or (LOWER(ud.customerCode) LIKE LOWER(CONCAT('%', :contactName, '%')) OR :contactName IS NULL)) group by f.user.id, u.name, ud.debtStructure, ud.mainBusiness, ud.propertyStructure, ud.mostRecentYearProfit, ud.mostRecentYearRevenue, u.phone, u.email, u.status, ud.description, ud.capitalSize, ud.title, ud.businessName, ud.contactName, ud.codeTax, ud.codeReg, ud.dateOfBirth, ud.CINumber, ud.address, ud.isCustomerPersonal, ud.customerCode, u.createdAt, u.id ")
+            "or (LOWER(ud.customerCode) LIKE LOWER(CONCAT('%', :contactName, '%')) OR :contactName IS NULL)) group by f.user.id, u.name, ud.debtStructure, ud.propertyStructure," +
+            " ud.mostRecentYearProfit, ud.mostRecentYearRevenue, u.phone, u.email," +
+            " u.status, ud.description, ud.capitalSize, ud.title, ud.businessName, ud.contactName" +
+            ", ud.codeTax, ud.codeReg, ud.dateOfBirth, ud.CINumber, ud.address, ud.isCustomerPersonal," +
+            " ud.customerCode, u.createdAt, u.id, ud.mainBusiness")
     Page<UserDetailWithUserDTO> findAllUser(Pageable pageable,
                                             @Param("username") String username,
                                             @Param("contactName") String contactName,
