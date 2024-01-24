@@ -282,8 +282,11 @@ public class UserService extends BaseService implements IUserService {
         user = userRepository.save(user);
         mailService.sendFromSystem(message -> message.to(userDTO.getEmail())
                 .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT_FOR_ADMIN)
-                .text("Chúng tôi đã tạo tài khoản IB Online cho bạn với Email: " + userDTO.getEmail() + " và mật khẩu là: " + AuthConstant.DEFAULT_PASSWORD.getValue() + " . " +
-                        "vui lòng truy cập vào link này để đăng nhập: " + cmsUrl)
+                .text("Xin chào " + userDTO.getName() + ", " +
+                        "Bạn đã được đăng ký vào hệ thống IBOnline. Vui lòng đăng nhập với thông tin dưới đây: " +
+                        "1. Username: " + userDTO.getEmail() +
+                        "2. Password: " + AuthConstant.DEFAULT_PASSWORD.getValue() + "" +
+                        "Vui lòng truy cập vào link này để đăng nhập: " + cmsUrl)
                 .build());
         return user;
     }
