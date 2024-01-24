@@ -282,10 +282,10 @@ public class UserService extends BaseService implements IUserService {
         user = userRepository.save(user);
         mailService.sendFromSystem(message -> message.to(userDTO.getEmail())
                 .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT_FOR_ADMIN)
-                .text("Xin chào " + userDTO.getName() + ", " +
-                        "Bạn đã được đăng ký vào hệ thống IBOnline. Vui lòng đăng nhập với thông tin dưới đây: " +
-                        "1. Username: " + userDTO.getEmail() +
-                        "2. Password: " + AuthConstant.DEFAULT_PASSWORD.getValue() + "" +
+                .text("Xin chào " + userDTO.getName() + ",\n " +
+                        "Bạn đã được đăng ký vào hệ thống IBOnline. Vui lòng đăng nhập với thông tin dưới đây:\n " +
+                        "1. Username: " + userDTO.getEmail() + "\n " +
+                        "2. Password: " + AuthConstant.DEFAULT_PASSWORD.getValue() + "\n" +
                         "Vui lòng truy cập vào link này để đăng nhập: " + cmsUrl)
                 .build());
         return user;
@@ -357,7 +357,6 @@ public class UserService extends BaseService implements IUserService {
         financialReport.setDebt(businessCustomer.getDebtStructure());
         financialReport.setYear(businessCustomer.getYear());
         financialReport.setQuarter(businessCustomer.getQuarter());
-        financialReport.setTitle(businessCustomer.getReportTitle());
         financialReport.setUser(user);
         financialReport = financialReportService.save(financialReport);
         if (businessCustomer.getFiles() != null) {
