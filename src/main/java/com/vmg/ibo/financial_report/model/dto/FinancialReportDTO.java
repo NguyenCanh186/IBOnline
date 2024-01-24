@@ -1,7 +1,7 @@
 package com.vmg.ibo.financial_report.model.dto;
 
+import com.vmg.ibo.customer.model.customer.FileUpload;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ public class FinancialReportDTO {
     private Long debt;
     private Integer year;
     private Integer quarter;
-    private List<MultipartFile> files;
+    private List<FileUpload> files;
 }

@@ -26,6 +26,7 @@ import com.vmg.ibo.customer.service.fileUpload.FileUploadService;
 import com.vmg.ibo.core.service.mail.IMailService;
 import com.vmg.ibo.customer.service.userDetail.IUserDetailService;
 import com.vmg.ibo.customer.model.DataModel;
+import com.vmg.ibo.financial_report.model.dto.FinancialReportDTO;
 import com.vmg.ibo.financial_report.model.entity.FinancialReport;
 import com.vmg.ibo.financial_report.service.IFinancialReportService;
 import com.vmg.ibo.form.entity.Form;
@@ -88,6 +89,17 @@ public class UserService extends BaseService implements IUserService {
         this.passwordEncoder = passwordEncoder;
         this.permissionRepository = permissionRepository;
         this.mailService = mailService;
+    }
+
+    private static String generateRandomString() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder randomString = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 30; i++) {
+            int index = random.nextInt(characters.length());
+            randomString.append(characters.charAt(index));
+        }
+        return randomString.toString();
     }
 
     @Override
@@ -157,7 +169,7 @@ public class UserService extends BaseService implements IUserService {
     @Override
     public int isValidEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email.trim());
-        if(user.isPresent()){
+        if (user.isPresent()) {
             if (StringUtils.isEmpty(email) || user != null) {
                 return 1;
             }
@@ -225,13 +237,11 @@ public class UserService extends BaseService implements IUserService {
             UserDetail userDetail = userDetailService.findByIdUser(user.getId());
             if (userDetail != null) {
                 userDTO.setUserDetail(userDetail);
-                if (!userDetail.getIsCustomerPersonal()) {
-                    List<FileUpload> fileUploads = fileUploadService.findByIdUser(user.getId());
-                    userDTO.setFiles(fileUploads);
+                if (userDetail.getIsCustomerPersonal() != null && !userDetail.getIsCustomerPersonal()) {
+                    List<FinancialReportDTO> financialReports = financialReportService.findAll(user);
+                    userDTO.setReports(financialReports);
                 }
             }
-            List<Form> forms = formRepository.findByUser(user);
-            userDTO.setForms(forms);
         }
         return userDTO;
     }
@@ -272,10 +282,11 @@ public class UserService extends BaseService implements IUserService {
         mailService.sendFromSystem(message -> message.to(userDTO.getEmail())
                 .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT_FOR_ADMIN)
                 .text("Chúng tôi đã tạo tài khoản IB Online cho bạn với Email: " + userDTO.getEmail() + " và mật khẩu là: " + AuthConstant.DEFAULT_PASSWORD.getValue() + " . " +
-                      "vui lòng truy cập vào link này để đăng nhập: "  +  cmsUrl )
+                        "vui lòng truy cập vào link này để đăng nhập: " + cmsUrl)
                 .build());
         return user;
     }
+
     @Override
     public User createPersonalCustomer(PersonalCustomer personalCustomer) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
@@ -330,7 +341,12 @@ public class UserService extends BaseService implements IUserService {
         userDetail.setMainBusiness(businessCustomer.getMainBusiness());
         userDetail.setTitle(businessCustomer.getTitle());
         userDetailService.create(userDetail);
-        FinancialReport financialReport = new FinancialReport();
+        FinancialReport financialReport = financialReportService.findByQuarterAndYearAndUser(businessCustomer.getQuarter(), businessCustomer.getYear(), user);
+        boolean isExist = true;
+        if (financialReport == null) {
+            financialReport = new FinancialReport();
+            isExist = false;
+        }
         financialReport.setRevenue(businessCustomer.getMostRecentYearRevenue());
         financialReport.setProfit(businessCustomer.getMostRecentYearProfit());
         financialReport.setAsset(businessCustomer.getPropertyStructure());
@@ -340,6 +356,9 @@ public class UserService extends BaseService implements IUserService {
         financialReport.setUser(user);
         financialReport = financialReportService.save(financialReport);
         if (businessCustomer.getFiles() != null) {
+            if (isExist) {
+                fileUploadService.deleteAllByFinancialReport(financialReport);
+            }
             for (int i = 0; i < businessCustomer.getFiles().size(); i++) {
                 FileUpload fileUpload1 = new FileUpload();
                 MultipartFile file = businessCustomer.getFiles().get(i);
@@ -351,7 +370,7 @@ public class UserService extends BaseService implements IUserService {
                 }
                 fileUpload1.setFile(fileName);
                 fileUpload1.setIdUser(idUser);
-                fileUpload1.setFinancialReportId(financialReport.getId());
+                fileUpload1.setFinancialReport(financialReport);
                 fileUploadService.saveFile(fileUpload1);
             }
         }
@@ -439,7 +458,7 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public void checkChannel(User user) {
-        if(user.getChannelId() == 0){
+        if (user.getChannelId() == 0) {
             throw new WebServiceException(HttpStatus.CONFLICT.value(), "Access denied");
         }
     }
@@ -471,7 +490,6 @@ public class UserService extends BaseService implements IUserService {
         return user;
     }
 
-
     private UserDTO mapToDTO(User user) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(user, UserDTO.class);
@@ -489,16 +507,5 @@ public class UserService extends BaseService implements IUserService {
             randomString = generateRandomString();
         }
         return randomString;
-    }
-
-    private static String generateRandomString() {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder randomString = new StringBuilder();
-        Random random = new Random();
-        for (int i = 0; i < 30; i++) {
-            int index = random.nextInt(characters.length());
-            randomString.append(characters.charAt(index));
-        }
-        return randomString.toString();
     }
 }

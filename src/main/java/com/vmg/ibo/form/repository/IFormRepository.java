@@ -40,5 +40,5 @@ public interface IFormRepository extends JpaRepository<Form, Long> {
             )
     Page<DemandDTO> getAllDemand(DemandReq demandReq, Pageable pageable);
 
-    List<Form> findByUser(User user);
+    Page<Form> findByUser(User user, Pageable pageable);
 }

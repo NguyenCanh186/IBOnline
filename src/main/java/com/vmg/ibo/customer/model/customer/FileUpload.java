@@ -1,5 +1,6 @@
 package com.vmg.ibo.customer.model.customer;
 
+import com.vmg.ibo.financial_report.model.entity.FinancialReport;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -13,7 +14,8 @@ public class FileUpload {
     private Long id;
     private String filename;
     private Long idUser;
-    private Long financialReportId;
+    @ManyToOne
+    private FinancialReport financialReport;
 
     public FileUpload() {
 
