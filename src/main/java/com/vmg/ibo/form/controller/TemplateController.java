@@ -36,7 +36,7 @@ public class TemplateController {
 
     @PostMapping("/create-template")
     public Result<?> createForm(@RequestBody FormDataReq formDataReq) {
-        return Result.success("Thêm mói thành công", formFieldService.createFormField(formDataReq));
+        return Result.success("Thêm mới thành công", formFieldService.createFormField(formDataReq));
     }
 
 }
