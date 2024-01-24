@@ -12,6 +12,7 @@ import com.vmg.ibo.form.entity.TemplateField;
 import com.vmg.ibo.form.model.FormDataReq;
 import com.vmg.ibo.form.model.TemplateFieldReq;
 import com.vmg.ibo.form.repository.IFormFieldRepository;
+import com.vmg.ibo.form.repository.ITemplateFieldRepository;
 import com.vmg.ibo.form.service.form.IFormService;
 import com.vmg.ibo.form.service.template.ITemplateService;
 import com.vmg.ibo.form.service.template_field.ITemplateFieldService;
@@ -22,11 +23,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class FormFieldService extends BaseService implements IFormFieldService {
     @Autowired
     private IFormFieldRepository formFieldRepository;
+
+    @Autowired
+    private ITemplateFieldRepository templateFieldRepository;
 
     @Autowired
     private IFormService formService;
@@ -49,6 +54,25 @@ public class FormFieldService extends BaseService implements IFormFieldService {
     public Form createFormField(FormDataReq formDataReq) {
         if (!getCurrentUser().isInfo()) {
             throw new WebServiceException(HttpStatus.OK.value(), "Vui lòng cập nhật thông tin cá nhân trước khi đăng nhu cầu");
+        }
+        List<TemplateField> templateFields = templateFieldRepository.getTemplateFieldsByTemplateId(formDataReq.getIdTemplate());
+        String templateFieldIds = templateFields.stream()
+                .map(templateField -> String.valueOf(templateField.getId()))
+                .collect(Collectors.joining(","));
+
+        for (int i = 0; i < formDataReq.getTemplateFieldReqs().size(); i++) {
+            long templateFieldId = formDataReq.getTemplateFieldReqs().get(i).getIdTemplateField();
+            String[] templateFieldIdArray = templateFieldIds.split(",");
+            boolean idExists = false;
+            for (String id : templateFieldIdArray) {
+                if (Long.parseLong(id) == templateFieldId) {
+                    idExists = true;
+                    break;
+                }
+            }
+            if (!idExists) {
+                throw new WebServiceException(200, 409, "Dữ liệu form không hợp lệ");
+            }
         }
         userService.checkChannel(getCurrentUser());
         Optional<Template> template = templateService.getTemplateById(formDataReq.getIdTemplate());
