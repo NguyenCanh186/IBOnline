@@ -169,7 +169,17 @@ public class FormService extends BaseService implements IFormService {
             demandReq.getStatus().add(2);
             demandReq.getStatus().add(3);
         }
-        return formRepository.getAllDemand(demandReq, pageable);
+        Long userId = getCurrentUser().getId();
+        Optional<User> userOptional = userRepository.findById(userId);
+        if(userOptional.isPresent()) {
+            User user = userOptional.get();
+            if(user.getChannelId() == 2) {
+                userId = null;
+            }
+        }
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        return formRepository.getAllDemand(demandReq,userId, pageable);
     }
 
     @Override
