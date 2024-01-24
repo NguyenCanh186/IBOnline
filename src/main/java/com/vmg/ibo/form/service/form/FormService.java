@@ -104,6 +104,7 @@ public class FormService extends BaseService implements IFormService {
             Long userID = form.get().getUser().getId();
             UserDetail userDetail = userDetailRepository.findByIdUser(userID);
             formDTO.getUser().setUserDetail(userDetail);
+            formDTO.setCodeDemand(form.get().getCodeDemand());
             return formDTO;
         } else {
             throw new WebServiceException(HttpStatus.OK.value(),409, "Không tìm thấy nhu cầu hợp lệ");
