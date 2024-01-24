@@ -143,7 +143,8 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                 if (isRequired) {
                     if (request.getValue() != null && !request.getValue().isEmpty()) {
                         if (jsonObject.containsKey("max")) {
-                            Integer max = (Integer) jsonObject.get("max");
+                            String json = jsonObject.get("max").toString();
+                            Integer max = Integer.valueOf(json);
                             if (request.getValue().length() <= max) {
                                 return true;
                             } else {
