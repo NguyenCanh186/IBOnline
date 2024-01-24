@@ -59,8 +59,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(WebServiceException.class)
     public Object handleException(WebServiceException ex, HttpServletRequest request, HttpServletResponse response) {
         LOG.debug("GlobalExceptionHandler => ResponseEntity: ", ex);
-        Result rs = Result.error(ex.getHttpStatus(), GlobalException.format(ex.getMessage()));
-        HttpStatus httpStatus = HttpStatus.valueOf(rs.getCode());
+        Result rs = Result.error(ex.getCode(), GlobalException.format(ex.getMessage()));
+        HttpStatus httpStatus = HttpStatus.valueOf(ex.getHttpStatus());
         return new ResponseEntity(rs, httpStatus);
     }
 
