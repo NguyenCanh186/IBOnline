@@ -16,6 +16,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "financial_report")
 public class FinancialReport extends BaseEntity {
+    private String title;
     private Long revenue;
     private Long profit;
     private Long asset;
