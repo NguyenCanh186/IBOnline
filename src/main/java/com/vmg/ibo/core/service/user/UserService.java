@@ -357,6 +357,7 @@ public class UserService extends BaseService implements IUserService {
         financialReport.setDebt(businessCustomer.getDebtStructure());
         financialReport.setYear(businessCustomer.getYear());
         financialReport.setQuarter(businessCustomer.getQuarter());
+        financialReport.setTitle(businessCustomer.getReportTitle());
         financialReport.setUser(user);
         financialReport = financialReportService.save(financialReport);
         if (businessCustomer.getFiles() != null) {
