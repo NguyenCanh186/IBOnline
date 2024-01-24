@@ -71,16 +71,16 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                 }
             }
             if (!idExists) {
-                throw new WebServiceException(200, 409, "Dữ liệu form không hợp lệ");
+                throw new WebServiceException(200, 409, "Form sai định dạng");
             }
         }
         userService.checkChannel(getCurrentUser());
         Optional<Template> template = templateService.getTemplateById(formDataReq.getIdTemplate());
         if (!template.isPresent()) {
-            throw new WebServiceException(HttpStatus.OK.value(), "Không tìm thấy Form");
+            throw new WebServiceException(HttpStatus.OK.value(), 409, "Không tìm thấy Form");
         }
         if (!checkListField(formDataReq.getTemplateFieldReqs())) {
-            throw new WebServiceException(HttpStatus.OK.value(), "Dữ liệu không hợp lệ");
+            throw new WebServiceException(HttpStatus.OK.value(), 409, "Dữ liệu không hợp lệ");
         }
         List<String> listFormCode = formService.getAllCodeDemand();
         int maxNumber = listFormCode.stream()
@@ -99,7 +99,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
             FormField formField = new FormField();
             Optional<TemplateField> templateField = templateFieldService.getTemplateFieldById(formDataReq.getTemplateFieldReqs().get(i).getIdTemplateField());
             if (!templateField.isPresent()) {
-                throw new WebServiceException(HttpStatus.OK.value(), "Template Field không tồn tại");
+                throw new WebServiceException(HttpStatus.OK.value(), 409, "Template Field không tồn tại");
             }
             formField.setForm(formCreated);
             formField.setCreatedAt(new Date());
@@ -125,7 +125,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
     private boolean isValidField(Long templateFieldId, TemplateFieldReq request) {
         Optional<TemplateField> templateField = templateFieldService.getTemplateFieldById(templateFieldId);
         if (!templateField.isPresent()) {
-            throw new WebServiceException(HttpStatus.OK.value(), "Template Field không tồn tại");
+            throw new WebServiceException(HttpStatus.OK.value(), 409, "Template Field không tồn tại");
         }
         String rules = templateField.get().getRules();
         String type = templateField.get().getType();
@@ -133,7 +133,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
             try {
                 long valueRequest = Long.parseLong(request.getValue());
             } catch (NumberFormatException e) {
-                throw new WebServiceException(HttpStatus.OK.value(), "Dữ liệu không hợp lệ");
+                throw new WebServiceException(HttpStatus.OK.value(), 409, "Dữ liệu không hợp lệ");
             }
         }
         if(rules != null && !rules.isEmpty()) {
@@ -147,7 +147,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                             if (request.getValue().length() <= max) {
                                 return true;
                             } else {
-                                throw new WebServiceException(HttpStatus.OK.value(), templateField.get().getName() + " không được vượt quá " + max + " ký tự");
+                                throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " không được vượt quá " + max + " ký tự");
                             }
                         }
                         if (jsonObject.containsKey("greaterThan")) {
@@ -158,7 +158,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                                 if (value > target) {
                                     return true;
                                 } else {
-                                    throw new WebServiceException(HttpStatus.OK.value(), templateField.get().getName() + " phải lớn hơn " + target);
+                                    throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " phải lớn hơn " + target);
                                 }
                             }
                         }
@@ -170,7 +170,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                                 if (value < target) {
                                     return true;
                                 } else {
-                                    throw new WebServiceException(HttpStatus.OK.value(), templateField.get().getName() + " phải nhỏ hơn " + target);
+                                    throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " phải nhỏ hơn " + target);
                                 }
                             }
                         }
