@@ -76,6 +76,9 @@ public class FormService extends BaseService implements IFormService {
         Optional<Form> form = formRepository.findById(id);
         List<Long> list = new ArrayList<>();
         if (form.isPresent()) {
+            if(!getCurrentUser().getId().equals(form.get().getUser().getId())) {
+                throw new WebServiceException(HttpStatus.OK.value(),409, "Tài khoản không có quyền xem chi tiết nhu cầu");
+            }
             List<Template> templateList;
             if (form.get().getTemplate().getType() == 2) {
                 templateList = templateRepository.findAllByType(1);
