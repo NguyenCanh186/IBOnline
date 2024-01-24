@@ -12,5 +12,4 @@ public class DemandReq extends BaseFilter {
     private String createdAt = "";
     private List<Integer> status;
     private String query = "";
-    private Long userId;
 }
