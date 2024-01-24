@@ -34,7 +34,8 @@ public interface IFormRepository extends JpaRepository<Form, Long> {
             "and (:#{#demandReq.demandName} is null or t.name like %:#{#demandReq.demandName}%) " +
             "and t.type in (:#{#demandReq.demandType})" +
             "and f.status in (:#{#demandReq.status}) and " +
-            "(:#{#demandReq.createdAt} is null or :#{#demandReq.createdAt} = '' or DATE(f.createdAt) = COALESCE(DATE(:#{#demandReq.createdAt}), DATE(f.createdAt)))"
+            "(:#{#demandReq.createdAt} is null or :#{#demandReq.createdAt} = '' or DATE(f.createdAt) = COALESCE(DATE(:#{#demandReq.createdAt}), DATE(f.createdAt))) " +
+            "and (:#{#demandReq.userId} is null or f.user.id = :#{#demandReq.userId}) order by f.codeDemand desc "
             )
     Page<DemandDTO> getAllDemand(DemandReq demandReq, Pageable pageable);
 
