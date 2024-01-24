@@ -47,13 +47,13 @@ public class AuthController {
                     new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (LockedException lockedException) {
-            throw new WebServiceException(HttpStatus.BAD_REQUEST.value(), "login.error.user-locked");
+            throw new WebServiceException(HttpStatus.OK.value(),409, "login.error.user-locked");
         } catch (Exception e) {
-            throw new WebServiceException(HttpStatus.BAD_REQUEST.value(), "login.error.bad-credentials");
+            throw new WebServiceException(HttpStatus.OK.value(),409, "login.error.bad-credentials");
         }
         User currentUser = userService.findByEmail(loginDTO.getEmail());
         if (!currentUser.isActive()) {
-            return Result.result(400, "Vui lòng kích hoạt tài khoản", null);
+            return Result.result(409, "Vui lòng kích hoạt tài khoản", null);
         }
         String jwt = jwtService.generateJwtToken(loginDTO.getEmail());
         return Result.success(new JwtDTO(jwt, currentUser.getId(),
@@ -81,7 +81,7 @@ public class AuthController {
     public Result<?> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
         User user = userService.changePassword(changePasswordRequest);
         if (user == null) {
-            throw new WebServiceException(HttpStatus.BAD_REQUEST.value(), "change-password.error.bad-credentials");
+            throw new WebServiceException(HttpStatus.OK.value(),409, "change-password.error.bad-credentials");
         }
         return Result.success("Thay đổi mật khẩu thành công");
     }

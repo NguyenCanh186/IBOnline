@@ -16,4 +16,5 @@ public class FormDTO {
     private UserDTO user;
     private List<FormFieldDTO> formFields;
     private List<FormSuggestDTO> suggestLatest;
+    private String codeDemand;
 }
