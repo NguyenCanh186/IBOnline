@@ -143,6 +143,7 @@ public class UserService extends BaseService implements IUserService {
         String userCode = DataModel.USER_CODE + String.valueOf(maxNumber);
         UserDetail userDetail = new UserDetail();
         userDetail.setCustomerCode(userCode);
+        userDetail.setContactName("");
         userDetail.setIdUser(user.getId());
         userDetailService.create(userDetail);
         mailService.sendFromSystem(message -> message.to(registerModel.getEmail())
