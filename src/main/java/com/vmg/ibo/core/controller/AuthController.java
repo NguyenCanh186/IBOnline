@@ -7,11 +7,14 @@ import com.vmg.ibo.core.model.dto.JwtDTO;
 import com.vmg.ibo.core.model.dto.LoginDTO;
 import com.vmg.ibo.core.model.entity.Permission;
 import com.vmg.ibo.core.model.entity.User;
+import com.vmg.ibo.core.payload.OauthGoogleRequest;
+import com.vmg.ibo.core.service.google.IGoogleAuthService;
 import com.vmg.ibo.core.service.permission.IPermissionService;
 import com.vmg.ibo.core.service.security.JwtService;
 import com.vmg.ibo.core.service.user.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.LockedException;
@@ -28,6 +31,19 @@ import java.util.List;
 @RequestMapping("/v1/auth")
 @Slf4j
 public class AuthController {
+    
+    @Value("${google.authorization.uri}")
+    private String authorizationUri;
+
+    @Value("${google.client.id}")
+    private String clientId;
+
+    @Value("${google.redirect.uri}")
+    private String redirectUri;
+
+    @Value("${google.response.type}")
+    private String responseType;
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -39,6 +55,9 @@ public class AuthController {
 
     @Autowired
     private IPermissionService permissionService;
+
+    @Autowired
+    private IGoogleAuthService googleAuthService;
 
     @PostMapping("/login")
     public Result<?> login(@Validated @RequestBody LoginDTO loginDTO) {
@@ -85,4 +104,34 @@ public class AuthController {
         }
         return Result.success("Thay đổi mật khẩu thành công");
     }
+
+    @PostMapping("/google/get-token")
+    public Result<?> oauthGoogle(@Validated @RequestBody OauthGoogleRequest oauthGoogleRequest) {
+        
+        return Result.success(googleAuthService.authenByGoogle(oauthGoogleRequest.getCode(), oauthGoogleRequest.getRedirectUri()));
+    }
+
+    @GetMapping("/google/authorization")
+    public Result<?> getUrlGoogle() {
+        String scope = "profile email";
+        String googleAuthorizationUrl =
+                authorizationUri
+                        + "?client_id="
+                        + clientId
+                        + "&redirect_uri="
+                        + redirectUri
+                        + "&scope="
+                        + scope
+                        + "&response_type="
+                        + responseType;
+
+        return Result.success(googleAuthorizationUrl);
+    }
+
+    @GetMapping("/google/callback")
+    public Result<?> getUrlGoogle(@RequestParam("code") String authorizationCode) {
+        return Result.success(googleAuthService.authenByGoogle(authorizationCode, null));
+    }
+    
+
 }

@@ -16,6 +16,7 @@ import java.util.List;
 public interface IUserService {
     User FindUserById(Long id);
     User registerUser(RegisterModel registerModel);
+    User registerUserByGoogle(RegisterModel registerModel);
 
     void forgotPassword(String email);
     int isValidEmail(String email);
