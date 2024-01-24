@@ -147,12 +147,12 @@ public class FormService extends BaseService implements IFormService {
 
     @Override
     public Page<DemandDTO> getAllDemand(DemandReq demandReq, Pageable pageable) {
-        if (demandReq.getDemandType().isEmpty()) {
+        if (demandReq.getDemandType() == null || demandReq.getDemandType().isEmpty()) {
             demandReq.setDemandType(new ArrayList<>());
             demandReq.getDemandType().add(1);
             demandReq.getDemandType().add(2);
         }
-        if (demandReq.getStatus().isEmpty()) {
+        if (demandReq.getStatus() == null ||  demandReq.getStatus().isEmpty()) {
             demandReq.setStatus(new ArrayList<>());
             demandReq.getStatus().add(0);
             demandReq.getStatus().add(1);
