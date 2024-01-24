@@ -106,7 +106,7 @@ public class FormService extends BaseService implements IFormService {
             formDTO.getUser().setUserDetail(userDetail);
             return formDTO;
         } else {
-            throw new WebServiceException(HttpStatus.CONFLICT.value(), "Không tìm thấy nhu cầu hợp lệ");
+            throw new WebServiceException(HttpStatus.OK.value(),409, "Không tìm thấy nhu cầu hợp lệ");
         }
     }
 
@@ -124,13 +124,13 @@ public class FormService extends BaseService implements IFormService {
     public Form connect(Long id, FormUpdateStatusReq formUpdateStatusReq) {
         userService.checkChannel(getCurrentUser());
         Form form = formRepository.findById(id)
-                .orElseThrow(() -> new WebServiceException(HttpStatus.CONFLICT.value(), "Không tìm thấy nhu cầu hợp lệ"));
+                .orElseThrow(() -> new WebServiceException(HttpStatus.OK.value(),HttpStatus.CONFLICT.value(), "Không tìm thấy nhu cầu hợp lệ"));
         Form formPartner = formRepository.findById(formUpdateStatusReq.getPartnerId())
-                .orElseThrow(() -> new WebServiceException(HttpStatus.CONFLICT.value(), "Không tìm thấy nhu cầu hợp lệ"));
+                .orElseThrow(() -> new WebServiceException(HttpStatus.OK.value(),HttpStatus.CONFLICT.value(), "Không tìm thấy nhu cầu hợp lệ"));
         if (form.getPartnerId() != null) {
-            throw new WebServiceException(HttpStatus.CONFLICT.value(), "Nhu cầu đã được kết nối");
+            throw new WebServiceException(HttpStatus.OK.value(),HttpStatus.CONFLICT.value(), "Nhu cầu đã được kết nối");
         } else if (formPartner.getPartnerId() != null) {
-            throw new WebServiceException(HttpStatus.CONFLICT.value(), "Đối tác đã được kết nối vui lòng chọn đối tác khác");
+            throw new WebServiceException(HttpStatus.OK.value(),HttpStatus.CONFLICT.value(), "Đối tác đã được kết nối vui lòng chọn đối tác khác");
         }
         else {
             form.setStatus(1);
@@ -164,7 +164,7 @@ public class FormService extends BaseService implements IFormService {
 
     @Override
     public Page<Form> getAllFormByUser(Long id, BaseFilter filter) {
-        User user = userRepository.findById(id).orElseThrow(() -> new WebServiceException(HttpStatus.CONFLICT.value(), "Không tìm thấy người dùng"));
+        User user = userRepository.findById(id).orElseThrow(() -> new WebServiceException(HttpStatus.OK.value(),409, "Không tìm thấy người dùng"));
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         PageRequest pageable = handlePaging(filter, sort);
         return formRepository.findByUser(user, pageable);
