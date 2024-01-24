@@ -12,6 +12,7 @@ import com.vmg.ibo.customer.model.UserDetail;
 import com.vmg.ibo.customer.repository.IUserDetailRepository;
 import com.vmg.ibo.form.dto.DemandDTO;
 import com.vmg.ibo.form.dto.FormDTO;
+import com.vmg.ibo.form.dto.FormFieldDTO;
 import com.vmg.ibo.form.dto.FormSuggestDTO;
 import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.entity.Template;
@@ -100,7 +101,12 @@ public class FormService extends BaseService implements IFormService {
             }
             ModelMapper modelMapper = new ModelMapper();
             FormDTO formDTO = modelMapper.map(form.get(), FormDTO.class);
-            formDTO.setSuggestLatest(listSuggestLatest.stream().map(x -> modelMapper.map(x, FormSuggestDTO.class)).collect(Collectors.toList()));
+            formDTO.setSuggestLatest(
+                    listSuggestLatest.stream()
+                            .map(x -> modelMapper.map(x, FormSuggestDTO.class))
+                            .peek(FormSuggestDTO::getFormFields) // Thực hiện getFilteredFormFields trên mỗi phần tử
+                            .collect(Collectors.toList())
+            );
             Long userID = form.get().getUser().getId();
             UserDetail userDetail = userDetailRepository.findByIdUser(userID);
             formDTO.getUser().setUserDetail(userDetail);
@@ -110,6 +116,9 @@ public class FormService extends BaseService implements IFormService {
             throw new WebServiceException(HttpStatus.OK.value(),409, "Không tìm thấy nhu cầu hợp lệ");
         }
     }
+
+
+
 
     @Override
     public Form createForm(Form form) {
