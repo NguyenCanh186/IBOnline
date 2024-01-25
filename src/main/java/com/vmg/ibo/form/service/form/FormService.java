@@ -27,6 +27,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -65,6 +66,9 @@ public class FormService extends BaseService implements IFormService {
 
     @Autowired
     private IDealService dealService;
+
+    @Value("${cms.url}")
+    private String cmsUrl;
 
     @Override
     public List<Form> getAllForms() {
@@ -198,19 +202,20 @@ public class FormService extends BaseService implements IFormService {
             formPartner.setStatus(1);
             formPartner.setPartnerId(id);
             formRepository.save(formPartner);
-            sendEmailsForStatus1(formPartner);
-            createDeal(form, formPartner);
+            Deal deal = createDeal(form, formPartner);
+            sendEmailsForStatus1(formPartner,deal);
+
             return form;
         }
     }
 
-    private void createDeal(Form first, Form second) {
+    private Deal createDeal(Form first, Form second) {
         Deal deal = new Deal();
         deal.setFirst(first);
         deal.setSecond(second);
         deal.setConnectionDate(new Date());
         deal.setStatus(Integer.parseInt(DealConstant.PROCESSING.getValue()));
-        dealService.save(deal);
+        return dealService.save(deal);
     }
 
 
@@ -249,15 +254,19 @@ public class FormService extends BaseService implements IFormService {
         return formRepository.findByUser(user, pageable);
     }
 
-    private void sendEmailsForStatus1(Form formPartner) {
+    private void sendEmailsForStatus1(Form formPartner,Deal deal) {
         User userParent = formPartner.getUser();
         List<User> users = userRepository.findUsersByRoleId(13L);
-        List<String> emails = users.stream().map(User::getEmail).collect(Collectors.toList());
-        emailService.sendEmail(emails.get(0), MailMessageConstant.DEMAND, "Xin chào bạn \n" +
-                "Hệ thống IBOnline ghi nhận " + getCurrentUser().getName() +
-                " đang có nhu cầu kết nối đến nhu cầu " + formPartner.getCodeDemand() +
-                " của khách hàng " + userParent.getName() + ". " +
-                "Bạn có thể xem chi tiết tại đây:url\n", emails);
-
+        if(!Objects.isNull(users) ) {
+            List<String> emails = users.stream().map(User::getEmail).collect(Collectors.toList());
+            String url = cmsUrl + "/cms/quan-ly-deal/" + deal.getId();
+            emailService.sendEmail(emails.get(0), MailMessageConstant.DEMAND, "Xin chào bạn \n" +
+                    "Hệ thống IBOnline ghi nhận " + getCurrentUser().getName() +
+                    " đang có nhu cầu kết nối đến nhu cầu " + formPartner.getCodeDemand() +
+                    " của khách hàng " + userParent.getName() + ". " +
+                    "Bạn có thể xem chi tiết tại đây:" + url, emails);
+        } else {
+            throw new WebServiceException(HttpStatus.OK.value(),409, "Không tìm thấy điểu phối viên");
+        }
     }
 }
