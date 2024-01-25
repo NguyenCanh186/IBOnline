@@ -257,7 +257,7 @@ public class FormService extends BaseService implements IFormService {
     private void sendEmailsForStatus1(Form formPartner,Deal deal) {
         User userParent = formPartner.getUser();
         List<User> users = userRepository.findUsersByRoleId(13L);
-        if(!Objects.isNull(users) ) {
+        if(!Objects.isNull(users) && !users.isEmpty()) {
             List<String> emails = users.stream().map(User::getEmail).collect(Collectors.toList());
             String url = cmsUrl + "/cms/quan-ly-deal/" + deal.getId();
             emailService.sendEmail(emails.get(0), MailMessageConstant.DEMAND, "Xin chào bạn \n" +
