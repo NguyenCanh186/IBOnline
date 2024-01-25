@@ -9,6 +9,7 @@ import com.vmg.ibo.form.model.FormUpdateStatusReq;
 import com.vmg.ibo.form.service.form.IFormService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,6 +21,13 @@ public class FormController {
     @GetMapping("/{id}")
     public Result<?> getFormsFieldById(@PathVariable Long id) {
         FormDTO form = formService.getFormById(id);
+        return Result.success("Lấy dữ liệu thành công", form) ;
+    }
+
+    @GetMapping("/cms/{id}")
+    @PreAuthorize("hasAuthority('form-detail')")
+    public Result<?> getFormsCMSFieldById(@PathVariable Long id) {
+        FormDTO form = formService.getFormCMSById(id);
         return Result.success("Lấy dữ liệu thành công", form) ;
     }
 

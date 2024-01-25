@@ -121,8 +121,51 @@ public class FormService extends BaseService implements IFormService {
         }
     }
 
+    @Override
+    public FormDTO getFormCMSById(Long id) {
+        Optional<Form> form = formRepository.findById(id);
+        List<Long> list = new ArrayList<>();
+        if (form.isPresent()) {
+            List<Template> templateList;
+            if (form.get().getTemplate().getType() == 2) {
+                templateList = templateRepository.findAllByType(1);
+            } else {
+                templateList = templateRepository.findAllByType(2);
+            }
+            String tag = form.get().getTemplate().getTag();
+            for (Template template : templateList) {
+                String tagTemplate =  template.getTag();
+                if (tag.toLowerCase().contains(tagTemplate.toLowerCase()) || tagTemplate.toLowerCase().contains(tag.toLowerCase())) {
+                    list.add(template.getId());
+                }
+            }
+            List<Form> listSuggestLatest = new ArrayList<>();
+            if (form.get().getPartnerId() == null) {
+                listSuggestLatest = formRepository.findTop3ByTemplateIdInAndUserIdNotAndPartnerIdNullOrderByCreatedAtDesc(list, getCurrentUser().getId());
+            } else {
+                Optional<Form> findParent = formRepository.findById(form.get().getPartnerId());
+                if (findParent.isPresent()) {
+                    listSuggestLatest.add(findParent.get());
 
-
+                }
+            }
+            ModelMapper modelMapper = new ModelMapper();
+            FormDTO formDTO = modelMapper.map(form.get(), FormDTO.class);
+            formDTO.setSuggestLatest(
+                    listSuggestLatest.stream()
+                            .map(x -> modelMapper.map(x, FormSuggestDTO.class))
+                            .peek(FormSuggestDTO::getFormFields) // Thực hiện getFilteredFormFields trên mỗi phần tử
+                            .collect(Collectors.toList())
+            );
+            Long userID = form.get().getUser().getId();
+            UserDetail userDetail = userDetailRepository.findByIdUser(userID);
+            formDTO.getUser().setUserDetail(userDetail);
+            formDTO.setCodeDemand(form.get().getCodeDemand());
+            return formDTO;
+        } else {
+            throw new WebServiceException(HttpStatus.OK.value(),409, "Không tìm thấy nhu cầu hợp lệ");
+        }
+    }
 
     @Override
     public Form createForm(Form form) {
