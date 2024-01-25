@@ -78,98 +78,108 @@ public class FormService extends BaseService implements IFormService {
     @Override
     public FormDTO getFormById(Long id) {
         userService.checkChannel(getCurrentUser());
-        Optional<Form> form = formRepository.findById(id);
-        List<Long> list = new ArrayList<>();
-        if (form.isPresent()) {
-            if(!getCurrentUser().getId().equals(form.get().getUser().getId())) {
-                throw new WebServiceException(HttpStatus.OK.value(),409, "Tài khoản không có quyền xem chi tiết nhu cầu");
-            }
-            List<Template> templateList;
-            if (form.get().getTemplate().getType() == 2) {
-                templateList = templateRepository.findAllByType(1);
-            } else {
-                templateList = templateRepository.findAllByType(2);
-            }
-            String tag = form.get().getTemplate().getTag();
-            for (Template template : templateList) {
-                String tagTemplate =  template.getTag();
-                if (tag.toLowerCase().contains(tagTemplate.toLowerCase()) || tagTemplate.toLowerCase().contains(tag.toLowerCase())) {
-                    list.add(template.getId());
-                }
-            }
-            List<Form> listSuggestLatest = new ArrayList<>();
-            if (form.get().getPartnerId() == null) {
-                listSuggestLatest = formRepository.findTop3ByTemplateIdInAndUserIdNotAndPartnerIdNullOrderByCreatedAtDesc(list, getCurrentUser().getId());
-            } else {
-                Optional<Form> findParent = formRepository.findById(form.get().getPartnerId());
-                if (findParent.isPresent()) {
-                    listSuggestLatest.add(findParent.get());
+        Optional<Form> formOptional = formRepository.findById(id);
 
-                }
-            }
-            ModelMapper modelMapper = new ModelMapper();
-            FormDTO formDTO = modelMapper.map(form.get(), FormDTO.class);
-            formDTO.setSuggestLatest(
-                    listSuggestLatest.stream()
-                            .map(x -> modelMapper.map(x, FormSuggestDTO.class))
-                            .peek(FormSuggestDTO::getFormFields) // Thực hiện getFilteredFormFields trên mỗi phần tử
-                            .collect(Collectors.toList())
-            );
-            Long userID = form.get().getUser().getId();
-            UserDetail userDetail = userDetailRepository.findByIdUser(userID);
-            formDTO.getUser().setUserDetail(userDetail);
-            formDTO.setCodeDemand(form.get().getCodeDemand());
-            return formDTO;
-        } else {
-            throw new WebServiceException(HttpStatus.OK.value(),409, "Không tìm thấy nhu cầu hợp lệ");
-        }
+        Form form = formOptional.orElseThrow(() ->
+                new WebServiceException(HttpStatus.OK.value(), 409, "Không tìm thấy nhu cầu hợp lệ"));
+
+        validateCurrentUser(form);
+
+        List<Template> templateList = getTemplateList(form);
+
+        String tag = form.getTemplate().getTag();
+        List<Long> list = templateList.stream()
+                .filter(template -> tagMatches(tag, template.getTag()))
+                .map(Template::getId)
+                .collect(Collectors.toList());
+
+        List<Form> listSuggestLatest = getListSuggestLatest(form, list);
+
+        ModelMapper modelMapper = new ModelMapper();
+        FormDTO formDTO = modelMapper.map(form, FormDTO.class);
+        formDTO.setSuggestLatest(
+                listSuggestLatest.stream()
+                        .map(x -> modelMapper.map(x, FormSuggestDTO.class))
+                        .peek(FormSuggestDTO::getFormFields)
+                        .collect(Collectors.toList())
+        );
+
+        setUserDetailsAndCodeDemand(formDTO, form);
+
+        return formDTO;
     }
 
     @Override
     public FormDTO getFormCMSById(Long id) {
-        Optional<Form> form = formRepository.findById(id);
-        List<Long> list = new ArrayList<>();
-        if (form.isPresent()) {
-            List<Template> templateList;
-            if (form.get().getTemplate().getType() == 2) {
-                templateList = templateRepository.findAllByType(1);
-            } else {
-                templateList = templateRepository.findAllByType(2);
-            }
-            String tag = form.get().getTemplate().getTag();
-            for (Template template : templateList) {
-                String tagTemplate =  template.getTag();
-                if (tag.toLowerCase().contains(tagTemplate.toLowerCase()) || tagTemplate.toLowerCase().contains(tag.toLowerCase())) {
-                    list.add(template.getId());
-                }
-            }
-            List<Form> listSuggestLatest = new ArrayList<>();
-            if (form.get().getPartnerId() == null) {
-                listSuggestLatest = formRepository.findTop3ByTemplateIdInAndUserIdNotAndPartnerIdNullOrderByCreatedAtDesc(list, getCurrentUser().getId());
-            } else {
-                Optional<Form> findParent = formRepository.findById(form.get().getPartnerId());
-                if (findParent.isPresent()) {
-                    listSuggestLatest.add(findParent.get());
+        Optional<Form> formOptional = formRepository.findById(id);
+        Form form = formOptional.orElseThrow(() ->
+                new WebServiceException(HttpStatus.OK.value(), 409, "Không tìm thấy nhu cầu hợp lệ"));
+        List<Template> templateList = getTemplateList(form);
+        String tag = form.getTemplate().getTag();
+        List<Long> list = templateList.stream()
+                .filter(template -> tagMatches(tag, template.getTag()))
+                .map(Template::getId)
+                .collect(Collectors.toList());
+        List<Form> listSuggestLatest = getListSuggestLatest(form, list);
+        ModelMapper modelMapper = new ModelMapper();
+        FormDTO formDTO = modelMapper.map(form, FormDTO.class);
+        formDTO.setSuggestLatest(
+                listSuggestLatest.stream()
+                        .map(x -> modelMapper.map(x, FormSuggestDTO.class))
+                        .peek(FormSuggestDTO::getFormFields)
+                        .collect(Collectors.toList())
+        );
+        setUserDetailsAndCodeDemand(formDTO, form);
+        return formDTO;
+    }
 
-                }
-            }
-            ModelMapper modelMapper = new ModelMapper();
-            FormDTO formDTO = modelMapper.map(form.get(), FormDTO.class);
-            formDTO.setSuggestLatest(
-                    listSuggestLatest.stream()
-                            .map(x -> modelMapper.map(x, FormSuggestDTO.class))
-                            .peek(FormSuggestDTO::getFormFields) // Thực hiện getFilteredFormFields trên mỗi phần tử
-                            .collect(Collectors.toList())
-            );
-            Long userID = form.get().getUser().getId();
-            UserDetail userDetail = userDetailRepository.findByIdUser(userID);
-            formDTO.getUser().setUserDetail(userDetail);
-            formDTO.setCodeDemand(form.get().getCodeDemand());
-            return formDTO;
-        } else {
-            throw new WebServiceException(HttpStatus.OK.value(),409, "Không tìm thấy nhu cầu hợp lệ");
+
+    private void validateCurrentUser(Form form) {
+        if (!getCurrentUser().getId().equals(form.getUser().getId())) {
+            throw new WebServiceException(HttpStatus.OK.value(), 409, "Tài khoản không có quyền xem chi tiết nhu cầu");
         }
     }
+
+    private List<Template> getTemplateList(Form form) {
+        Template template = form.getTemplate();
+        int templateType = template.getType();
+        long templateId = template.getId();
+
+        switch (templateType) {
+            case 2:
+                return (templateId == 11) ?
+                        templateRepository.findAllByTypeAndIdIn(1, Arrays.asList(3L, 4L, 5L, 6L, 7L, 8L)) :
+                        templateRepository.findAllByTypeAndIdIn(1, Collections.singletonList(2L));
+
+            default:
+                return (templateId == 2) ?
+                        templateRepository.findAllByTypeAndIdIn(2, Arrays.asList(1L, 9L, 10L)) :
+                        templateRepository.findAllByTypeAndIdIn(2, Collections.singletonList(11L));
+        }
+    }
+
+    private boolean tagMatches(String tag, String tagTemplate) {
+        return tag.toLowerCase().contains(tagTemplate.toLowerCase()) || tagTemplate.toLowerCase().contains(tag.toLowerCase());
+    }
+
+    private List<Form> getListSuggestLatest(Form form, List<Long> list) {
+        if (form.getPartnerId() == null) {
+            return formRepository.findTop3ByTemplateIdInAndUserIdNotAndPartnerIdNullOrderByCreatedAtDesc(list, getCurrentUser().getId());
+        } else {
+            Optional<Form> findParent = formRepository.findById(form.getPartnerId());
+            return findParent.map(Collections::singletonList).orElseGet(ArrayList::new);
+        }
+    }
+
+    private void setUserDetailsAndCodeDemand(FormDTO formDTO, Form form) {
+        Long userID = form.getUser().getId();
+        UserDetail userDetail = userDetailRepository.findByIdUser(userID);
+        formDTO.getUser().setUserDetail(userDetail);
+        formDTO.setCodeDemand(form.getCodeDemand());
+    }
+
+
+
 
     @Override
     public Form createForm(Form form) {
