@@ -512,4 +512,35 @@ public class UserService extends BaseService implements IUserService {
         }
         return randomString;
     }
+
+    @Override
+    public User registerUserByGoogle(RegisterModel registerModel) {
+        String codeValid = generateRandomCode();
+        CodeAndEmail codeAndEmail = new CodeAndEmail();
+        codeAndEmail.setCode(codeValid);
+        codeAndEmail.setEmail(registerModel.getEmail());
+        codeAndEmailService.saveCodeAndEmail(codeAndEmail);
+        User user = new User();
+        user.setEmail(registerModel.getEmail());
+        List<String> listUserName = userDetailRepository.getAllUsername();
+        int maxNumberUserName = listUserName.stream()
+                .map(s -> Integer.parseInt(s.substring(8)))
+                .max(Comparator.naturalOrder()).orElse(0) + 1;
+        String username = "username" + String.valueOf(maxNumberUserName);
+        user.setUsername(username);
+        String password = registerModel.getPassword();
+        user.setStatus((Integer) UserConstant.ENABLE.getValue());
+        user.setChannelId((Integer) UserConstant.USER_CONSTANT.getValue());
+        user.setChannelName((String) UserConstant.CHANNEL_USER_STR.getValue());
+        user.setPassword(passwordEncoder.encode(password));
+        user.setCreatedBy("google");
+        user.setActive(true);
+        user.setCreatedByUserId(1L);
+        user.setCreatedAt(new Date());
+        user.setIsResetPass(true);
+        Role role = roleRepository.findById(2L).get();
+        user.setRoles(Collections.singleton(role));
+        user = userRepository.save(user);
+        return user;
+    }
 }

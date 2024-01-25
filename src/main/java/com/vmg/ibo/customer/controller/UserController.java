@@ -66,7 +66,6 @@ public class UserController extends BaseService {
     }
 
     @GetMapping("/check-info")
-    @PreAuthorize("hasAuthority('user-get')")
     public Result<?> checkInfo() {
         if (!userDetailService.isInfo()) {
             return Result.error(404, "Không tìm thấy thông tin người dùng");
