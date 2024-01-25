@@ -141,7 +141,7 @@ public class DealService extends BaseService implements IDealService {
     private String generateDealCode() {
         List<String> codes = dealRepository.getAllCode();
         int maxNumber = codes.stream()
-                .map(s -> Integer.parseInt(s.substring(3)))
+                .map(s -> Integer.parseInt(s.substring(5)))
                 .max(Comparator.naturalOrder()).orElse(0) + 1;
         return DataModel.DEAL_CODE + maxNumber;
     }
