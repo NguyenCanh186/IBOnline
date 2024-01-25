@@ -10,9 +10,11 @@ import com.vmg.ibo.core.service.mail.IMailService;
 import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.customer.model.UserDetail;
 import com.vmg.ibo.customer.repository.IUserDetailRepository;
+import com.vmg.ibo.deal.constant.DealConstant;
+import com.vmg.ibo.deal.model.entity.Deal;
+import com.vmg.ibo.deal.service.IDealService;
 import com.vmg.ibo.form.dto.DemandDTO;
 import com.vmg.ibo.form.dto.FormDTO;
-import com.vmg.ibo.form.dto.FormFieldDTO;
 import com.vmg.ibo.form.dto.FormSuggestDTO;
 import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.entity.Template;
@@ -31,13 +33,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.regex.Pattern;
+import javax.transaction.Transactional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,6 +62,9 @@ public class FormService extends BaseService implements IFormService {
 
     @Autowired
     private IUserDetailRepository userDetailRepository;
+
+    @Autowired
+    private IDealService dealService;
 
     @Override
     public List<Form> getAllForms() {
@@ -134,6 +135,8 @@ public class FormService extends BaseService implements IFormService {
     }
 
 
+    @Override
+    @Transactional
     public Form connect(Long id, FormUpdateStatusReq formUpdateStatusReq) {
         userService.checkChannel(getCurrentUser());
         Form form = formRepository.findById(id)
@@ -153,8 +156,18 @@ public class FormService extends BaseService implements IFormService {
             formPartner.setPartnerId(id);
             formRepository.save(formPartner);
             sendEmailsForStatus1(formPartner);
+            createDeal(form, formPartner);
             return form;
         }
+    }
+
+    private void createDeal(Form first, Form second) {
+        Deal deal = new Deal();
+        deal.setFirst(first);
+        deal.setSecond(second);
+        deal.setConnectionDate(new Date());
+        deal.setStatus(Integer.parseInt(DealConstant.PROCESSING.getValue()));
+        dealService.save(deal);
     }
 
 
