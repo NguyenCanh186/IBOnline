@@ -104,7 +104,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
             formField.setForm(formCreated);
             formField.setCreatedAt(new Date());
             formField.setTemplateField(templateField.get());
-            formField.setValue(formDataReq.getTemplateFieldReqs().get(i).getValue());
+            formField.setValue(formDataReq.getTemplateFieldReqs().get(i).getValue().trim());
             FormField formField1 = formFieldRepository.save(formField);
             formFields.add(formField1);
         }
@@ -141,11 +141,11 @@ public class FormFieldService extends BaseService implements IFormFieldService {
             if(jsonObject.containsKey("required")) {
                 boolean isRequired = (boolean) jsonObject.get("required");
                 if (isRequired) {
-                    if (request.getValue() != null && !request.getValue().isEmpty()) {
+                    if (request.getValue() != null && !request.getValue().trim().isEmpty()) {
                         if (jsonObject.containsKey("max")) {
                             String json = jsonObject.get("max").toString();
                             Integer max = Integer.valueOf(json);
-                            if (request.getValue().length() <= max) {
+                            if (request.getValue().trim().length() <= max) {
                                 return true;
                             } else {
                                 throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " không được vượt quá " + max + " ký tự");
@@ -155,7 +155,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                             JSONObject greaterThan = (JSONObject) jsonObject.get("greaterThan");
                             long target = (long) greaterThan.get("target");
                             if (type.equals("number")) {
-                                long value = Long.parseLong(request.getValue());
+                                long value = Long.parseLong(request.getValue().trim());
                                 if (value > target) {
                                     return true;
                                 } else {
@@ -167,7 +167,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                             JSONObject lessThan = (JSONObject) jsonObject.get("lessThanOrEqual");
                             long target = (long) lessThan.get("target");
                             if (type.equals("number")) {
-                                long value = Long.parseLong(request.getValue());
+                                long value = Long.parseLong(request.getValue().trim());
                                 if (value < target) {
                                     return true;
                                 } else {
