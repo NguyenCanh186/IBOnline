@@ -3,6 +3,7 @@ package com.vmg.ibo.core.service.google;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,6 +38,7 @@ import com.vmg.ibo.core.repository.IUserRepository;
 import com.vmg.ibo.core.service.security.JwtService;
 import com.vmg.ibo.core.service.user.IUserService;
 import com.vmg.ibo.customer.model.customer.RegisterModel;
+import com.vmg.ibo.form.service.email.EmailService;
 
 @Service
 public class GoogleAuthService implements IGoogleAuthService {
@@ -69,10 +71,10 @@ public class GoogleAuthService implements IGoogleAuthService {
     private IUserService userService;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private JwtService jwtService;
 
     @Autowired
-    private JwtService jwtService;
+    private EmailService emailService;
 
     @Override
     public UserInfoGoogleDto getAccessToken(String authorizationCode, String redirectUri) {
@@ -178,6 +180,10 @@ public class GoogleAuthService implements IGoogleAuthService {
         
         String jwt = jwtService.generateJwtToken(currentUser.getEmail());
         
+
+        if (!userOp.isPresent()) {
+            emailService.sendEmail(currentUser.getEmail(), "[IB Online thông báo]", "[IB Online thông báo] Tài khoản của bạn đã được kích hoạt thành công. Cảm ơn quý khách đã tin tưởng sử dụng dịch vụ IB Online của HMG", Collections.emptyList());
+        }
         return new JwtDTO(
                 jwt,
                 currentUser.getId(),
