@@ -42,9 +42,9 @@ public interface IUserService {
 
     User update(Long id, UserAddDto userDTO);
 
-    List<User> deleteByIds(UserDTO userDTO);
+    List<User> deleteByIds(UserAddDto userDTO);
 
-    List<User> changeStatusByIds(UserDTO userDTO);
+    List<User> changeStatusByIds(UserAddDto userDTO);
 
     ProfileResponse getCurrentUserInfo();
 

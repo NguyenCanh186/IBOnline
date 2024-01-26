@@ -6,7 +6,6 @@ import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.base.Result;
 import com.vmg.ibo.core.model.dto.UserAddDto;
 import com.vmg.ibo.core.model.dto.UserChangeStatusDto;
-import com.vmg.ibo.customer.model.UserDetail;
 import com.vmg.ibo.customer.model.customer.BusinessCustomer;
 import com.vmg.ibo.customer.model.customer.PersonalCustomer;
 import com.vmg.ibo.core.model.dto.UserDTO;
@@ -77,7 +76,6 @@ public class UserController extends BaseService {
         return Result.success(userService.findByUserDetail());
     }
 
-
     @GetMapping("/check-info")
     public Result<?> checkInfo() {
         if (!userDetailService.isInfo()) {
@@ -106,7 +104,7 @@ public class UserController extends BaseService {
 
     @PutMapping("/change-status")
     @PreAuthorize("hasAuthority('user-change-status')")
-    public Result<?> changeStatusUser(@RequestBody UserDTO userDTO) {
+    public Result<?> changeStatusUser(@RequestBody UserAddDto userDTO) {
         return Result.success(userService.changeStatusByIds(userDTO));
     }
 
