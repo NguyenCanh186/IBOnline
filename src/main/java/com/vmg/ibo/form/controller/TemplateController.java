@@ -2,6 +2,7 @@ package com.vmg.ibo.form.controller;
 
 import com.vmg.ibo.core.base.Result;
 import com.vmg.ibo.form.entity.Template;
+import com.vmg.ibo.form.model.FormDataEditReq;
 import com.vmg.ibo.form.model.FormDataReq;
 import com.vmg.ibo.form.service.template.ITemplateService;
 import com.vmg.ibo.form.service.form_field.IFormFieldService;
@@ -39,4 +40,8 @@ public class TemplateController {
         return Result.success("Thêm mới thành công", formFieldService.createFormField(formDataReq));
     }
 
+    @PostMapping("/update-template")
+    public Result<?> updateForm(@RequestBody FormDataEditReq formDataReq) {
+        return Result.success("Cập nhật thành công", formFieldService.editForm(formDataReq));
+    }
 }
