@@ -12,6 +12,7 @@ import com.vmg.ibo.form.entity.TemplateField;
 import com.vmg.ibo.form.model.FormDataReq;
 import com.vmg.ibo.form.model.TemplateFieldReq;
 import com.vmg.ibo.form.repository.IFormFieldRepository;
+import com.vmg.ibo.form.repository.IFormRepository;
 import com.vmg.ibo.form.repository.ITemplateFieldRepository;
 import com.vmg.ibo.form.service.form.IFormService;
 import com.vmg.ibo.form.service.template.ITemplateService;
@@ -44,6 +45,9 @@ public class FormFieldService extends BaseService implements IFormFieldService {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private IFormRepository formRepository;
 
     @Override
     public List<FormField> getFormFieldsByFormId(Long formId) {
@@ -111,6 +115,36 @@ public class FormFieldService extends BaseService implements IFormFieldService {
         formCreated.setFormFields(formFields);
 
         return formCreated;
+    }
+
+    @Override
+    public Form getFormByUserAndTemplate(Long idUser, Long idTemplate) {
+        return formRepository.findByTemplateIdAndUserId(idUser, idTemplate);
+    }
+
+    @Override
+    public Form editForm(FormDataReq formDataReq) {
+        Form form = getFormByUserAndTemplate(getCurrentUser().getId(), formDataReq.getIdTemplate());
+        if (form == null) {
+            throw new WebServiceException(HttpStatus.OK.value(), 409, "Không tìm thấy Form");
+        }
+        if (form.getStatus() != 0) {
+            throw new WebServiceException(HttpStatus.OK.value(), 409, "Form đã được duyệt không thể chỉnh sửa");
+        }
+        if (!checkListField(formDataReq.getTemplateFieldReqs())) {
+            throw new WebServiceException(HttpStatus.OK.value(), 409, "Dữ liệu không hợp lệ");
+        }
+        List<FormField> formFields = form.getFormFields();
+        for (int i = 0; i < formFields.size(); i++) {
+            for (int j = 0; j < formDataReq.getTemplateFieldReqs().size(); j++) {
+                if (Objects.equals(formFields.get(i).getTemplateField().getId(), formDataReq.getTemplateFieldReqs().get(j).getIdTemplateField())) {
+                    formFields.get(i).setValue(formDataReq.getTemplateFieldReqs().get(j).getValue().trim());
+                    formFields.get(i).setUpdatedAt(new Date());
+                    formFieldRepository.save(formFields.get(i));
+                }
+            }
+        }
+        return form;
     }
 
     private boolean checkListField(List<TemplateFieldReq> request) {
