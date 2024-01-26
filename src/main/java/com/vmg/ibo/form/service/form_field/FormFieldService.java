@@ -9,7 +9,9 @@ import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.entity.FormField;
 import com.vmg.ibo.form.entity.Template;
 import com.vmg.ibo.form.entity.TemplateField;
+import com.vmg.ibo.form.model.FormDataEditReq;
 import com.vmg.ibo.form.model.FormDataReq;
+import com.vmg.ibo.form.model.TemplateFieldEditReq;
 import com.vmg.ibo.form.model.TemplateFieldReq;
 import com.vmg.ibo.form.repository.IFormFieldRepository;
 import com.vmg.ibo.form.repository.IFormRepository;
@@ -52,6 +54,53 @@ public class FormFieldService extends BaseService implements IFormFieldService {
     @Override
     public List<FormField> getFormFieldsByFormId(Long formId) {
         return formFieldRepository.getFormFieldsByFormId(formId);
+    }
+
+    @Override
+    public Form editForm(FormDataEditReq formDataReq) {
+        Optional<Form> form = formRepository.findById(formDataReq.getIdForm());
+        if (!form.isPresent()) {
+            throw new WebServiceException(HttpStatus.OK.value(), 409, "Không tìm thấy Form");
+        }
+        if (form.get().getStatus() != 0) {
+            throw new WebServiceException(HttpStatus.OK.value(), 409, "Form đã được kết nối");
+        }
+        List<TemplateField> templateFields = templateFieldRepository.getTemplateFieldsByTemplateId(form.get().getTemplate().getId());
+        String templateFieldIds = templateFields.stream()
+                .map(templateField -> String.valueOf(templateField.getId()))
+                .collect(Collectors.joining(","));
+        String[] templateFieldIdArray = templateFieldIds.split(",");
+        for (int i = 0; i < formDataReq.getTemplateFieldReqs().size(); i++) {
+            long templateFieldId = formDataReq.getTemplateFieldReqs().get(i).getIdTemplateField();
+            boolean idExists = false;
+            for (String id : templateFieldIdArray) {
+                if (Long.parseLong(id) == templateFieldId) {
+                    idExists = true;
+                    break;
+                }
+            }
+            if (!idExists) {
+                throw new WebServiceException(200, 409, "Form sai định dạng");
+            }
+        }
+        List<FormField> formFields = formFieldRepository.findAllByFormId(formDataReq.getIdForm());
+        if (!checkListFieldEdit(formDataReq.getTemplateFieldReqs())) {
+            throw new WebServiceException(HttpStatus.OK.value(), 409, "Dữ liệu không hợp lệ");
+        }
+        for (FormField formField : formFields) {
+            for (int j = 0; j < formDataReq.getTemplateFieldReqs().size(); j++) {
+                if (Objects.equals(formField.getTemplateField().getId(), formDataReq.getTemplateFieldReqs().get(j).getIdTemplateField())) {
+                    Optional<TemplateField> templateField = templateFieldService.getTemplateFieldById(formDataReq.getTemplateFieldReqs().get(j).getIdTemplateField());
+                    if (!templateField.isPresent()) {
+                        throw new WebServiceException(HttpStatus.OK.value(), 409, "Template Field không tồn tại");
+                    }
+                    formField.setValue(formDataReq.getTemplateFieldReqs().get(j).getValue().trim());
+                    formField.setUpdatedAt(new Date());
+                    formFieldRepository.save(formField);
+                }
+            }
+        }
+        return form.get();
     }
 
     @Override
@@ -122,35 +171,81 @@ public class FormFieldService extends BaseService implements IFormFieldService {
         return formRepository.findByTemplateIdAndUserId(idUser, idTemplate);
     }
 
-    @Override
-    public Form editForm(FormDataReq formDataReq) {
-        Form form = getFormByUserAndTemplate(getCurrentUser().getId(), formDataReq.getIdTemplate());
-        if (form == null) {
-            throw new WebServiceException(HttpStatus.OK.value(), 409, "Không tìm thấy Form");
-        }
-        if (form.getStatus() != 0) {
-            throw new WebServiceException(HttpStatus.OK.value(), 409, "Form đã được duyệt không thể chỉnh sửa");
-        }
-        if (!checkListField(formDataReq.getTemplateFieldReqs())) {
-            throw new WebServiceException(HttpStatus.OK.value(), 409, "Dữ liệu không hợp lệ");
-        }
-        List<FormField> formFields = form.getFormFields();
-        for (int i = 0; i < formFields.size(); i++) {
-            for (int j = 0; j < formDataReq.getTemplateFieldReqs().size(); j++) {
-                if (Objects.equals(formFields.get(i).getTemplateField().getId(), formDataReq.getTemplateFieldReqs().get(j).getIdTemplateField())) {
-                    formFields.get(i).setValue(formDataReq.getTemplateFieldReqs().get(j).getValue().trim());
-                    formFields.get(i).setUpdatedAt(new Date());
-                    formFieldRepository.save(formFields.get(i));
-                }
-            }
-        }
-        return form;
-    }
-
     private boolean checkListField(List<TemplateFieldReq> request) {
         for (TemplateFieldReq templateFieldReq : request) {
             if (!isValidField(templateFieldReq.getIdTemplateField(), templateFieldReq)) {
                 return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean checkListFieldEdit(List<TemplateFieldEditReq> request) {
+        for (TemplateFieldEditReq templateFieldReq : request) {
+            if (!isValidFieldEdit(templateFieldReq.getIdTemplateField(), templateFieldReq)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isValidFieldEdit(Long templateFieldId, TemplateFieldEditReq request) {
+        Optional<TemplateField> templateField = templateFieldService.getTemplateFieldById(templateFieldId);
+        if (!templateField.isPresent()) {
+            throw new WebServiceException(HttpStatus.OK.value(), 409, "Template Field không tồn tại");
+        }
+        String rules = templateField.get().getRules();
+        String type = templateField.get().getType();
+        if (type.equals("number")) {
+            try {
+                long valueRequest = Long.parseLong(request.getValue());
+            } catch (NumberFormatException e) {
+                throw new WebServiceException(HttpStatus.OK.value(), 409, "Dữ liệu không hợp lệ");
+            }
+        }
+        if(rules != null && !rules.isEmpty()) {
+            JSONObject jsonObject = (JSONObject) JSONValue.parse(rules);
+            if(jsonObject.containsKey("required")) {
+                boolean isRequired = (boolean) jsonObject.get("required");
+                if (isRequired) {
+                    if (request.getValue() != null && !request.getValue().trim().isEmpty()) {
+                        if (jsonObject.containsKey("max")) {
+                            String json = jsonObject.get("max").toString();
+                            Integer max = Integer.valueOf(json);
+                            if (request.getValue().trim().length() <= max) {
+                                return true;
+                            } else {
+                                throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " không được vượt quá " + max + " ký tự");
+                            }
+                        }
+                        if (jsonObject.containsKey("greaterThan")) {
+                            JSONObject greaterThan = (JSONObject) jsonObject.get("greaterThan");
+                            long target = (long) greaterThan.get("target");
+                            if (type.equals("number")) {
+                                long value = Long.parseLong(request.getValue().trim());
+                                if (value > target) {
+                                    return true;
+                                } else {
+                                    throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " phải lớn hơn " + target);
+                                }
+                            }
+                        }
+                        if (jsonObject.containsKey("lessThanOrEqual")) {
+                            JSONObject lessThan = (JSONObject) jsonObject.get("lessThanOrEqual");
+                            long target = (long) lessThan.get("target");
+                            if (type.equals("number")) {
+                                long value = Long.parseLong(request.getValue().trim());
+                                if (value < target) {
+                                    return true;
+                                } else {
+                                    throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " phải nhỏ hơn " + target);
+                                }
+                            }
+                        }
+                    } else {
+                        throw new WebServiceException(HttpStatus.OK.value(), templateField.get().getName() + " không được để trống");
+                    }
+                }
             }
         }
         return true;

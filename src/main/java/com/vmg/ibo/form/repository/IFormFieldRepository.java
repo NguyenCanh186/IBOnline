@@ -12,4 +12,6 @@ import java.util.List;
 public interface IFormFieldRepository extends JpaRepository<FormField, Long> {
     @Query(value = "SELECT f FROM FormField f WHERE f.form.id = :formId")
     List<FormField> getFormFieldsByFormId(@Param("formId") Long formId);
+
+    List<FormField> findAllByFormId(Long formId);
 }
