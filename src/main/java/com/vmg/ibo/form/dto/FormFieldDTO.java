@@ -8,5 +8,4 @@ public class FormFieldDTO {
     private Long templateFieldId;
     private String templateFieldName;
     private String value;
-
 }

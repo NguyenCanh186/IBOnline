@@ -320,8 +320,8 @@ public class UserService extends BaseService implements IUserService {
     public User createPersonalCustomer(PersonalCustomer personalCustomer) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         List<UserDetail> userDetailList = userDetailService.findAll();
-        for (UserDetail detail : userDetailList) {
-            if (detail.getCINumber().equals(personalCustomer.getCinumber())) {
+        for (int i = 0; i < userDetailList.size(); i++) {
+            if (userDetailList.get(i).getCINumber() != null && userDetailList.get(i).getCINumber().equals(personalCustomer.getCinumber())) {
                 throw new WebServiceException(200, 409, "Số căn cước công dân đã tồn tại");
             }
         }
