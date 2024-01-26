@@ -436,7 +436,7 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     @Transactional
-    public List<User> deleteByIds(UserDTO userDTO) {
+    public List<User> deleteByIds(UserAddDto userDTO) {
         writeLog("DELETE_USER", "Xóa người dùng hệ thống", userDTO, null, null, null, "SYSTEM", this.getClass());
         List<Long> ids = reformatIdsFromRequest(userDTO);
         List<User> oldUsers = userRepository.findAllById(ids);
@@ -449,7 +449,7 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     @Transactional
-    public List<User> changeStatusByIds(UserDTO userDTO) {
+    public List<User> changeStatusByIds(UserAddDto userDTO) {
         writeLog("CHANGE_STATUS_USER", "Cập nhật trạng thái người dùng hệ thống", userDTO, null, null, null, "SYSTEM", this.getClass());
         List<Long> ids = reformatIdsFromRequest(userDTO);
         List<User> oldUsers = userRepository.findAllById(ids);
@@ -508,7 +508,7 @@ public class UserService extends BaseService implements IUserService {
         return profileResponse;
     }
 
-    private List<Long> reformatIdsFromRequest(UserDTO userDTO) {
+    private List<Long> reformatIdsFromRequest(UserAddDto userDTO) {
         return Arrays.stream(userDTO.getIds().split(","))
                 .map(String::trim)
                 .map(Long::parseLong)

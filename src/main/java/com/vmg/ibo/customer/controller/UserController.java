@@ -6,7 +6,6 @@ import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.base.Result;
 import com.vmg.ibo.core.model.dto.UserAddDto;
 import com.vmg.ibo.core.model.dto.UserChangeStatusDto;
-import com.vmg.ibo.customer.model.UserDetail;
 import com.vmg.ibo.customer.model.customer.BusinessCustomer;
 import com.vmg.ibo.customer.model.customer.PersonalCustomer;
 import com.vmg.ibo.core.model.dto.UserDTO;
@@ -40,7 +39,7 @@ public class UserController extends BaseService {
     }
 
     @PostMapping("/search")
-    @PreAuthorize("hasAuthority('user-list')")
+    @PreAuthorize("hasAuthority('customer-list')")
     public Result<?> findAllUsersWithPaging(@RequestBody UserFilter userFilter) {
         return Result.success(userDetailService.findAllUser(userFilter));
     }
@@ -66,11 +65,16 @@ public class UserController extends BaseService {
         return Result.success(userService.findById(id));
     }
 
+    @GetMapping("/customer/{id}")
+    @PreAuthorize("hasAuthority('customer-detail')")
+    public Result<?> getCustomerById(@PathVariable Long id) {
+        return Result.success(userService.findById(id));
+    }
+
     @GetMapping("/get-detail")
     public Result<?> getDetailUser() {
         return Result.success(userService.findByUserDetail());
     }
-
 
     @GetMapping("/check-info")
     public Result<?> checkInfo() {
@@ -87,7 +91,7 @@ public class UserController extends BaseService {
     }
 
     @PutMapping("/{id}/lockOrUnlock")
-    @PreAuthorize("hasAuthority('user-edit')")
+    @PreAuthorize("hasAuthority('customer-update-status')")
     public Result<?> lockOrUnlock(@PathVariable Long id,@Validated(Update.class) @RequestBody UserChangeStatusDto userChangeStatusDto) {
         if (userChangeStatusDto.getStatus() == null) {
             return Result.error(409, "Trường status không được để trống");
@@ -100,7 +104,7 @@ public class UserController extends BaseService {
 
     @PutMapping("/change-status")
     @PreAuthorize("hasAuthority('user-change-status')")
-    public Result<?> changeStatusUser(@RequestBody UserDTO userDTO) {
+    public Result<?> changeStatusUser(@RequestBody UserAddDto userDTO) {
         return Result.success(userService.changeStatusByIds(userDTO));
     }
 
