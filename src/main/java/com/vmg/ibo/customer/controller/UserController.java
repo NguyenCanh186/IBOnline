@@ -4,6 +4,7 @@ import com.vmg.ibo.core.action.Insert;
 import com.vmg.ibo.core.action.Update;
 import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.base.Result;
+import com.vmg.ibo.core.model.dto.UserAddDto;
 import com.vmg.ibo.core.model.dto.UserChangeStatusDto;
 import com.vmg.ibo.customer.model.UserDetail;
 import com.vmg.ibo.customer.model.customer.BusinessCustomer;
@@ -65,6 +66,12 @@ public class UserController extends BaseService {
         return Result.success(userService.findById(id));
     }
 
+    @GetMapping("/get-detail")
+    public Result<?> getDetailUser() {
+        return Result.success(userService.findByUserDetail());
+    }
+
+
     @GetMapping("/check-info")
     public Result<?> checkInfo() {
         if (!userDetailService.isInfo()) {
@@ -75,7 +82,7 @@ public class UserController extends BaseService {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('user-edit')")
-    public Result<?> editUser(@PathVariable Long id, @Validated(Update.class) @RequestBody UserDTO userDTO) {
+    public Result<?> editUser(@PathVariable Long id, @Validated(Update.class) @RequestBody UserAddDto userDTO) {
         return Result.success(userService.update(id, userDTO));
     }
 
@@ -99,7 +106,7 @@ public class UserController extends BaseService {
 
     @PostMapping
     @PreAuthorize("hasAuthority('user-add')")
-    public Result<?> createUser(@Validated(Insert.class) @RequestBody UserDTO userDTO) {
+    public Result<?> createUser(@Validated(Insert.class) @RequestBody UserAddDto userDTO) {
         if (userService.isValidEmail(userDTO.getEmail()) == 1) {
             return Result.error(409, "Email đã được đăng ký");
         }
