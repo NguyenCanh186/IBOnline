@@ -10,4 +10,6 @@ public class TemplateDTO {
     private String tag;
     private Integer type;
     private String image;
+    private String rules;
+    private String prop;
 }
