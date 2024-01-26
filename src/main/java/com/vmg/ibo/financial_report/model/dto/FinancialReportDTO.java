@@ -9,7 +9,6 @@ import java.util.List;
 @Data
 public class FinancialReportDTO {
     private Long id;
-    private String title;
     private Long revenue;
     private Long profit;
     private Long asset;

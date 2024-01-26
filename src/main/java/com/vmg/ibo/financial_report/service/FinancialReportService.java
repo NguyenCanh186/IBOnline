@@ -62,7 +62,6 @@ public class FinancialReportService extends BaseService implements IFinancialRep
         financialReport.setDebt(financialReportRequest.getDebt());
         financialReport.setYear(financialReportRequest.getYear());
         financialReport.setQuarter(financialReportRequest.getQuarter());
-        financialReport.setTitle(financialReportRequest.getTitle());
         financialReport.setUser(user);
         financialReport = this.save(financialReport);
         if (financialReportRequest.getFiles() != null) {
