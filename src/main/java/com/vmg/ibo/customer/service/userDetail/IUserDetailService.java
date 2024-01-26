@@ -6,6 +6,7 @@ import com.vmg.ibo.customer.model.UserDetail;
 import com.vmg.ibo.customer.model.UserDetailWithUserDTOImpl;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IUserDetailService {
@@ -18,4 +19,6 @@ public interface IUserDetailService {
     UserDetail create(UserDetail userDetail);
 
     UserDetail findByIdUser(Long id);
+
+    List<UserDetail> findAll();
 }

@@ -71,4 +71,9 @@ public class UserDetailService extends BaseService implements IUserDetailService
     public UserDetail findByIdUser(Long id) {
         return userDetailRepository.findByIdUser(id);
     }
+
+    @Override
+    public List<UserDetail> findAll() {
+        return userDetailRepository.findAll();
+    }
 }

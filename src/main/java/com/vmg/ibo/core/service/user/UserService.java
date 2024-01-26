@@ -319,6 +319,12 @@ public class UserService extends BaseService implements IUserService {
     @Override
     public User createPersonalCustomer(PersonalCustomer personalCustomer) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
+        List<UserDetail> userDetailList = userDetailService.findAll();
+        for (UserDetail detail : userDetailList) {
+            if (detail.getCINumber().equals(personalCustomer.getCinumber())) {
+                throw new WebServiceException(200, 409, "Số căn cước công dân đã tồn tại");
+            }
+        }
         User user = userRepository.findById(idUser).orElse(null);
         assert user != null;
         user.setInfo(true);
