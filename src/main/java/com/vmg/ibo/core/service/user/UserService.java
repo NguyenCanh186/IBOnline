@@ -5,6 +5,7 @@ import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.constant.AuthConstant;
 import com.vmg.ibo.core.constant.MailMessageConstant;
 import com.vmg.ibo.core.constant.UserConstant;
+import com.vmg.ibo.core.model.dto.UserAddDto;
 import com.vmg.ibo.customer.model.CodeAndEmail;
 import com.vmg.ibo.customer.model.ForgotPass;
 import com.vmg.ibo.customer.model.UserDetail;
@@ -133,8 +134,10 @@ public class UserService extends BaseService implements IUserService {
         user.setCreatedByUserId(1L);
         user.setCreatedAt(new Date());
         user.setIsResetPass(true);
-        Role role = roleRepository.findById(2L).get();
-        user.setRoles(Collections.singleton(role));
+        Optional<Role> role = roleRepository.findById(2L);
+        if (role.isPresent()) {
+            user.setRoles(Collections.singleton(role.get()));
+        }
         user = userRepository.save(user);
         List<String> listUserCode = userDetailRepository.getAllCustomerCode();
         int maxNumber = listUserCode.stream()
@@ -248,8 +251,30 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
+    public UserDTO findByUserDetail() {
+        User user = userRepository.findById(getCurrentUser().getId()).orElse(null);
+        if (user == null) {
+            throw new WebServiceException(HttpStatus.NOT_FOUND.value(), "user.error.notFound");
+        }
+        UserDTO userDTO = mapToDTO(user);
+        if (userDTO != null) {
+            List<Long> roleIds = user.getRoles().stream().map(Role::getId).collect(Collectors.toList());
+            userDTO.setRoleIds(roleIds);
+            UserDetail userDetail = userDetailService.findByIdUser(user.getId());
+            if (userDetail != null) {
+                userDTO.setUserDetail(userDetail);
+                if (userDetail.getIsCustomerPersonal() != null && !userDetail.getIsCustomerPersonal()) {
+                    List<FinancialReportDTO> financialReports = financialReportService.findAll(user);
+                    userDTO.setReports(financialReports);
+                }
+            }
+        }
+        return userDTO;
+    }
+
+    @Override
     @Transactional
-    public User create(UserDTO userDTO) {
+    public User create(UserAddDto userDTO) {
         writeLog("CREATE_USER", "Thêm mới người dùng hệ thống", userDTO, null, null, null, "SYSTEM", this.getClass());
         String password = AuthConstant.DEFAULT_PASSWORD.getValue();
         User user = mapToEntity(userDTO);
@@ -383,7 +408,7 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     @Transactional
-    public User update(Long id, UserDTO userDTO) {
+    public User update(Long id, UserAddDto userDTO) {
         writeLog("UPDATE_USER", "Chỉnh sửa người dùng hệ thống", userDTO, null, null, null, "SYSTEM", this.getClass());
         User user = mapToEntity(userDTO);
         User oldUser = userRepository.findById(id).orElse(null);
@@ -484,7 +509,7 @@ public class UserService extends BaseService implements IUserService {
                 .collect(Collectors.toList());
     }
 
-    private User mapToEntity(UserDTO userDTO) {
+    private User mapToEntity(UserAddDto userDTO) {
         User user = new User();
         user.setId(userDTO.getId());
         user.setUsername(userDTO.getEmail());

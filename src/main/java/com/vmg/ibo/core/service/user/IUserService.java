@@ -1,5 +1,6 @@
 package com.vmg.ibo.core.service.user;
 
+import com.vmg.ibo.core.model.dto.UserAddDto;
 import com.vmg.ibo.customer.model.customer.BusinessCustomer;
 import com.vmg.ibo.customer.model.customer.PersonalCustomer;
 import com.vmg.ibo.customer.model.customer.RegisterModel;
@@ -31,14 +32,15 @@ public interface IUserService {
     boolean isExistEmail(String email);
 
     UserDTO findById(Long id);
+    UserDTO findByUserDetail();
 
-    User create(UserDTO userDTO);
+    User create(UserAddDto userDTO);
 
     User createPersonalCustomer(PersonalCustomer personalCustomer);
 
     User createBusinessCustomer(BusinessCustomer businessCustomer);
 
-    User update(Long id, UserDTO userDTO);
+    User update(Long id, UserAddDto userDTO);
 
     List<User> deleteByIds(UserDTO userDTO);
 
