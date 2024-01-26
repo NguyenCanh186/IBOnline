@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class BusinessCustomer {
     @NotNull(message = "Tên doanh nghiệp bắt buộc nhập!", groups = {Insert.class, Update.class})
-    @Size(max = 100, message = "Tên doanh nghiệp không được vượt quá 100 ký tự!", groups = {Insert.class, Update.class})
+    @Size(max = 255, message = "Tên doanh nghiệp không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
     @NotBlank(message = "Tên doanh nghiệp không được để trống!", groups = {Insert.class, Update.class})
     private String businessName;
     @NotNull(message = "Mã số thuế bắt buộc nhập!", groups = {Insert.class, Update.class})
@@ -25,16 +25,16 @@ public class BusinessCustomer {
     @NotBlank(message = "Mã số thuế không được để trống!", groups = {Insert.class, Update.class})
     private String codeTax;
     private String codeReg;
-    @Size(max = 100, message = "Địa chỉ không được vượt quá 100 ký tự!", groups = {Insert.class, Update.class})
+    @Size(max = 255, message = "Địa chỉ không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
     private String address;
     @NotNull(message = "Tên người liên hệ bắt buộc nhập!", groups = {Insert.class, Update.class})
-    @Size(max = 50, message = "Tên người liên hệ không được vượt quá 50 ký tự!", groups = {Insert.class, Update.class})
+    @Size(max = 255, message = "Tên người liên hệ không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
     @NotBlank(message = "Tên người liên hệ không được để trống!", groups = {Insert.class, Update.class})
     private String contactName;
     @Size(max = 255, message = "Ngành nghề kinh doanh chính không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
     private String title;
     @NotNull(message = "Số điện thoại bắt buộc nhập!", groups = {Insert.class, Update.class})
-    @Size(max = 11, message = "Số điện thoại không được vượt quá 11 ký tự!", groups = {Insert.class, Update.class})
+    @Size(max = 10, message = "Số điện thoại không được vượt quá 10 ký tự!", groups = {Insert.class, Update.class})
     @NotBlank(message = "Số điện thoại không được để trống!", groups = {Insert.class, Update.class})
     private String phone;
     @NotNull(message = "Ngành nghề kinh doanh chính bắt buộc nhập!", groups = {Insert.class, Update.class})
@@ -43,7 +43,7 @@ public class BusinessCustomer {
     private String mainBusiness;
     @NotNull (message = "Quy mô vốn bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Long capitalSize;
-    @Size(max = 255, message = "Mô tả không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
+    @Size(max = 500, message = "Mô tả không được vượt quá 500 ký tự!", groups = {Insert.class, Update.class})
     private String description;
     @NotNull (message = "Doanh thu năm gần nhất bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Long mostRecentYearRevenue;
