@@ -11,8 +11,6 @@ import java.util.List;
 @Data
 public class FinancialReportRequest {
     private Long id;
-    @NotNull(message = "Tiêu đề báo cáo tài chính bắt buộc nhập!", groups = {Insert.class, Update.class})
-    private String title;
     @NotNull (message = "Doanh thu bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Long revenue;
     @NotNull (message = "Lợi nhuận bắt buộc nhập!", groups = {Insert.class, Update.class})

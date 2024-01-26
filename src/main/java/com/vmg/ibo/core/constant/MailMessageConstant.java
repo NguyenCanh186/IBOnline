@@ -21,4 +21,5 @@ public class MailMessageConstant {
             "Lưu ý: Yêu cầu thay đổi mật khẩu lần đầu đăng nhập.\n" +
             "\n" +
             "Cảm ơn Quý Đối Tác đã tin tưởng sử dụng dịch vụ IB Online!";
+    public static final String CONTACT_FORM_SUBJECT = "[IB Online] Có yêu cầu liên hệ từ %s";
 }

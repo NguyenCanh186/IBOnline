@@ -6,6 +6,7 @@ import com.vmg.ibo.core.service.security.IUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -83,6 +84,7 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST,"/v1/contact-form/send").permitAll()
                 .antMatchers("/v1/auth/login").permitAll()
                 .antMatchers("/v1/demand").permitAll()
                 .antMatchers("/v1/register/**").permitAll()

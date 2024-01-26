@@ -2,6 +2,7 @@ package com.vmg.ibo.financial_report.service;
 
 import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.config.exception.WebServiceException;
+import com.vmg.ibo.core.model.dto.FileUploadDto;
 import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.repository.IUserRepository;
 import com.vmg.ibo.customer.model.customer.FileUpload;
@@ -11,6 +12,7 @@ import com.vmg.ibo.financial_report.model.dto.FinancialReportDTO;
 import com.vmg.ibo.financial_report.model.dto.FinancialReportRequest;
 import com.vmg.ibo.financial_report.model.entity.FinancialReport;
 import com.vmg.ibo.financial_report.repository.IFinancialReportRepository;
+import com.vmg.ibo.form.dto.FormSuggestDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,7 +62,6 @@ public class FinancialReportService extends BaseService implements IFinancialRep
         financialReport.setDebt(financialReportRequest.getDebt());
         financialReport.setYear(financialReportRequest.getYear());
         financialReport.setQuarter(financialReportRequest.getQuarter());
-        financialReport.setTitle(financialReportRequest.getTitle());
         financialReport.setUser(user);
         financialReport = this.save(financialReport);
         if (financialReportRequest.getFiles() != null) {
@@ -114,7 +115,7 @@ public class FinancialReportService extends BaseService implements IFinancialRep
         ModelMapper modelMapper = new ModelMapper();
         FinancialReportDTO financialReportDTO = modelMapper.map(financialReport, FinancialReportDTO.class);
         List<FileUpload> files = fileUploadRepository.findAllByFinancialReport(financialReport);
-        financialReportDTO.setFiles(files);
+        financialReportDTO.setFiles(files.stream().map(x -> modelMapper.map(x, FileUploadDto.class)).collect(Collectors.toList()));
         return financialReportDTO;
     }
 }

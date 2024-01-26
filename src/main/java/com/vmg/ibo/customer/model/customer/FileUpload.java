@@ -1,5 +1,6 @@
 package com.vmg.ibo.customer.model.customer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vmg.ibo.financial_report.model.entity.FinancialReport;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ public class FileUpload {
     private Long id;
     private String filename;
     private Long idUser;
+
     @ManyToOne
     private FinancialReport financialReport;
 
