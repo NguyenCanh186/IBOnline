@@ -32,4 +32,6 @@ public class TemplateField extends BaseEntity {
     @OneToMany(mappedBy = "templateField", cascade = CascadeType.ALL)
     private List<FormField> formFields;
 
+    private Integer priority;
+
 }
