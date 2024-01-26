@@ -1,6 +1,9 @@
 package com.vmg.ibo.form.dto;
 
+import com.vmg.ibo.form.entity.TemplateField;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class TemplateDTO {
@@ -10,6 +13,5 @@ public class TemplateDTO {
     private String tag;
     private Integer type;
     private String image;
-    private String rules;
-    private String prop;
+    private List<TemplateField> templateFields;
 }
