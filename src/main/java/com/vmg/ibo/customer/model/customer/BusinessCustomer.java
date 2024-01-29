@@ -31,7 +31,7 @@ public class BusinessCustomer {
     @Size(max = 255, message = "Tên người liên hệ không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
     @NotBlank(message = "Tên người liên hệ không được để trống!", groups = {Insert.class, Update.class})
     private String contactName;
-    @Size(max = 255, message = "Ngành nghề kinh doanh chính không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
+    @Size(max = 255, message = "Chức danh không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
     private String title;
     @NotNull(message = "Số điện thoại bắt buộc nhập!", groups = {Insert.class, Update.class})
     @Size(max = 10, message = "Số điện thoại không được vượt quá 10 ký tự!", groups = {Insert.class, Update.class})
@@ -45,18 +45,18 @@ public class BusinessCustomer {
     private Long capitalSize;
     @Size(max = 500, message = "Mô tả không được vượt quá 500 ký tự!", groups = {Insert.class, Update.class})
     private String description;
-    @NotNull (message = "Doanh thu năm gần nhất bắt buộc nhập!", groups = {Insert.class, Update.class})
+    @NotNull (message = "Doanh thu năm gần nhất bắt buộc nhập!", groups = {Insert.class})
     private Long mostRecentYearRevenue;
-    @NotNull (message = "Lợi nhuận năm gần nhất bắt buộc nhập!", groups = {Insert.class, Update.class})
+    @NotNull (message = "Lợi nhuận năm gần nhất bắt buộc nhập!", groups = {Insert.class})
     private Long mostRecentYearProfit;
-    @NotNull (message = "Cơ cấu tài sản bắt buộc nhập!", groups = {Insert.class, Update.class})
+    @NotNull (message = "Cơ cấu tài sản bắt buộc nhập!", groups = {Insert.class})
     private Long propertyStructure;
-    @NotNull (message = "Cơ cấu nợ bắt buộc nhập!", groups = {Insert.class, Update.class})
+    @NotNull (message = "Cơ cấu nợ bắt buộc nhập!", groups = {Insert.class})
     private Long debtStructure;
-    @NotNull (message = "Năm bắt buộc nhập!", groups = {Insert.class, Update.class})
+    @NotNull (message = "Năm bắt buộc nhập!", groups = {Insert.class})
     private Integer year;
     private Integer quarter;
     private List<MultipartFile> files;
-    @NotNull(message = "Tiêu đề báo cáo tài chính bắt buộc nhập!", groups = {Insert.class, Update.class})
+    @NotNull(message = "Tiêu đề báo cáo tài chính bắt buộc nhập!", groups = {Insert.class})
     private String reportTitle;
 }
