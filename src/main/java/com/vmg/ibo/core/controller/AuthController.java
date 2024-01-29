@@ -105,6 +105,11 @@ public class AuthController {
         return Result.success("Thay đổi mật khẩu thành công");
     }
 
+    @PostMapping("/check-new-password")
+    public Result<?> checkNewPassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        return Result.success(userService.checkNewPassword(changePasswordRequest.getNewPassword()));
+    }
+
     @PostMapping("/google/get-token")
     public Result<?> oauthGoogle(@Validated @RequestBody OauthGoogleRequest oauthGoogleRequest) {
         

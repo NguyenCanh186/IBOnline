@@ -5,7 +5,7 @@ import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.constant.AuthConstant;
 import com.vmg.ibo.core.constant.MailMessageConstant;
 import com.vmg.ibo.core.constant.UserConstant;
-import com.vmg.ibo.core.model.dto.UserAddDto;
+import com.vmg.ibo.core.model.dto.*;
 import com.vmg.ibo.customer.model.CodeAndEmail;
 import com.vmg.ibo.customer.model.ForgotPass;
 import com.vmg.ibo.customer.model.UserDetail;
@@ -13,9 +13,6 @@ import com.vmg.ibo.customer.model.customer.BusinessCustomer;
 import com.vmg.ibo.customer.model.customer.FileUpload;
 import com.vmg.ibo.customer.model.customer.PersonalCustomer;
 import com.vmg.ibo.customer.model.customer.RegisterModel;
-import com.vmg.ibo.core.model.dto.ChangePasswordRequest;
-import com.vmg.ibo.core.model.dto.ProfileResponse;
-import com.vmg.ibo.core.model.dto.UserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
 import com.vmg.ibo.core.model.entity.*;
 import com.vmg.ibo.core.repository.IPermissionRepository;
@@ -496,6 +493,15 @@ public class UserService extends BaseService implements IUserService {
         if (user.getChannelId() == 0) {
             throw new WebServiceException(HttpStatus.CONFLICT.value(), "Access denied");
         }
+    }
+
+    @Override
+    public CheckPasswordResponse checkNewPassword(String newPassword) {
+        boolean isEqual = false;
+        if (!Objects.isNull(newPassword)) {
+            isEqual = passwordEncoder.matches(newPassword, getCurrentUser().getPassword());
+        }
+        return CheckPasswordResponse.builder().isEqual(isEqual).build();
     }
 
     @Override
