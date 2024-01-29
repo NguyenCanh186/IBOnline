@@ -320,10 +320,23 @@ public class UserService extends BaseService implements IUserService {
     public User createPersonalCustomer(PersonalCustomer personalCustomer) {
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         List<UserDetail> userDetailList = userDetailService.findAll();
+        UserDetail userDetail1 = userDetailService.findByIdUser(idUser);
+        boolean foundCINumber = false;
+
         for (int i = 0; i < userDetailList.size(); i++) {
-            if (userDetailList.get(i).getCINumber() != null && userDetailList.get(i).getCINumber().equals(personalCustomer.getCinumber())) {
-                throw new WebServiceException(200, 409, "Số căn cước công dân đã tồn tại");
+            UserDetail currentUserDetail = userDetailList.get(i);
+
+            if (currentUserDetail.getCINumber() != null && currentUserDetail.getCINumber().equals(personalCustomer.getCinumber())) {
+                if (userDetail1.getCINumber() != null && userDetail1.getCINumber().equals(personalCustomer.getCinumber())) {
+                    foundCINumber = true;
+                } else {
+                    throw new WebServiceException(200, 409, "Số căn cước công dân đã tồn tại");
+                }
             }
+        }
+
+        if (!foundCINumber && userDetail1.getCINumber() != null && userDetail1.getCINumber().equals(personalCustomer.getCinumber())) {
+            throw new WebServiceException(200, 409, "Số căn cước công dân đã tồn tại");
         }
         User user = userRepository.findById(idUser).orElse(null);
         assert user != null;
@@ -409,6 +422,36 @@ public class UserService extends BaseService implements IUserService {
                 fileUploadService.saveFile(fileUpload1);
             }
         }
+        return user;
+    }
+
+    @Override
+    public User updateBusinessCustomer(BusinessCustomer businessCustomer) {
+        Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
+        User user = userRepository.findById(idUser).orElse(null);
+        assert user != null;
+        user.setInfo(true);
+        user.setName(businessCustomer.getBusinessName());
+        user.setPhone(businessCustomer.getPhone());
+        user.setStatus((Integer) UserConstant.ENABLE.getValue());
+        user.setCreatedAt(new Date());
+        userRepository.save(user);
+        UserDetail userDetail = userDetailService.findByIdUser(idUser);
+        if (userDetail == null) {
+            userDetail = new UserDetail();
+        }
+        userDetail.setAddress(businessCustomer.getAddress());
+        userDetail.setDescription(businessCustomer.getDescription());
+        userDetail.setIdUser(idUser);
+        userDetail.setCapitalSize(businessCustomer.getCapitalSize());
+        userDetail.setIsCustomerPersonal(false);
+        userDetail.setContactName(businessCustomer.getContactName());
+        userDetail.setCodeReg(businessCustomer.getCodeReg());
+        userDetail.setCodeTax(businessCustomer.getCodeTax());
+        userDetail.setBusinessName(businessCustomer.getBusinessName());
+        userDetail.setMainBusiness(businessCustomer.getMainBusiness());
+        userDetail.setTitle(businessCustomer.getTitle());
+        userDetailService.create(userDetail);
         return user;
     }
 
