@@ -15,22 +15,22 @@ public class DealFilter extends BaseFilter {
     private Integer status;
 
     public String getQuery() {
-        return query.trim();
+        return query.trim().toLowerCase();
     }
 
     public String getFirstForm() {
-        return firstForm.trim();
+        return firstForm.trim().toLowerCase();
     }
 
     public String getSecondForm() {
-        return secondForm.trim();
+        return secondForm.trim().toLowerCase();
     }
 
     public String getCoordinator() {
-        return coordinator.trim();
+        return coordinator.trim().toLowerCase();
     }
 
     public String getDate() {
-        return date.trim();
+        return date.trim().toLowerCase();
     }
 }

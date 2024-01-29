@@ -26,10 +26,18 @@ public interface IDealRepository extends JpaRepository<Deal, Long> {
             "LEFT JOIN Form ff on d.first.id = ff.id LEFT JOIN Template tf on ff.template.id = tf.id left join UserDetail udf on ff.user.id = udf.idUser " +
             "LEFT JOIN Form fs on d.second.id = fs.id LEFT JOIN Template ts on fs.template.id = ts.id left join UserDetail uds on fs.user.id = uds.idUser " +
             "LEFT JOIN User u on d.coordinator.id = u.id " +
-            "WHERE ((:#{#filter.query} is null OR :#{#filter.query} = '') OR (d.code LIKE CONCAT('%', :#{#filter.query}, '%') OR tf.name LIKE CONCAT('%', :#{#filter.query}, '%') OR ts.name LIKE CONCAT('%', :#{#filter.query}, '%') OR u.name LIKE CONCAT('%', :#{#filter.query}, '%'))) " +
-            "AND (:#{#filter.firstForm} is null OR :#{#filter.firstForm} = '' OR tf.name LIKE CONCAT('%', :#{#filter.firstForm}, '%')) " +
-            "AND (:#{#filter.secondForm} is null OR :#{#filter.secondForm} = '' OR ts.name LIKE CONCAT('%', :#{#filter.secondForm}, '%')) " +
-            "AND (:#{#filter.coordinator} is null OR :#{#filter.coordinator} = '' OR u.name LIKE CONCAT('%', :#{#filter.coordinator}, '%')) " +
+            "WHERE ((:#{#filter.query} is null OR :#{#filter.query} = '') " +
+            "OR (lower(d.code) LIKE CONCAT('%', :#{#filter.query}, '%') " +
+            "OR lower(tf.name) LIKE CONCAT('%', :#{#filter.query}, '%') " +
+            "OR lower(ts.name) LIKE CONCAT('%', :#{#filter.query}, '%') " +
+            "OR lower(udf.businessName) LIKE CONCAT('%', :#{#filter.query}, '%') " +
+            "OR lower(uds.businessName) LIKE CONCAT('%', :#{#filter.query}, '%') " +
+            "OR lower(udf.contactName) LIKE CONCAT('%', :#{#filter.query}, '%') " +
+            "OR lower(uds.contactName) LIKE CONCAT('%', :#{#filter.query}, '%') " +
+            "OR lower(u.name) LIKE CONCAT('%', :#{#filter.query}, '%'))) " +
+            "AND (:#{#filter.firstForm} is null OR :#{#filter.firstForm} = '' OR lower(tf.name) LIKE CONCAT('%', :#{#filter.firstForm}, '%')) " +
+            "AND (:#{#filter.secondForm} is null OR :#{#filter.secondForm} = '' OR lower(ts.name) LIKE CONCAT('%', :#{#filter.secondForm}, '%')) " +
+            "AND (:#{#filter.coordinator} is null OR :#{#filter.coordinator} = '' OR lower(u.name) LIKE CONCAT('%', :#{#filter.coordinator}, '%')) " +
             "AND (:#{#filter.status} is null OR d.status = :#{#filter.status}) " +
             "AND (:#{#filter.date} is null OR :#{#filter.date} = '' OR DATE(d.connectionDate) = COALESCE(DATE(:#{#filter.date}), DATE(d.connectionDate)))")
     Page<DealResponse> getAllDeals(DealFilter filter, Pageable pageable);
