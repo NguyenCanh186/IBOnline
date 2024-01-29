@@ -36,6 +36,7 @@ public interface IUserService {
     User createPersonalCustomer(PersonalCustomer personalCustomer);
 
     User createBusinessCustomer(BusinessCustomer businessCustomer);
+    User updateBusinessCustomer(BusinessCustomer businessCustomer);
 
     User update(Long id, UserAddDto userDTO);
 

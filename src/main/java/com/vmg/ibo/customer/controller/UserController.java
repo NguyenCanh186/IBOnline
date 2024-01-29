@@ -53,6 +53,11 @@ public class UserController extends BaseService {
     public Result<?> createUser(@Validated(Insert.class) @ModelAttribute BusinessCustomer businessCustomer) {
         return Result.success(userService.createBusinessCustomer(businessCustomer));
     }
+
+    @PostMapping("/update-business-customer")
+    public Result<?> updateUser(@Validated(Update.class) @ModelAttribute BusinessCustomer businessCustomer) {
+        return Result.success(userService.updateBusinessCustomer(businessCustomer));
+    }
     @GetMapping("/systemUser/{id}")
     @PreAuthorize("hasAuthority('user-get')")
     public Result<?> getUserById(@PathVariable Long id) {
