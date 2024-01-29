@@ -31,6 +31,12 @@ public class FormController {
         return Result.success("Lấy dữ liệu thành công", form) ;
     }
 
+    @GetMapping("/cms/get-all-demand")
+    @PreAuthorize("hasAuthority('form-list')")
+    public Result<?> getAllDemandCMS(DemandReq demandReq, Pageable pageable) {
+        return Result.success("Lấy dữ liệu thành công", formService.getAllDemand(demandReq, pageable));
+    }
+
     @PutMapping("/{id}/connect")
     public Result<?> updateStatus(@PathVariable Long id, @RequestBody FormUpdateStatusReq formUpdateStatusReq) {
         Form form = formService.connect(id, formUpdateStatusReq);

@@ -12,4 +12,16 @@ public class DemandReq extends BaseFilter {
     private String createdAt = "";
     private List<Integer> status;
     private String query = "";
+
+    public String getDemandName() {
+        return demandName.trim().toLowerCase();
+    }
+
+    public String getCreatedAt() {
+        return createdAt.trim().toLowerCase();
+    }
+
+    public String getQuery() {
+        return query.trim().toLowerCase();
+    }
 }

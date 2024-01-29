@@ -3,6 +3,8 @@ package com.vmg.ibo.core.model.dto.filter;
 import com.vmg.ibo.core.base.BaseFilter;
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 public class UserFilter extends BaseFilter {
     private String email;
@@ -12,4 +14,16 @@ public class UserFilter extends BaseFilter {
     private Integer status;
     private Long fromCapitalSize;
     private Long toCapitalSize;
+
+    public String getEmail() {
+        return Objects.isNull(email) ? null : email.trim();
+    }
+
+    public String getUsername() {
+        return Objects.isNull(username) ? null : username.trim();
+    }
+
+    public String getQuery() {
+        return Objects.isNull(query) ? null : query.trim();
+    }
 }

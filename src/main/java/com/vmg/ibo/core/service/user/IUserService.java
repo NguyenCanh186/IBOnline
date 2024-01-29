@@ -1,12 +1,9 @@
 package com.vmg.ibo.core.service.user;
 
-import com.vmg.ibo.core.model.dto.UserAddDto;
+import com.vmg.ibo.core.model.dto.*;
 import com.vmg.ibo.customer.model.customer.BusinessCustomer;
 import com.vmg.ibo.customer.model.customer.PersonalCustomer;
 import com.vmg.ibo.customer.model.customer.RegisterModel;
-import com.vmg.ibo.core.model.dto.ChangePasswordRequest;
-import com.vmg.ibo.core.model.dto.ProfileResponse;
-import com.vmg.ibo.core.model.dto.UserDTO;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
 import com.vmg.ibo.customer.model.ForgotPass;
 import com.vmg.ibo.core.model.entity.User;
@@ -56,4 +53,6 @@ public interface IUserService {
     User lockOrUnlockUser(Integer status, Long id);
 
     void checkChannel(User user);
+
+    CheckPasswordResponse checkNewPassword(String newPassword);
 }
