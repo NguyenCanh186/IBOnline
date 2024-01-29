@@ -49,7 +49,10 @@ public class FinancialReportService extends BaseService implements IFinancialRep
     @Override
     @Transactional
     public FinancialReportDTO create(FinancialReportRequest financialReportRequest) {
-        User user = userRepository.findById(financialReportRequest.getUserId()).orElseThrow(() -> new WebServiceException(HttpStatus.OK.value(),HttpStatus.CONFLICT.value(), "Không tìm thấy người dùng hợp lệ"));
+        User user = getCurrentUser();
+        if (user == null) {
+            throw new WebServiceException(HttpStatus.OK.value(),HttpStatus.CONFLICT.value(), "Không tìm thấy người dùng hợp lệ");
+        }
         FinancialReport financialReport = this.findByQuarterAndYearAndUser(financialReportRequest.getQuarter(), financialReportRequest.getYear(), user);
         boolean isExist = true;
         if (financialReport == null) {
