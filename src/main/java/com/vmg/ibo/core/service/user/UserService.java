@@ -1,6 +1,8 @@
 package com.vmg.ibo.core.service.user;
 
 import com.vmg.ibo.core.base.BaseService;
+import com.vmg.ibo.form.service.email.EmailService;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.constant.AuthConstant;
 import com.vmg.ibo.core.constant.MailMessageConstant;
@@ -59,6 +61,9 @@ public class UserService extends BaseService implements IUserService {
 
     @Autowired
     private IUserDetailService userDetailService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private FileUploadService fileUploadService;
@@ -146,10 +151,8 @@ public class UserService extends BaseService implements IUserService {
         userDetail.setContactName("");
         userDetail.setIdUser(user.getId());
         userDetailService.create(userDetail);
-        mailService.sendFromSystem(message -> message.to(registerModel.getEmail())
-                .subject(MailMessageConstant.CREATE_ACCOUNT_SUBJECT)
-                .text("Quý khách vui lòng truy cập theo link: " + cmsUrl + "/active-user?code=" + codeValid + " để xác thực tài khoản email. Cảm ơn quý khách đã tin tưởng sử dụng dịch vụ IB Online của HMG")
-                .build());
+        emailService.sendEmail(registerModel.getEmail(), MailMessageConstant.CREATE_ACCOUNT_SUBJECT, "Xin chào bạn \n" +
+                "Quý khách vui lòng truy cập theo link: " + cmsUrl + "/active-user?code=" + codeValid + " để xác thực tài khoản email. Cảm ơn quý khách đã tin tưởng sử dụng dịch vụ IB Online của HMG", null);
         return user;
     }
 
@@ -185,6 +188,15 @@ public class UserService extends BaseService implements IUserService {
     @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
+    }
+
+    private boolean isValidPdf(MultipartFile file) {
+        try (PDDocument document = PDDocument.load(file.getInputStream())) {
+            return document.getNumberOfPages() > 0;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
@@ -315,6 +327,9 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public User createPersonalCustomer(PersonalCustomer personalCustomer) {
+        if (getCurrentUser().getChannelId() == 0) {
+            throw new WebServiceException(200, 409, "Bạn là người dùng hệ thống, không thể cập nhật thông tin");
+        }
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
         List<UserDetail> userDetailList = userDetailService.findAll();
         UserDetail userDetail1 = userDetailService.findByIdUser(idUser);
@@ -361,7 +376,32 @@ public class UserService extends BaseService implements IUserService {
     @Override
     @Transactional
     public User createBusinessCustomer(BusinessCustomer businessCustomer) {
+        if (getCurrentUser().getChannelId() == 0) {
+            throw new WebServiceException(200, 409, "Bạn là người dùng hệ thống, không thể cập nhật thông tin");
+        }
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
+
+        List<UserDetail> userDetailList = userDetailService.findAll();
+        UserDetail userDetail1 = userDetailService.findByIdUser(idUser);
+        boolean foundCodeTax = false;
+
+        for (int i = 0; i < userDetailList.size(); i++) {
+            UserDetail currentUserDetail = userDetailList.get(i);
+
+            if (currentUserDetail.getCodeTax() != null && currentUserDetail.getCodeTax().equals(businessCustomer.getCodeTax())) {
+                if (userDetail1.getCodeTax() != null && userDetail1.getCodeTax().equals(businessCustomer.getCodeTax())) {
+                    foundCodeTax = true;
+                } else {
+                    throw new WebServiceException(200, 409, "Mã số thuế đã tồn tại");
+                }
+            }
+        }
+
+        if (!foundCodeTax && userDetail1.getCodeTax() != null && userDetail1.getCodeTax().equals(businessCustomer.getCodeTax())) {
+            throw new WebServiceException(200, 409, "Mã số thuế đã tồn tại");
+        }
+
+
         User user = userRepository.findById(idUser).orElse(null);
         assert user != null;
         user.setInfo(true);
@@ -401,6 +441,11 @@ public class UserService extends BaseService implements IUserService {
         financialReport.setUser(user);
         financialReport = financialReportService.save(financialReport);
         if (businessCustomer.getFiles() != null) {
+            for (int i = 0; i < businessCustomer.getFiles().size(); i++) {
+                if (!isValidPdf(businessCustomer.getFiles().get(i))) {
+                    throw new WebServiceException(200, 409, "File không đúng định dạng PDF");
+                }
+            }
             if (isExist) {
                 fileUploadService.deleteAllByFinancialReport(financialReport);
             }
@@ -424,7 +469,32 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public User updateBusinessCustomer(BusinessCustomer businessCustomer) {
+        if (!getCurrentUser().isInfo()) {
+            throw new WebServiceException(200, 409, "Vui lòng điền thông tin cá nhân trước khi cập nhật");
+        }
+        if (getCurrentUser().getChannelId() == 0) {
+            throw new WebServiceException(200, 409, "Bạn là người dùng hệ thống, không thể cập nhật thông tin");
+        }
         Long idUser = (long) Math.toIntExact(getCurrentUser().getId());
+        List<UserDetail> userDetailList = userDetailService.findAll();
+        UserDetail userDetail1 = userDetailService.findByIdUser(idUser);
+        boolean foundCodeTax = false;
+
+        for (int i = 0; i < userDetailList.size(); i++) {
+            UserDetail currentUserDetail = userDetailList.get(i);
+
+            if (currentUserDetail.getCodeTax() != null && currentUserDetail.getCodeTax().equals(businessCustomer.getCodeTax())) {
+                if (userDetail1.getCodeTax() != null && userDetail1.getCodeTax().equals(businessCustomer.getCodeTax())) {
+                    foundCodeTax = true;
+                } else {
+                    throw new WebServiceException(200, 409, "Mã số thuế đã tồn tại");
+                }
+            }
+        }
+
+        if (!foundCodeTax && userDetail1.getCodeTax() != null && userDetail1.getCodeTax().equals(businessCustomer.getCodeTax())) {
+            throw new WebServiceException(200, 409, "Mã số thuế đã tồn tại");
+        }
         User user = userRepository.findById(idUser).orElse(null);
         assert user != null;
         user.setInfo(true);
