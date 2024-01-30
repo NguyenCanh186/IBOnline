@@ -153,7 +153,7 @@ public class UserService extends BaseService implements IUserService {
         userDetail.setIdUser(user.getId());
         userDetailService.create(userDetail);
         emailService.sendEmail(registerModel.getEmail(), MailMessageConstant.CREATE_ACCOUNT_SUBJECT, "Xin chào bạn \n" +
-                "Quý khách vui lòng truy cập theo link: " + cmsUrl + "/active-user?code=" + codeValid + " để xác thực tài khoản email. Cảm ơn quý khách đã tin tưởng sử dụng dịch vụ IB Online của HMG", null);
+                "Quý khách vui lòng truy cập theo link: " + cmsUrl + "/kich-hoat-tai-khoan?code=" + codeValid + " để xác thực tài khoản email. Cảm ơn quý khách đã tin tưởng sử dụng dịch vụ IB Online của HMG", null);
         return user;
     }
 
@@ -174,7 +174,7 @@ public class UserService extends BaseService implements IUserService {
         codeAndEmailService.saveCodeAndEmail(codeAndEmail);
         mailService.sendFromSystem(message -> message.to(email)
                 .subject(MailMessageConstant.FORGOT_PASSWORD_SUBJECT)
-                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + cmsUrl + "/change-password?code=" + codeValid
+                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + cmsUrl + "/doi-mat-khau?code=" + codeValid
                         + " . Đường link này có hiệu lực trong 10 phút")
                 .build());
     }
