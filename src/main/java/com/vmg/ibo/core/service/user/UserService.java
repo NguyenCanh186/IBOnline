@@ -111,6 +111,7 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
+    @Transactional
     public User registerUser(RegisterModel registerModel) {
         String codeValid = generateRandomCode();
         CodeAndEmail codeAndEmail = new CodeAndEmail();
@@ -123,7 +124,7 @@ public class UserService extends BaseService implements IUserService {
         int maxNumberUserName = listUserName.stream()
                 .map(s -> Integer.parseInt(s.substring(8)))
                 .max(Comparator.naturalOrder()).orElse(0) + 1;
-        String username = "username" + String.valueOf(maxNumberUserName);
+        String username = "username" + maxNumberUserName;
         user.setUsername(username);
         String password = registerModel.getPassword();
         user.setStatus((Integer) UserConstant.ENABLE.getValue());
@@ -154,6 +155,14 @@ public class UserService extends BaseService implements IUserService {
         emailService.sendEmail(registerModel.getEmail(), MailMessageConstant.CREATE_ACCOUNT_SUBJECT, "Xin chào bạn \n" +
                 "Quý khách vui lòng truy cập theo link: " + cmsUrl + "/active-user?code=" + codeValid + " để xác thực tài khoản email. Cảm ơn quý khách đã tin tưởng sử dụng dịch vụ IB Online của HMG", null);
         return user;
+    }
+
+    private void createUserDetail(String userCode, User user) {
+        UserDetail userDetail = new UserDetail();
+        userDetail.setCustomerCode(userCode);
+        userDetail.setContactName("");
+        userDetail.setIdUser(user.getId());
+        userDetailService.create(userDetail);
     }
 
     @Override
@@ -229,6 +238,7 @@ public class UserService extends BaseService implements IUserService {
         for (int i = 0; i < listEmail.size(); i++) {
             if (listEmail.get(i).equals(email)) {
                 isExist = true;
+                break;
             }
             if (isExist) {
                 break;
@@ -299,7 +309,7 @@ public class UserService extends BaseService implements IUserService {
         int maxNumberUserName = listUserName.stream()
                 .map(s -> Integer.parseInt(s.substring(8)))
                 .max(Comparator.naturalOrder()).orElse(0) + 1;
-        String username = "username" + String.valueOf(maxNumberUserName);
+        String username = "username" + maxNumberUserName;
         user.setUsername(username);
         user.setEmail(userDTO.getEmail());
         user.setRoles(roles);
@@ -664,6 +674,7 @@ public class UserService extends BaseService implements IUserService {
     }
 
     @Override
+    @Transactional
     public User registerUserByGoogle(RegisterModel registerModel) {
         User user = new User();
         user.setEmail(registerModel.getEmail());
@@ -671,7 +682,7 @@ public class UserService extends BaseService implements IUserService {
         int maxNumberUserName = listUserName.stream()
                 .map(s -> Integer.parseInt(s.substring(8)))
                 .max(Comparator.naturalOrder()).orElse(0) + 1;
-        String username = "username" + String.valueOf(maxNumberUserName);
+        String username = "username" + maxNumberUserName;
         user.setUsername(username);
         String password = registerModel.getPassword();
         user.setStatus((Integer) UserConstant.ENABLE.getValue());
@@ -683,9 +694,15 @@ public class UserService extends BaseService implements IUserService {
         user.setCreatedByUserId(1L);
         user.setCreatedAt(new Date());
         user.setIsResetPass(true);
-        Role role = roleRepository.findById(2L).get();
+        Role role = roleRepository.findById(2L).orElseThrow(() -> new WebServiceException(HttpStatus.OK.value(),HttpStatus.CONFLICT.value(), "Không tìm thấy vai trò người dùng hợp lệ"));
         user.setRoles(Collections.singleton(role));
         user = userRepository.save(user);
+        List<String> listUserCode = userDetailRepository.getAllCustomerCode();
+        int maxNumber = listUserCode.stream()
+                .map(s -> Integer.parseInt(s.substring(3)))
+                .max(Comparator.naturalOrder()).orElse(0) + 1;
+        String userCode = DataModel.USER_CODE + maxNumber;
+        createUserDetail(userCode, user);
         return user;
     }
 }
