@@ -191,7 +191,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
     }
 
     private boolean isValidFieldEdit(Long templateFieldId, TemplateFieldEditReq request) {
-        boolean valid = false;
+        boolean valid = true;
         Optional<TemplateField> templateField = templateFieldService.getTemplateFieldById(templateFieldId);
         if (!templateField.isPresent()) {
             throw new WebServiceException(HttpStatus.OK.value(), 409, "Template Field không tồn tại");
@@ -254,7 +254,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
     }
 
     private boolean isValidField(Long templateFieldId, TemplateFieldReq request) {
-        boolean valid = false;
+        boolean valid = true;
         Optional<TemplateField> templateField = templateFieldService.getTemplateFieldById(templateFieldId);
         if (!templateField.isPresent()) {
             throw new WebServiceException(HttpStatus.OK.value(), 409, "Template Field không tồn tại");
