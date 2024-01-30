@@ -11,4 +11,6 @@ public interface ITemplateService {
     Template createTemplate(Template template);
 
     List<Template> getAllTemplate();
+
+    Template getTemplateBySlug(String slug);
 }

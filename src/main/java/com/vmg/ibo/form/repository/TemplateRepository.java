@@ -10,4 +10,6 @@ import java.util.List;
 public interface TemplateRepository extends JpaRepository<Template, Long> {
     List<Template> findAllByType(Integer type);
     List<Template> findAllByTypeAndIdIn(Integer type,List<Long> ids);
+
+    Template findBySlug(String slug);
 }
