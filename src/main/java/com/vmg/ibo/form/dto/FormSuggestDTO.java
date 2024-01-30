@@ -2,8 +2,7 @@ package com.vmg.ibo.form.dto;
 
 import lombok.Data;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
@@ -13,55 +12,34 @@ public class FormSuggestDTO {
     private TemplateDTO template;
     private List<FormFieldDTO> formFields;
 
-    public List<FormFieldDTO> getFormFields () {
+    private static final Map<Long, Long> TEMPLATE_FIELD_ID_MAP = createTemplateFieldIdMap();
+
+    private static Map<Long, Long> createTemplateFieldIdMap() {
+        Map<Long, Long> map = new HashMap<>();
+        map.put(1L, 3L);
+        map.put(2L, 8L);
+        map.put(3L, 12L);
+        map.put(4L, 17L);
+        map.put(5L, 21L);
+        map.put(6L, 26L);
+        map.put(7L, 30L);
+        map.put(8L, 36L);
+        map.put(9L, 44L);
+        map.put(10L, 51L);
+        map.put(11L, 55L);
+        return Collections.unmodifiableMap(map);
+    }
+
+    public List<FormFieldDTO> getFormFields() {
         if (template != null && template.getId() != null) {
-            if(template.getId() == 1) {
+            Long templateFieldId = TEMPLATE_FIELD_ID_MAP.get(template.getId());
+            if (templateFieldId != null) {
                 return formFields.stream()
-                        .filter(field -> field.getTemplateFieldId() != null && field.getTemplateFieldId() == 3)
-                        .collect(Collectors.toList());
-            } else if(template.getId() == 2){
-                return formFields.stream()
-                        .filter(field -> field.getTemplateFieldId() != null && field.getTemplateFieldId() == 8)
-                        .collect(Collectors.toList());
-            } else if(template.getId() == 3){
-                return formFields.stream()
-                        .filter(field -> field.getTemplateFieldId() != null && field.getTemplateFieldId() == 12)
-                        .collect(Collectors.toList());
-            } else if(template.getId() == 4) {
-                return formFields.stream()
-                        .filter(field -> field.getTemplateFieldId() != null && field.getTemplateFieldId() == 17)
-                        .collect(Collectors.toList());
-            } else if(template.getId() == 5) {
-                return formFields.stream()
-                        .filter(field -> field.getTemplateFieldId() != null && field.getTemplateFieldId() == 21)
-                        .collect(Collectors.toList());
-            } else if(template.getId() == 6) {
-                return formFields.stream()
-                        .filter(field -> field.getTemplateFieldId() != null && field.getTemplateFieldId() == 26)
-                        .collect(Collectors.toList());
-            } else if(template.getId() == 7) {
-                return formFields.stream()
-                        .filter(field -> field.getTemplateFieldId() != null && field.getTemplateFieldId() == 30)
-                        .collect(Collectors.toList());
-            } else if(template.getId() == 8) {
-                return formFields.stream()
-                        .filter(field -> field.getTemplateFieldId() != null && field.getTemplateFieldId() == 36)
-                        .collect(Collectors.toList());
-            } else if(template.getId() == 9) {
-                return formFields.stream()
-                        .filter(field -> field.getTemplateFieldId() != null && field.getTemplateFieldId() == 44)
-                        .collect(Collectors.toList());
-            } else if(template.getId() == 10) {
-                return formFields.stream()
-                        .filter(field -> field.getTemplateFieldId() != null && field.getTemplateFieldId() == 51)
-                        .collect(Collectors.toList());
-            } else if(template.getId() == 11) {
-                return formFields.stream()
-                        .filter(field -> field.getTemplateFieldId() != null && field.getTemplateFieldId() == 55)
+                        .filter(field -> field.getTemplateFieldId() != null && field.getTemplateFieldId().equals(templateFieldId))
                         .collect(Collectors.toList());
             }
-
         }
-        return null; // or an empty list, depending on your requirement
+
+        return Collections.emptyList(); // Return an empty list if template or template ID is not found
     }
 }
