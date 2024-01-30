@@ -22,6 +22,5 @@ public class FinancialReportRequest {
     @NotNull(message = "Năm bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Integer year;
     private Integer quarter;
-    private Long userId;
     private List<MultipartFile> files;
 }

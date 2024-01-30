@@ -4,6 +4,7 @@ import com.vmg.ibo.core.base.BaseFilter;
 import com.vmg.ibo.core.base.BaseService;
 import com.vmg.ibo.core.config.exception.WebServiceException;
 import com.vmg.ibo.core.constant.MailMessageConstant;
+import com.vmg.ibo.core.constant.UserConstant;
 import com.vmg.ibo.core.model.entity.User;
 import com.vmg.ibo.core.repository.IUserRepository;
 import com.vmg.ibo.core.service.mail.IMailService;
@@ -247,7 +248,7 @@ public class FormService extends BaseService implements IFormService {
         Optional<User> userOptional = userRepository.findById(userId);
         if(userOptional.isPresent()) {
             User user = userOptional.get();
-            if(user.getChannelId() == 2) {
+            if(user.getChannelId() == UserConstant.CHANNEL_ADMIN.getValue()) {
                 userId = null;
             }
         }

@@ -665,11 +665,6 @@ public class UserService extends BaseService implements IUserService {
 
     @Override
     public User registerUserByGoogle(RegisterModel registerModel) {
-        String codeValid = generateRandomCode();
-        CodeAndEmail codeAndEmail = new CodeAndEmail();
-        codeAndEmail.setCode(codeValid);
-        codeAndEmail.setEmail(registerModel.getEmail());
-        codeAndEmailService.saveCodeAndEmail(codeAndEmail);
         User user = new User();
         user.setEmail(registerModel.getEmail());
         List<String> listUserName = userDetailRepository.getAllUsername();
