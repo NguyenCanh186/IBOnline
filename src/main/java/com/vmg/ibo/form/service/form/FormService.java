@@ -280,10 +280,10 @@ public class FormService extends BaseService implements IFormService {
         if(!Objects.isNull(users) && !users.isEmpty()) {
             List<String> emails = users.stream().map(User::getEmail).collect(Collectors.toList());
             String url = cmsUrl + "/cms/quan-ly-deal/" + deal.getId();
-            emailService.sendEmail(emails.get(0), MailMessageConstant.DEMAND, "Xin chào bạn! \n" +
+            emailService.sendEmail(emails.get(0), MailMessageConstant.DEMAND, "Xin chào bạn \n" +
                     "Hệ thống IBOnline ghi nhận " + getCurrentUser().getName() +
                     " đang có nhu cầu kết nối đến nhu cầu " + formPartner.getCodeDemand() +
-                    " của khách hàng " + userParent.getName() + ".\n" +
+                    " của khách hàng " + userParent.getName() + ". " +
                     "Bạn có thể xem chi tiết tại đây:" + url, emails);
         } else {
             throw new WebServiceException(HttpStatus.OK.value(),409, "Không tìm thấy điểu phối viên");
