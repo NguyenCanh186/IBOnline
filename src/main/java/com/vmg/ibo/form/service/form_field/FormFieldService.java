@@ -236,7 +236,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                             long target = (long) lessThan.get("target");
                             if (type.equals("number")) {
                                 long value = Long.parseLong(request.getValue().trim());
-                                if (value < target) {
+                                if (value <= target) {
                                     valid = true;
                                 } else {
                                     throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " phải nhỏ hơn " + target);
@@ -299,7 +299,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                             long target = (long) lessThan.get("target");
                             if (type.equals("number")) {
                                 long value = Long.parseLong(request.getValue().trim());
-                                if (value < target) {
+                                if (value <= target) {
                                     valid = true;
                                 } else {
                                     throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " phải nhỏ hơn " + target);
