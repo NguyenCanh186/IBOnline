@@ -57,6 +57,4 @@ public class BusinessCustomer {
     private Integer year;
     private Integer quarter;
     private List<MultipartFile> files;
-    @NotNull(message = "Tiêu đề báo cáo tài chính bắt buộc nhập!", groups = {Insert.class})
-    private String reportTitle;
 }
