@@ -396,6 +396,10 @@ public class UserService extends BaseService implements IUserService {
 
         List<UserDetail> userDetailList = userDetailService.findAll();
         UserDetail userDetail1 = userDetailService.findByIdUser(idUser);
+        if (userDetail1 == null) {
+            throw new WebServiceException(200, 409, "Không tìm thấy thông tin tài khoản");
+
+        }
         boolean foundCodeTax = false;
 
         for (int i = 0; i < userDetailList.size(); i++) {
