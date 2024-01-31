@@ -65,7 +65,7 @@ public class FinancialReportService extends BaseService implements IFinancialRep
         financialReport.setDebt(financialReportRequest.getDebt());
         financialReport.setYear(financialReportRequest.getYear());
         if(financialReportRequest.getType() == 0) {
-            if(financialReport.getQuarter() == null ){
+            if(financialReportRequest.getQuarter() == null ){
                 throw new WebServiceException(200, 409, "Vui lòng chọn quý");
             }
         }
