@@ -455,7 +455,7 @@ public class UserService extends BaseService implements IUserService {
         financialReport.setDebt(businessCustomer.getDebtStructure());
         financialReport.setYear(businessCustomer.getYear());
         if(businessCustomer.getType() == 0) {
-            if(financialReport.getQuarter() == null ){
+            if(businessCustomer.getQuarter() == null ){
                 throw new WebServiceException(200, 409, "Vui lòng chọn quý");
             }
         }
