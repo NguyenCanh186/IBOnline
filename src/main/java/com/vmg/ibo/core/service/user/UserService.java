@@ -614,7 +614,7 @@ public class UserService extends BaseService implements IUserService {
             user.get().setStatus(status);
             return userRepository.save(user.get());
         } else {
-            throw new WebServiceException(HttpStatus.OK.value(), "user.error.notFound");
+            throw new WebServiceException(HttpStatus.OK.value(),HttpStatus.BAD_REQUEST.value(), "user.error.notFound");
         }
     }
 
