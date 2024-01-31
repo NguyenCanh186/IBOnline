@@ -13,6 +13,6 @@ public class LogFilter extends BaseFilter {
         if(CommonUtils.empty(this.query)) {
             return null;
         }
-        return query.toLowerCase().trim();
+        return query.toLowerCase().trim().replace("%", "\\%");
     }
 }

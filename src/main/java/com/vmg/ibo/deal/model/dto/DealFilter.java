@@ -15,22 +15,22 @@ public class DealFilter extends BaseFilter {
     private Integer status;
 
     public String getQuery() {
-        return query.trim().toLowerCase();
+        return query.trim().toLowerCase().replace("%", "\\%");
     }
 
     public String getFirstForm() {
-        return firstForm.trim().toLowerCase();
+        return firstForm.trim().toLowerCase().replace("%", "\\%");
     }
 
     public String getSecondForm() {
-        return secondForm.trim().toLowerCase();
+        return secondForm.trim().toLowerCase().replace("%", "\\%");
     }
 
     public String getCoordinator() {
-        return coordinator.trim().toLowerCase();
+        return coordinator.trim().toLowerCase().replace("%", "\\%");
     }
 
     public String getDate() {
-        return date.trim().toLowerCase();
+        return date.trim().toLowerCase().replace("%", "\\%");
     }
 }

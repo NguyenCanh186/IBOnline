@@ -12,6 +12,6 @@ public class RoleFilter extends BaseFilter {
         if(CommonUtils.empty(this.name)) {
             return null;
         }
-        return name.trim().toLowerCase();
+        return name.trim().toLowerCase().replace("%", "\\%");
     }
 }
