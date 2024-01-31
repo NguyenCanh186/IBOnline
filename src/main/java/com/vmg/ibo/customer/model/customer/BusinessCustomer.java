@@ -56,5 +56,7 @@ public class BusinessCustomer {
     @NotNull (message = "Năm bắt buộc nhập!", groups = {Insert.class})
     private Integer year;
     private Integer quarter;
+    @NotNull(message = "Loại báo cáo bắt buộc nhập!", groups = {Insert.class, Update.class})
+    private Integer type;
     private List<MultipartFile> files;
 }
