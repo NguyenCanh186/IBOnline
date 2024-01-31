@@ -302,6 +302,9 @@ public class UserService extends BaseService implements IUserService {
                 throw new WebServiceException(HttpStatus.NOT_FOUND.value(), "Không tìm thấy vai trò này");
             }
         }
+        if (checkEmailExisted(userDTO.getEmail())) {
+            throw new WebServiceException(HttpStatus.CONFLICT.value(), "Email đã tồn tại");
+        }
         List<Long> userIds = userDTO.getRoleIds();
         Set<Role> roles = new HashSet<>(roleRepository.findAllById(userIds));
         User currentUser = getCurrentUser();
@@ -625,6 +628,17 @@ public class UserService extends BaseService implements IUserService {
             isEqual = passwordEncoder.matches(newPassword, getCurrentUser().getPassword());
         }
         return CheckPasswordResponse.builder().isEqual(isEqual).build();
+    }
+
+    @Override
+    public ExistedResponse checkExistedEmail(String email) {
+        return ExistedResponse.builder().exists(checkEmailExisted(email)).build();
+    }
+
+    private boolean checkEmailExisted(String email) {
+        email = email.trim().toLowerCase();
+        User user = userRepository.findByEmail(email).orElse(null);
+        return Objects.nonNull(user);
     }
 
     @Override
