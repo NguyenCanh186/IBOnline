@@ -143,7 +143,8 @@ public class DealService extends BaseService implements IDealService {
         int maxNumber = codes.stream()
                 .map(s -> Integer.parseInt(s.substring(5)))
                 .max(Comparator.naturalOrder()).orElse(0) + 1;
-        return DataModel.DEAL_CODE + maxNumber;
+        String paddedMaxNumber = String.format("%06d", maxNumber);
+        return DataModel.DEAL_CODE + paddedMaxNumber;
     }
 
     private DealDTO mapToDTO(Deal deal) {
