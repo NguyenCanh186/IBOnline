@@ -124,7 +124,8 @@ public class UserService extends BaseService implements IUserService {
         int maxNumberUserName = listUserName.stream()
                 .map(s -> Integer.parseInt(s.substring(8)))
                 .max(Comparator.naturalOrder()).orElse(0) + 1;
-        String username = "username" + maxNumberUserName;
+        String paddedMaxNumber = String.format("%06d", maxNumberUserName);
+        String username = "username" + paddedMaxNumber;
         user.setUsername(username);
         String password = registerModel.getPassword();
         user.setStatus((Integer) UserConstant.ENABLE.getValue());
@@ -617,16 +618,20 @@ public class UserService extends BaseService implements IUserService {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             user.get().setStatus(status);
+            List<Form> forms = formRepository.findAllByUserIdAndStatus(id,1);
+            if (forms.size() > 0) {
+                throw new WebServiceException(HttpStatus.OK.value(),HttpStatus.CONFLICT.value(), "Khách hàng đang có giao dịch, khóa thất bại. Vui lòng thử lại sau");
+            }
             return userRepository.save(user.get());
         } else {
-            throw new WebServiceException(HttpStatus.OK.value(),HttpStatus.BAD_REQUEST.value(), "user.error.notFound");
+            throw new WebServiceException(HttpStatus.OK.value(),HttpStatus.CONFLICT.value(), "user.error.notFound");
         }
     }
 
     @Override
     public void checkChannel(User user) {
         if (user.getChannelId() == 0) {
-            throw new WebServiceException(HttpStatus.CONFLICT.value(), "Access denied");
+            throw new WebServiceException(HttpStatus.OK.value(),HttpStatus.CONFLICT.value(), "Access denied");
         }
     }
 

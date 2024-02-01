@@ -140,7 +140,8 @@ public class FormFieldService extends BaseService implements IFormFieldService {
         int maxNumber = listFormCode.stream()
                 .map(s -> Integer.parseInt(s.substring(3)))
                 .max(Comparator.naturalOrder()).orElse(0) + 1;
-        String formCode = DataModel.DEMAND_FORM_CODE + String.valueOf(maxNumber);
+        String paddedMaxNumber = String.format("%06d", maxNumber);
+        String formCode = DataModel.DEMAND_FORM_CODE + paddedMaxNumber;
         Form form = new Form();
         form.setTemplate(template.get());
         form.setUser(getCurrentUser());

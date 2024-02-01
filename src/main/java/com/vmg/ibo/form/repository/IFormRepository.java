@@ -42,6 +42,9 @@ public interface IFormRepository extends JpaRepository<Form, Long> {
     Page<DemandDTO> getAllDemand(DemandReq demandReq,Long userId, Pageable pageable);
 
     Page<Form> findByUser(User user, Pageable pageable);
+
+    List<Form> findAllByUserIdAndStatus(Long userId, Integer status);
+
     @Query(value = "SELECT f.dealCode FROM Form f")
     List<String> getAllDealCode();
 }
