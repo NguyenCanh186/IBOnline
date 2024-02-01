@@ -14,14 +14,14 @@ public class DemandReq extends BaseFilter {
     private String query = "";
 
     public String getDemandName() {
-        return demandName.trim().toLowerCase();
+        return demandName.trim().toLowerCase().replace("%", "\\%");
     }
 
     public String getCreatedAt() {
-        return createdAt.trim().toLowerCase();
+        return createdAt.trim().toLowerCase().replace("%", "\\%");
     }
 
     public String getQuery() {
-        return query.trim().toLowerCase();
+        return query.trim().toLowerCase().replace("%", "\\%");
     }
 }

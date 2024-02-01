@@ -17,6 +17,7 @@ import com.vmg.ibo.deal.service.IDealService;
 import com.vmg.ibo.form.dto.DemandDTO;
 import com.vmg.ibo.form.dto.FormDTO;
 import com.vmg.ibo.form.dto.FormSuggestDTO;
+import com.vmg.ibo.form.dto.FormView;
 import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.entity.Template;
 import com.vmg.ibo.form.model.DemandReq;
@@ -179,9 +180,6 @@ public class FormService extends BaseService implements IFormService {
         formDTO.setCodeDemand(form.getCodeDemand());
     }
 
-
-
-
     @Override
     public Form createForm(Form form) {
         return formRepository.save(form);
@@ -265,6 +263,17 @@ public class FormService extends BaseService implements IFormService {
         return formRepository.findByUser(user, pageable);
     }
 
+    @Override
+    public FormView getFormViewById(Long id) {
+        Optional<Form> formOptional = formRepository.findById(id);
+        Form form = formOptional.orElseThrow(() ->
+                new WebServiceException(HttpStatus.OK.value(), 409, "Không tìm thấy nhu cầu hợp lệ"));
+        ModelMapper modelMapper = new ModelMapper();
+        FormView formView = modelMapper.map(form, FormView.class);
+        formView.setCodeDemand(form.getCodeDemand());
+        return formView;
+    }
+
     private void sendEmailsForStatus1(Form formPartner,Deal deal) {
         User userParent = formPartner.getUser();
         List<User> users = userRepository.findUsersByRoleId(13L);
@@ -274,7 +283,7 @@ public class FormService extends BaseService implements IFormService {
             emailService.sendEmail(emails.get(0), MailMessageConstant.DEMAND, "Xin chào bạn \n" +
                     "Hệ thống IBOnline ghi nhận " + getCurrentUser().getName() +
                     " đang có nhu cầu kết nối đến nhu cầu " + formPartner.getCodeDemand() +
-                    " của khách hàng " + userParent.getName() + ".\n " +
+                    " của khách hàng " + userParent.getName() + ". " +
                     "Bạn có thể xem chi tiết tại đây:" + url, emails);
         } else {
             throw new WebServiceException(HttpStatus.OK.value(),409, "Không tìm thấy điểu phối viên");

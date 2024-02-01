@@ -30,6 +30,12 @@ public class TemplateController {
         return Result.success("Lấy dữ liệu thành công", template.get()) ;
     }
 
+    @GetMapping("/get/{slug}")
+    public Result<?> getFormsFieldBySlug(@PathVariable String slug) {
+        Template template = templateService.getTemplateBySlug(slug);
+        return Result.success("Lấy dữ liệu thành công", template) ;
+    }
+
     @GetMapping("/get-template")
     public Result<?> getAll() {
         return Result.success("Lấy dữ liệu thành công", templateService.getAllTemplate());

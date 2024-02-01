@@ -55,4 +55,6 @@ public interface IUserService {
     void checkChannel(User user);
 
     CheckPasswordResponse checkNewPassword(String newPassword);
+
+    ExistedResponse checkExistedEmail(String email);
 }

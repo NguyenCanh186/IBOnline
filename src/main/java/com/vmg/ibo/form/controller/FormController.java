@@ -3,6 +3,7 @@ package com.vmg.ibo.form.controller;
 import com.vmg.ibo.core.base.BaseFilter;
 import com.vmg.ibo.core.base.Result;
 import com.vmg.ibo.form.dto.FormDTO;
+import com.vmg.ibo.form.dto.FormView;
 import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.model.DemandReq;
 import com.vmg.ibo.form.model.FormUpdateStatusReq;
@@ -21,6 +22,12 @@ public class FormController {
     @GetMapping("/{id}")
     public Result<?> getFormsFieldById(@PathVariable Long id) {
         FormDTO form = formService.getFormById(id);
+        return Result.success("Lấy dữ liệu thành công", form) ;
+    }
+
+    @GetMapping("/view/{id}")
+    public Result<?> getFormViewById(@PathVariable Long id) {
+        FormView form = formService.getFormViewById(id);
         return Result.success("Lấy dữ liệu thành công", form) ;
     }
 

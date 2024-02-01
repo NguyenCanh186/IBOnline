@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -18,28 +19,27 @@ import java.util.List;
 public class BusinessCustomer {
     @NotNull(message = "Tên doanh nghiệp bắt buộc nhập!", groups = {Insert.class, Update.class})
     @Size(max = 255, message = "Tên doanh nghiệp không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
-    @NotBlank(message = "Tên doanh nghiệp không được để trống!", groups = {Insert.class, Update.class})
+    @NotEmpty(message = "Tên doanh nghiệp không được để trống!", groups = {Insert.class, Update.class})
     private String businessName;
     @NotNull(message = "Mã số thuế bắt buộc nhập!", groups = {Insert.class, Update.class})
     @Size(max = 20, message = "Mã số thuế không được vượt quá 20 ký tự!", groups = {Insert.class, Update.class})
-    @NotBlank(message = "Mã số thuế không được để trống!", groups = {Insert.class, Update.class})
+    @NotEmpty(message = "Mã số thuế không được để trống!", groups = {Insert.class, Update.class})
     private String codeTax;
     private String codeReg;
     @Size(max = 255, message = "Địa chỉ không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
     private String address;
     @NotNull(message = "Tên người liên hệ bắt buộc nhập!", groups = {Insert.class, Update.class})
     @Size(max = 255, message = "Tên người liên hệ không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
-    @NotBlank(message = "Tên người liên hệ không được để trống!", groups = {Insert.class, Update.class})
+    @NotEmpty(message = "Tên người liên hệ không được để trống!", groups = {Insert.class, Update.class})
     private String contactName;
     @Size(max = 255, message = "Chức danh không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
     private String title;
     @NotNull(message = "Số điện thoại bắt buộc nhập!", groups = {Insert.class, Update.class})
-    @Size(max = 10, message = "Số điện thoại không được vượt quá 10 ký tự!", groups = {Insert.class, Update.class})
-    @NotBlank(message = "Số điện thoại không được để trống!", groups = {Insert.class, Update.class})
+    @Size(max = 100, message = "Số điện thoại không được vượt quá 100 ký tự!", groups = {Insert.class, Update.class})
+    @NotEmpty(message = "Số điện thoại không được để trống!", groups = {Insert.class, Update.class})
     private String phone;
     @NotNull(message = "Ngành nghề kinh doanh chính bắt buộc nhập!", groups = {Insert.class, Update.class})
     @Size(max = 255, message = "Ngành nghề kinh doanh chính không được vượt quá 255 ký tự!", groups = {Insert.class, Update.class})
-    @NotBlank(message = "Số điện thoại không được để trống!", groups = {Insert.class, Update.class})
     private String mainBusiness;
     @NotNull (message = "Quy mô vốn bắt buộc nhập!", groups = {Insert.class, Update.class})
     private Long capitalSize;
@@ -56,7 +56,7 @@ public class BusinessCustomer {
     @NotNull (message = "Năm bắt buộc nhập!", groups = {Insert.class})
     private Integer year;
     private Integer quarter;
+    @NotNull(message = "Loại báo cáo bắt buộc nhập!", groups = {Insert.class, Update.class})
+    private Integer type;
     private List<MultipartFile> files;
-    @NotNull(message = "Tiêu đề báo cáo tài chính bắt buộc nhập!", groups = {Insert.class})
-    private String reportTitle;
 }

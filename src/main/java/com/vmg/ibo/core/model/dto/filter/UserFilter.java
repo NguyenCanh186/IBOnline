@@ -16,14 +16,14 @@ public class UserFilter extends BaseFilter {
     private Long toCapitalSize;
 
     public String getEmail() {
-        return Objects.isNull(email) ? null : email.trim();
+        return Objects.isNull(email) ? null : email.trim().replace("%", "\\%");
     }
 
     public String getUsername() {
-        return Objects.isNull(username) ? null : username.trim();
+        return Objects.isNull(username) ? null : username.trim().replace("%", "\\%");
     }
 
     public String getQuery() {
-        return Objects.isNull(query) ? null : query.trim();
+        return Objects.isNull(query) ? null : query.trim().replace("%", "\\%");
     }
 }

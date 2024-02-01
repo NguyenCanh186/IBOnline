@@ -124,4 +124,9 @@ public class UserController extends BaseService {
         }
         return Result.success(userService.create(userDTO));
     }
+
+    @GetMapping("/check-email-existed/{email}")
+    public Result<?> checkEmail(@PathVariable String email) {
+        return Result.success(userService.checkExistedEmail(email));
+    }
 }

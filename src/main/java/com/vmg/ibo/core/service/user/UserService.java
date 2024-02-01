@@ -153,7 +153,7 @@ public class UserService extends BaseService implements IUserService {
         userDetail.setIdUser(user.getId());
         userDetailService.create(userDetail);
         emailService.sendEmail(registerModel.getEmail(), MailMessageConstant.CREATE_ACCOUNT_SUBJECT, "Xin chào bạn \n" +
-                "Quý khách vui lòng truy cập theo link: " + cmsUrl + "/active-user?code=" + codeValid + " để xác thực tài khoản email. Cảm ơn quý khách đã tin tưởng sử dụng dịch vụ IB Online của HMG", null);
+                "Quý khách vui lòng truy cập theo link: " + cmsUrl + "/kich-hoat-tai-khoan?code=" + codeValid + " để xác thực tài khoản email. Cảm ơn quý khách đã tin tưởng sử dụng dịch vụ IB Online của HMG", null);
         return user;
     }
 
@@ -174,7 +174,7 @@ public class UserService extends BaseService implements IUserService {
         codeAndEmailService.saveCodeAndEmail(codeAndEmail);
         mailService.sendFromSystem(message -> message.to(email)
                 .subject(MailMessageConstant.FORGOT_PASSWORD_SUBJECT)
-                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + cmsUrl + "/change-password?code=" + codeValid
+                .text("Vui lòng truy cập vào đường link sau để đổi mật khẩu: " + cmsUrl + "/doi-mat-khau?code=" + codeValid
                         + " . Đường link này có hiệu lực trong 10 phút")
                 .build());
     }
@@ -302,6 +302,9 @@ public class UserService extends BaseService implements IUserService {
                 throw new WebServiceException(HttpStatus.NOT_FOUND.value(), "Không tìm thấy vai trò này");
             }
         }
+        if (checkEmailExisted(userDTO.getEmail())) {
+            throw new WebServiceException(HttpStatus.CONFLICT.value(), "Email đã tồn tại");
+        }
         List<Long> userIds = userDTO.getRoleIds();
         Set<Role> roles = new HashSet<>(roleRepository.findAllById(userIds));
         User currentUser = getCurrentUser();
@@ -348,8 +351,8 @@ public class UserService extends BaseService implements IUserService {
         for (int i = 0; i < userDetailList.size(); i++) {
             UserDetail currentUserDetail = userDetailList.get(i);
 
-            if (currentUserDetail.getCINumber() != null && currentUserDetail.getCINumber().trim().equals(personalCustomer.getCinumber().trim())) {
-                if (userDetail1.getCINumber() != null && userDetail1.getCINumber().trim().equals(personalCustomer.getCinumber().trim())) {
+            if (currentUserDetail.getCINumber() != null && currentUserDetail.getCINumber().equals(personalCustomer.getCinumber())) {
+                if (userDetail1.getCINumber() != null && userDetail1.getCINumber().equals(personalCustomer.getCinumber())) {
                     foundCINumber = true;
                 } else {
                     throw new WebServiceException(200, 409, "Số căn cước công dân đã tồn tại");
@@ -357,7 +360,7 @@ public class UserService extends BaseService implements IUserService {
             }
         }
 
-        if (!foundCINumber && userDetail1.getCINumber() != null && userDetail1.getCINumber().trim().equals(personalCustomer.getCinumber().trim())) {
+        if (!foundCINumber && userDetail1.getCINumber() != null && userDetail1.getCINumber().equals(personalCustomer.getCinumber())) {
             throw new WebServiceException(200, 409, "Số căn cước công dân đã tồn tại");
         }
         User user = userRepository.findById(idUser).orElse(null);
@@ -393,13 +396,17 @@ public class UserService extends BaseService implements IUserService {
 
         List<UserDetail> userDetailList = userDetailService.findAll();
         UserDetail userDetail1 = userDetailService.findByIdUser(idUser);
+        if (userDetail1 == null) {
+            throw new WebServiceException(200, 409, "Không tìm thấy thông tin tài khoản");
+
+        }
         boolean foundCodeTax = false;
 
         for (int i = 0; i < userDetailList.size(); i++) {
             UserDetail currentUserDetail = userDetailList.get(i);
 
-            if (currentUserDetail.getCodeTax() != null && currentUserDetail.getCodeTax().trim().equals(businessCustomer.getCodeTax().trim())) {
-                if (userDetail1.getCodeTax() != null && userDetail1.getCodeTax().trim().equals(businessCustomer.getCodeTax().trim())) {
+            if (currentUserDetail.getCodeTax() != null && currentUserDetail.getCodeTax().equals(businessCustomer.getCodeTax())) {
+                if (userDetail1.getCodeTax() != null && userDetail1.getCodeTax().equals(businessCustomer.getCodeTax())) {
                     foundCodeTax = true;
                 } else {
                     throw new WebServiceException(200, 409, "Mã số thuế đã tồn tại");
@@ -407,7 +414,7 @@ public class UserService extends BaseService implements IUserService {
             }
         }
 
-        if (!foundCodeTax && userDetail1.getCodeTax() != null && userDetail1.getCodeTax().trim().equals(businessCustomer.getCodeTax().trim())) {
+        if (!foundCodeTax && userDetail1.getCodeTax() != null && userDetail1.getCodeTax().equals(businessCustomer.getCodeTax())) {
             throw new WebServiceException(200, 409, "Mã số thuế đã tồn tại");
         }
 
@@ -447,6 +454,11 @@ public class UserService extends BaseService implements IUserService {
         financialReport.setAsset(businessCustomer.getPropertyStructure());
         financialReport.setDebt(businessCustomer.getDebtStructure());
         financialReport.setYear(businessCustomer.getYear());
+        if(businessCustomer.getType() == 0) {
+            if(businessCustomer.getQuarter() == null ){
+                throw new WebServiceException(200, 409, "Vui lòng chọn quý");
+            }
+        }
         financialReport.setQuarter(businessCustomer.getQuarter());
         financialReport.setUser(user);
         financialReport = financialReportService.save(financialReport);
@@ -493,8 +505,8 @@ public class UserService extends BaseService implements IUserService {
         for (int i = 0; i < userDetailList.size(); i++) {
             UserDetail currentUserDetail = userDetailList.get(i);
 
-            if (currentUserDetail.getCodeTax() != null && currentUserDetail.getCodeTax().trim().equals(businessCustomer.getCodeTax().trim())) {
-                if (userDetail1.getCodeTax() != null && userDetail1.getCodeTax().trim().equals(businessCustomer.getCodeTax().trim())) {
+            if (currentUserDetail.getCodeTax() != null && currentUserDetail.getCodeTax().equals(businessCustomer.getCodeTax())) {
+                if (userDetail1.getCodeTax() != null && userDetail1.getCodeTax().equals(businessCustomer.getCodeTax())) {
                     foundCodeTax = true;
                 } else {
                     throw new WebServiceException(200, 409, "Mã số thuế đã tồn tại");
@@ -502,7 +514,7 @@ public class UserService extends BaseService implements IUserService {
             }
         }
 
-        if (!foundCodeTax && userDetail1.getCodeTax() != null && userDetail1.getCodeTax().trim().equals(businessCustomer.getCodeTax().trim())) {
+        if (!foundCodeTax && userDetail1.getCodeTax() != null && userDetail1.getCodeTax().equals(businessCustomer.getCodeTax())) {
             throw new WebServiceException(200, 409, "Mã số thuế đã tồn tại");
         }
         User user = userRepository.findById(idUser).orElse(null);
@@ -607,7 +619,7 @@ public class UserService extends BaseService implements IUserService {
             user.get().setStatus(status);
             return userRepository.save(user.get());
         } else {
-            throw new WebServiceException(HttpStatus.OK.value(), "user.error.notFound");
+            throw new WebServiceException(HttpStatus.OK.value(),HttpStatus.BAD_REQUEST.value(), "user.error.notFound");
         }
     }
 
@@ -625,6 +637,17 @@ public class UserService extends BaseService implements IUserService {
             isEqual = passwordEncoder.matches(newPassword, getCurrentUser().getPassword());
         }
         return CheckPasswordResponse.builder().isEqual(isEqual).build();
+    }
+
+    @Override
+    public ExistedResponse checkExistedEmail(String email) {
+        return ExistedResponse.builder().exists(checkEmailExisted(email)).build();
+    }
+
+    private boolean checkEmailExisted(String email) {
+        email = email.trim().toLowerCase();
+        User user = userRepository.findByEmail(email).orElse(null);
+        return Objects.nonNull(user);
     }
 
     @Override

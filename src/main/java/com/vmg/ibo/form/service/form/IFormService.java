@@ -3,6 +3,7 @@ package com.vmg.ibo.form.service.form;
 import com.vmg.ibo.core.base.BaseFilter;
 import com.vmg.ibo.form.dto.DemandDTO;
 import com.vmg.ibo.form.dto.FormDTO;
+import com.vmg.ibo.form.dto.FormView;
 import com.vmg.ibo.form.entity.Form;
 import com.vmg.ibo.form.model.DemandReq;
 import com.vmg.ibo.form.model.FormUpdateStatusReq;
@@ -21,4 +22,6 @@ public interface IFormService {
     Form connect(Long id, FormUpdateStatusReq formUpdateStatusReq);
     Page<DemandDTO> getAllDemand(DemandReq demandReq, Pageable pageable);
     Page<Form> getAllFormByUser(Long id, BaseFilter filter);
+
+    FormView getFormViewById(Long id);
 }

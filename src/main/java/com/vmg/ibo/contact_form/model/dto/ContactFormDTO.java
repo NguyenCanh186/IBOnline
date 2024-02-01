@@ -14,10 +14,10 @@ public class ContactFormDTO {
     @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Họ tên chỉ chứa ký tự chữ cái")
     private String fullname;
     @NotNull(message = "Số điện thoại không được để trống!")
-    @Size(max = 10, message = "Số điện thoại không được vượt quá 10 ký tự")
+    @Size(max = 100, message = "Số điện thoại không được vượt quá 100 ký tự")
     @Pattern(regexp = "^[0-9]+$", message = "Số điện thoại chỉ chứa ký tự số")
     private String phone;
-    @Pattern(regexp = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", message = "Email không đúng định dạng!")
+    @Pattern(regexp = "^$|^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", message = "Email không đúng định dạng!")
     @Size(max = 255, message = "Email không được vượt quá 255 ký tự")
     private String email;
     @Size(max = 500, message = "Nội dung yêu cầu không được vượt quá 500 ký tự")

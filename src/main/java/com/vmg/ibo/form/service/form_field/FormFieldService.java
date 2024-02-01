@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -190,6 +191,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
     }
 
     private boolean isValidFieldEdit(Long templateFieldId, TemplateFieldEditReq request) {
+        boolean valid = true;
         Optional<TemplateField> templateField = templateFieldService.getTemplateFieldById(templateFieldId);
         if (!templateField.isPresent()) {
             throw new WebServiceException(HttpStatus.OK.value(), 409, "Template Field không tồn tại");
@@ -211,20 +213,20 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                     if (request.getValue() != null && !request.getValue().trim().isEmpty()) {
                         if (jsonObject.containsKey("max")) {
                             String json = jsonObject.get("max").toString();
-                            Integer max = Integer.valueOf(json);
+                            int max = Integer.parseInt(json);
                             if (request.getValue().trim().length() <= max) {
-                                return true;
+                                valid = true;
                             } else {
                                 throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " không được vượt quá " + max + " ký tự");
                             }
                         }
                         if (jsonObject.containsKey("greaterThan")) {
                             JSONObject greaterThan = (JSONObject) jsonObject.get("greaterThan");
-                            long target = (long) greaterThan.get("target");
+                            BigDecimal target = new BigDecimal(String.valueOf(greaterThan.get("target")));
                             if (type.equals("number")) {
-                                long value = Long.parseLong(request.getValue().trim());
-                                if (value > target) {
-                                    return true;
+                                BigDecimal value = new BigDecimal(request.getValue().trim());
+                                if (value.compareTo(target) > 0) {
+                                    valid = true;
                                 } else {
                                     throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " phải lớn hơn " + target);
                                 }
@@ -232,13 +234,13 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                         }
                         if (jsonObject.containsKey("lessThanOrEqual")) {
                             JSONObject lessThan = (JSONObject) jsonObject.get("lessThanOrEqual");
-                            long target = (long) lessThan.get("target");
+                            BigDecimal target = new BigDecimal(String.valueOf(lessThan.get("target")));
                             if (type.equals("number")) {
-                                long value = Long.parseLong(request.getValue().trim());
-                                if (value < target) {
-                                    return true;
+                                BigDecimal value = new BigDecimal(request.getValue().trim());
+                                if (value.compareTo(target) <= 0) {
+                                    valid = true;
                                 } else {
-                                    throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " phải nhỏ hơn " + target);
+                                    throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " phải nhỏ hơn hoặc bằng " + target);
                                 }
                             }
                         }
@@ -248,10 +250,11 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                 }
             }
         }
-        return true;
+        return valid;
     }
 
     private boolean isValidField(Long templateFieldId, TemplateFieldReq request) {
+        boolean valid = true;
         Optional<TemplateField> templateField = templateFieldService.getTemplateFieldById(templateFieldId);
         if (!templateField.isPresent()) {
             throw new WebServiceException(HttpStatus.OK.value(), 409, "Template Field không tồn tại");
@@ -260,7 +263,7 @@ public class FormFieldService extends BaseService implements IFormFieldService {
         String type = templateField.get().getType();
         if (type.equals("number")) {
             try {
-                long valueRequest = Long.parseLong(request.getValue());
+                BigDecimal valueRequest = new BigDecimal(request.getValue());
             } catch (NumberFormatException e) {
                 throw new WebServiceException(HttpStatus.OK.value(), 409, "Dữ liệu không hợp lệ");
             }
@@ -273,20 +276,20 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                     if (request.getValue() != null && !request.getValue().trim().isEmpty()) {
                         if (jsonObject.containsKey("max")) {
                             String json = jsonObject.get("max").toString();
-                            Integer max = Integer.valueOf(json);
+                            int max = Integer.parseInt(json);
                             if (request.getValue().trim().length() <= max) {
-                                return true;
+                                valid = true;
                             } else {
                                 throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " không được vượt quá " + max + " ký tự");
                             }
                         }
                         if (jsonObject.containsKey("greaterThan")) {
                             JSONObject greaterThan = (JSONObject) jsonObject.get("greaterThan");
-                            long target = (long) greaterThan.get("target");
+                            BigDecimal target = new BigDecimal(String.valueOf(greaterThan.get("target")));
                             if (type.equals("number")) {
-                                long value = Long.parseLong(request.getValue().trim());
-                                if (value > target) {
-                                    return true;
+                                BigDecimal value = new BigDecimal(request.getValue().trim());
+                                if (value.compareTo(target) > 0) {
+                                    valid = true;
                                 } else {
                                     throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " phải lớn hơn " + target);
                                 }
@@ -294,13 +297,13 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                         }
                         if (jsonObject.containsKey("lessThanOrEqual")) {
                             JSONObject lessThan = (JSONObject) jsonObject.get("lessThanOrEqual");
-                            long target = (long) lessThan.get("target");
+                            BigDecimal target = new BigDecimal(String.valueOf(lessThan.get("target")));
                             if (type.equals("number")) {
-                                long value = Long.parseLong(request.getValue().trim());
-                                if (value < target) {
-                                    return true;
+                                BigDecimal value = new BigDecimal(request.getValue().trim());
+                                if (value.compareTo(target) <= 0) {
+                                    valid = true;
                                 } else {
-                                    throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " phải nhỏ hơn " + target);
+                                    throw new WebServiceException(HttpStatus.OK.value(), 409, templateField.get().getName() + " phải nhỏ hơn hoặc bằng " + target);
                                 }
                             }
                         }
@@ -310,6 +313,6 @@ public class FormFieldService extends BaseService implements IFormFieldService {
                 }
             }
         }
-        return true;
+        return valid;
     }
 }
