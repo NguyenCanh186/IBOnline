@@ -18,11 +18,8 @@ public interface IFormService {
     FormDTO getFormById(Long id);
     FormDTO getFormCMSById(Long id);
     Form createForm(Form form);
-
     List<String> getAllCodeDemand();
-
     Form connect(Long id, FormUpdateStatusReq formUpdateStatusReq);
-
     Page<DemandDTO> getAllDemand(DemandReq demandReq, Pageable pageable);
     Page<Form> getAllFormByUser(Long id, BaseFilter filter);
 
