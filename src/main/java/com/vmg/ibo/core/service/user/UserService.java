@@ -351,8 +351,8 @@ public class UserService extends BaseService implements IUserService {
         for (int i = 0; i < userDetailList.size(); i++) {
             UserDetail currentUserDetail = userDetailList.get(i);
 
-            if (currentUserDetail.getCINumber() != null && currentUserDetail.getCINumber().equals(personalCustomer.getCinumber())) {
-                if (userDetail1.getCINumber() != null && userDetail1.getCINumber().equals(personalCustomer.getCinumber())) {
+            if (currentUserDetail.getCINumber() != null && currentUserDetail.getCINumber().trim().equals(personalCustomer.getCinumber().trim())) {
+                if (userDetail1.getCINumber() != null && userDetail1.getCINumber().trim().equals(personalCustomer.getCinumber().trim())) {
                     foundCINumber = true;
                 } else {
                     throw new WebServiceException(200, 409, "Số căn cước công dân đã tồn tại");
@@ -360,7 +360,7 @@ public class UserService extends BaseService implements IUserService {
             }
         }
 
-        if (!foundCINumber && userDetail1.getCINumber() != null && userDetail1.getCINumber().equals(personalCustomer.getCinumber())) {
+        if (!foundCINumber && userDetail1.getCINumber() != null && userDetail1.getCINumber().trim().equals(personalCustomer.getCinumber().trim())) {
             throw new WebServiceException(200, 409, "Số căn cước công dân đã tồn tại");
         }
         User user = userRepository.findById(idUser).orElse(null);
@@ -405,8 +405,8 @@ public class UserService extends BaseService implements IUserService {
         for (int i = 0; i < userDetailList.size(); i++) {
             UserDetail currentUserDetail = userDetailList.get(i);
 
-            if (currentUserDetail.getCodeTax() != null && currentUserDetail.getCodeTax().equals(businessCustomer.getCodeTax())) {
-                if (userDetail1.getCodeTax() != null && userDetail1.getCodeTax().equals(businessCustomer.getCodeTax())) {
+            if (currentUserDetail.getCodeTax() != null && currentUserDetail.getCodeTax().trim().equals(businessCustomer.getCodeTax().trim())) {
+                if (userDetail1.getCodeTax() != null && userDetail1.getCodeTax().trim().equals(businessCustomer.getCodeTax().trim())) {
                     foundCodeTax = true;
                 } else {
                     throw new WebServiceException(200, 409, "Mã số thuế đã tồn tại");
@@ -414,7 +414,7 @@ public class UserService extends BaseService implements IUserService {
             }
         }
 
-        if (!foundCodeTax && userDetail1.getCodeTax() != null && userDetail1.getCodeTax().equals(businessCustomer.getCodeTax())) {
+        if (!foundCodeTax && userDetail1.getCodeTax() != null && userDetail1.getCodeTax().trim().equals(businessCustomer.getCodeTax().trim())) {
             throw new WebServiceException(200, 409, "Mã số thuế đã tồn tại");
         }
 
@@ -505,8 +505,8 @@ public class UserService extends BaseService implements IUserService {
         for (int i = 0; i < userDetailList.size(); i++) {
             UserDetail currentUserDetail = userDetailList.get(i);
 
-            if (currentUserDetail.getCodeTax() != null && currentUserDetail.getCodeTax().equals(businessCustomer.getCodeTax())) {
-                if (userDetail1.getCodeTax() != null && userDetail1.getCodeTax().equals(businessCustomer.getCodeTax())) {
+            if (currentUserDetail.getCodeTax() != null && currentUserDetail.getCodeTax().trim().equals(businessCustomer.getCodeTax().trim())) {
+                if (userDetail1.getCodeTax() != null && userDetail1.getCodeTax().trim().equals(businessCustomer.getCodeTax().trim())) {
                     foundCodeTax = true;
                 } else {
                     throw new WebServiceException(200, 409, "Mã số thuế đã tồn tại");
@@ -514,7 +514,7 @@ public class UserService extends BaseService implements IUserService {
             }
         }
 
-        if (!foundCodeTax && userDetail1.getCodeTax() != null && userDetail1.getCodeTax().equals(businessCustomer.getCodeTax())) {
+        if (!foundCodeTax && userDetail1.getCodeTax() != null && userDetail1.getCodeTax().trim().equals(businessCustomer.getCodeTax().trim())) {
             throw new WebServiceException(200, 409, "Mã số thuế đã tồn tại");
         }
         User user = userRepository.findById(idUser).orElse(null);
