@@ -7,6 +7,7 @@ import com.vmg.ibo.customer.model.customer.RegisterModel;
 import com.vmg.ibo.core.model.dto.filter.UserFilter;
 import com.vmg.ibo.customer.model.ForgotPass;
 import com.vmg.ibo.core.model.entity.User;
+import com.vmg.ibo.financial_report.model.dto.FinancialReportRequest;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public interface IUserService {
     boolean isExistEmail(String email);
 
     UserDTO findById(Long id);
+    boolean checkQuarter(FinancialReportRequest request);
     UserDTO findByUserDetail();
 
     User create(UserAddDto userDTO);

@@ -1,6 +1,7 @@
 package com.vmg.ibo.core.service.user;
 
 import com.vmg.ibo.core.base.BaseService;
+import com.vmg.ibo.financial_report.model.dto.FinancialReportRequest;
 import com.vmg.ibo.form.service.email.EmailService;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import com.vmg.ibo.core.config.exception.WebServiceException;
@@ -268,6 +269,26 @@ public class UserService extends BaseService implements IUserService {
             }
         }
         return userDTO;
+    }
+
+    @Override
+    public boolean checkQuarter(FinancialReportRequest request) {
+        UserDTO userDTO = findByUserDetail();
+        if (request.getType() == 1) {
+            for (int i = 0; i < userDTO.getReports().size(); i++) {
+                if (userDTO.getReports().get(i).getYear().equals(request.getYear())) {
+                    return false;
+                }
+            }
+        } else if (request.getType() == 0) {
+            for (int i = 0; i < userDTO.getReports().size(); i++) {
+                if (userDTO.getReports().get(i).getYear().equals(request.getYear())
+                        && userDTO.getReports().get(i).getQuarter().equals(request.getQuarter())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
